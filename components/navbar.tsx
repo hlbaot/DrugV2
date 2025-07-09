@@ -11,6 +11,7 @@ function Navbar() {
         height={200}
         className="mb-6"
       />
+      
     </div>
   );
 }

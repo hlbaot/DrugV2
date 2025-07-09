@@ -11,14 +11,14 @@ export default function Page() {
     if (token) {
       router.push('/home');
     } else {
-      router.push('/signin');
+      router.push('/auth/signin');
     }
   }, []);
 
   // useEffect(() => {
   //   const token = localStorage.getItem("token");
   //   if (token) {
-  //     router.push('/signin');
+  //     router.push('/auth/signin');
   //   } else {
   //     router.push('/home');
   //   }
