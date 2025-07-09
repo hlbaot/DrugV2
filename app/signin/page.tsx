@@ -50,7 +50,7 @@ function SignIn() {
                   password: values.password,
                 });
 
-                if (response.status === 200) {
+                if (response.status === 200 || response.status === 204) {
                   // lấy token xác thực người dùng SignIned
                   const token = response.data.token;
                   if (values.rememberMe) {
@@ -58,6 +58,7 @@ function SignIn() {
                   } else {
                     localStorage.removeItem("token");
                   }
+                  router.push("/home");
                   // alert("Đăng nhập thành công!");
                 }
               } catch (error: any) {

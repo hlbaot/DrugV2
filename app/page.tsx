@@ -15,5 +15,14 @@ export default function Page() {
     }
   }, []);
 
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     router.push('/signin');
+  //   } else {
+  //     router.push('/home');
+  //   }
+  // }, []);
+
   return null;
 }

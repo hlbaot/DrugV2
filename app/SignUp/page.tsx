@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
 import API_SignUp from "@/api/API_Signup";
@@ -7,17 +7,17 @@ interface Values {
   email: string;
   password: string;
   confirmPassword: string;
-   rememberMe: boolean;
+  rememberMe: boolean;
 }
 
 function SignUp() {
   const router = useRouter();
   const handleClickSignIn = () => {
     router.push("/signin");
-  }
+  };
   return (
-    <> 
-    <img className="w-[200px] h-[150px]" src="/logo.png" alt="Logo" />
+    <>
+      <img className="w-[200px] h-[150px]" src="/logo.png" alt="Logo" />
       <div className="main w-full flex flex-col sm:flex-row">
         <div className="form_login w-full sm:w-[30%]">
           <div className="w-full h-[4rem] bg-black rounded-tr-[40px] rounded-br-[40px] ">
@@ -42,10 +42,7 @@ function SignUp() {
                   confirmPassword: values.confirmPassword,
                 });
 
-                if (response.status === 200) {
-                  router.push("/signin");
-                  // alert("Đăng kí thành công!");
-                }
+                router.push("/signin");
               } catch (error: any) {
                 console.error("Lỗi đăng kí:", error);
                 // alert(
@@ -89,9 +86,9 @@ function SignUp() {
                     Confirm password
                   </label>
                   <Field
-                    id="password"
-                    name="password"
-                    placeholder="Password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="confirmPassword"
                     type="password"
                     className="border-[2px] rounded-[20px] border-black p-4"
                   />
@@ -105,7 +102,6 @@ function SignUp() {
                       />
                       <p className="my-auto">Remember me</p>
                     </div>
-                    
                   </div>
 
                   {/* Button submit */}
@@ -146,7 +142,7 @@ function SignUp() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default SignUp
+export default SignUp;
