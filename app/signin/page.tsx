@@ -1,11 +1,9 @@
 "use client";
-import "../../styles/signin.module.scss";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import Loader from "../../public/Loader";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
-import "../../styles/signin.module.scss";
+import API_SignIn from "@/api/API_Signin";
 
 interface Values {
   email: string;
@@ -22,9 +20,8 @@ function SignIn() {
 
   return (
     <div className="relative min-h-screen">
-      
       {loading && (
-        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white z-50">
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white z-10">
           <Loader />
         </div>
       )}
@@ -48,8 +45,7 @@ function SignIn() {
             ) => {
               setLoading(true);
               try {
-                // Gửi yêu cầu đăng nhập đến API
-                const response = await axios.post("/api/login", {
+                const response = await API_SignIn({
                   email: values.email,
                   password: values.password,
                 });
@@ -129,7 +125,7 @@ function SignIn() {
 
                   <div>
                     <p className="text-center">
-                      Don't have account,{" "}
+                      Don't have account,{"  "}
                       <b
                         onClick={handleClickSignUp}
                         className="underline cursor-pointer"
