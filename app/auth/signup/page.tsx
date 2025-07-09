@@ -13,7 +13,7 @@ interface Values {
 function SignUp() {
   const router = useRouter();
   const handleClickSignIn = () => {
-    router.push("/signin");
+    router.push("/auth/signin");
   };
   return (
     <>
@@ -42,7 +42,7 @@ function SignUp() {
                   confirmPassword: values.confirmPassword,
                 });
 
-                router.push("/signin");
+                router.push("/auth/signin");
               } catch (error: any) {
                 console.error("Lỗi đăng kí:", error);
                 // alert(
@@ -138,7 +138,7 @@ function SignUp() {
               <i>DrugConnection</i>
             </span>
           </h1>
-          <img className="w-[24rem] h-[20rem] mx-auto" src="logo1.png" alt="" />
+          <img className="w-[24rem] h-[20rem] mx-auto" src="/logo1.png" alt="" />
         </div>
       </div>
     </>

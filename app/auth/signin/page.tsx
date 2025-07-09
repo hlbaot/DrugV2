@@ -14,7 +14,7 @@ interface Values {
 function SignIn() {
   const router = useRouter();
   const handleClickSignUp = () => {
-    router.push("/signup");
+    router.push("/auth/signup");
   };
   const [loading, setLoading] = useState(false);
 
@@ -150,7 +150,7 @@ function SignIn() {
               <i>DrugConnection</i>
             </span>
           </h1>
-          <img className="w-[24rem] h-[20rem] mx-auto" src="logo1.png" alt="" />
+          <img className="w-[24rem] h-[20rem] mx-auto" src="/logo1.png" alt="" />
         </div>
       </div>
     </div>

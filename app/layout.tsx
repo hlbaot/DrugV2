@@ -3,7 +3,7 @@ import '../styles/global.scss';
 export const metadata = {
   title: 'DrugConnectionV2', // tiêu đề
   icons: {
-    icon: 'logo.png', // logo
+    icon: '/logo.png', // logo
   },
 };
 
