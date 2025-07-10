@@ -1,9 +1,7 @@
-'use client';
-import Navbar from "../../components/navbar";
+
 function Home() {
   return (
     <>
-    <Navbar/>
     </>
   )
 }
