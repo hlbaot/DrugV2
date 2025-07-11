@@ -1,0 +1,21 @@
+.menu-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+
+  .icon,
+  .text {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    .icon,
+    .text {
+      transform: scale(1.1);
+    }
+  }
+}
