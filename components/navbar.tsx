@@ -5,9 +5,15 @@ import "../styles/navbar.scss";
 
 
 function Navbar() {
-  const [active, setActive] = useState("active");
+  const [active, setActive] = useState("home");
+
   const isActive = (name: string) =>
-    `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === name ? 'bg-rose-400 text-white' : ''}`;
+    `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === name ? 'bg-rose-400 text-white' : ''
+    }`;
+
+  const handleSetActive = (name: string) => {
+    setActive(name);
+  };
 
   return (
     <div className="w-[4.5rem] lg:w-[20%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8">
@@ -17,9 +23,9 @@ function Navbar() {
       {/* Menu items */}
       <div className="flex flex-col justify-center gap-8">
         {/* Home */}
-        <Link href="/home" onClick={() => setActive("active")} className={isActive("active")}>
+        <Link href="/home" onClick={() => handleSetActive("home")} className={isActive("home")}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-            viewBox="0 0 24 24" strokeWidth="1.5" stroke={active == "active" ? "white" : "currentColor"}
+            viewBox="0 0 24 24" strokeWidth="1.5" stroke={active === "home" ? "white" : "currentColor"}
             className="icon w-7 h-7">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="m2.25 12 8.954-8.955c.44-.439 
@@ -30,13 +36,13 @@ function Navbar() {
           1.125 1.125V21h4.125c.621 0 
           1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
           </svg>
-          <span className={`text hidden lg:block text-2xl ${active === "active" ? "text-white" : ""}`}>Home</span>
+          <span className={`text hidden lg:block text-2xl ${active === "home" ? "text-white" : ""}`}>Home</span>
         </Link>
 
         {/* Message */}
-        <Link href="/message" onClick={() => setActive("active")} className={isActive("active")}>
+        <Link href="/message" onClick={() => handleSetActive("message")} className={isActive("message")}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-            viewBox="0 0 24 24" strokeWidth="1.5" stroke={active == "active" ? "white" : "currentColor"}
+            viewBox="0 0 24 24" strokeWidth="1.5" stroke={active === "message" ? "white" : "currentColor"}
             className="icon w-7 h-7">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M2.25 12.76c0 1.6 1.123 2.994 
@@ -53,7 +59,7 @@ function Navbar() {
         </Link>
 
         {/* Save */}
-        <Link href="/save" onClick={() => setActive("active")} className={isActive("active")}>
+        <Link href="/save" onClick={() => handleSetActive("save")} className={isActive("save")}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
             className="icon w-7 h-7">
@@ -80,7 +86,7 @@ function Navbar() {
         </div>
 
         {/* Profile */}
-        <Link href="/profile" onClick={() => setActive("active")} className={isActive("active")}>
+        <Link href="/profile" onClick={() => handleSetActive("profile")} className={isActive("profile")}>
           <img className="icon w-7 h-7 rounded-full border border-black" src="/usser_icon.png" alt="avatar" />
           <span className="text hidden lg:block text-xl">Profile</span>
         </Link>
@@ -115,9 +121,9 @@ function Navbar() {
           <span className="text hidden lg:block text-xl">More</span>
         </div>
       </div>
-    </div >
-
+    </div>
   );
 }
 
 export default Navbar;
+
