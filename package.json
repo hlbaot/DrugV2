@@ -24,6 +24,7 @@
     "react-dom": "latest",
     "sass": "^1.89.2",
     "styled-components": "^6.1.19",
+    "swiper": "^11.2.10",
     "tailwindcss": "3.4.17",
     "typescript": "5.7.3",
     "use-debounce": "^10.0.4",

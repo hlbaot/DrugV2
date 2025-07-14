@@ -16,7 +16,7 @@ function Navbar() {
   };
 
   return (
-    <div className="fixed w-[4.5rem] lg:w-[20%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
+    <div className="fixed z-50 w-[4.5rem] lg:w-[20%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
       {/* Logo */}
       <img className="w-[10rem] h-auto" src="/logo.png" alt="logo" />
 

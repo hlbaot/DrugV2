@@ -1,19 +1,20 @@
+'use client'
 import React from 'react';
 import styled from 'styled-components';
 
-const Checkbox = () => {
-    return (
-        <StyledWrapper>
-            <label className="ui-bookmark">
-                <input type="checkbox" />
-                <div className="bookmark">
-                    <svg viewBox="0 0 16 16" style={{ marginTop: 4 }} className="bi bi-heart-fill" height={25} width={25} xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" fillRule="evenodd" />
-                    </svg>
-                </div>
-            </label>
-        </StyledWrapper>
-    );
+const Heart = () => {
+  return (
+    <StyledWrapper>
+      <label className="ui-bookmark">
+        <input type="checkbox" />
+        <div className="bookmark">
+          <svg viewBox="0 0 16 16" style={{ marginTop: 4 }} className="bi bi-heart-fill" height={25} width={25} xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" fillRule="evenodd" />
+          </svg>
+        </div>
+      </label>
+    </StyledWrapper>
+  );
 }
 
 const StyledWrapper = styled.div`
@@ -220,4 +221,4 @@ const StyledWrapper = styled.div`
     }
   }`;
 
-export default Checkbox;
+export default Heart;
