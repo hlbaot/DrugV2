@@ -1,57 +1,25 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import IconHeart from "../public/icon_heart"
-import ThreeDotModal from './modal_post'
-
+import { useState } from 'react'
+import { PostType } from '../components/postFeed'
+import IconHeart from '../public/icon_heart'
+import IconSave from '../public/icon_save'
+import ThreeDotModal from '../components/modal_post'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
-interface PostType {
-  username: string
-  caption: string
-  avatar: string
-  images: string[]
-  likes: number
-  comments: number
-  commentPreview: string[]
-}
-
-function Post() {
-  const [post, setPost] = useState<PostType | null>(null)
+function Post(post: PostType) {
   const [showAllComments, setShowAllComments] = useState(false)
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      const data: PostType = {
-        username: 'hlbaot',
-        caption: 'Hi, daden',
-        avatar: 'https://i.pinimg.com/736x/b6/88/31/b68831ed5d31b7f569560a8805ff06ec.jpg',
-        images: [
-          'https://i.pinimg.com/736x/88/43/3f/88433f7556fb6968ef31fa2405aeb18b.jpg',
-          'https://i.pinimg.com/736x/f5/0d/4e/f50d4e1f62f0c6d2552494ca3c4f11cd.jpg',
-        ],
-        likes: 12,
-        comments: 3,
-        commentPreview: ['Ảnh đẹp quá!', 'Chụp ở đâu đó?', 'Nhìn mê thật!', 'hii', 'quá trời xịn', 'Ảnh đẹp quá!', 'Chụp ở đâu đó?', 'Nhìn mê thật!', 'hii', 'quá trời xịn', 'Ảnh đẹp quá!', 'Chụp ở đâu đó?', 'Nhìn mê thật!', 'hii', 'quá trời xịn'],
-      }
-      setPost(data)
-    }
-
-    fetchPost()
-  }, [])
-
-  if (!post) return <div>Loading...</div>
 
   return (
     <div className="post my-4 p-4 max-w-md border rounded-lg bg-white shadow">
       {/* Header */}
       <div className="head flex items-center mb-3 justify-between">
         <div className="left flex items-center space-x-2">
-          <img src={post.avatar} alt="avatar" className="w-10 h-10 rounded-full object-cover" />
+          <img src={post.avatar_url} alt="avatar" className="w-10 h-10 rounded-full object-cover" />
           <span className="font-semibold">{post.username}</span>
         </div>
         <ThreeDotModal />
@@ -76,7 +44,6 @@ function Post() {
           ))}
         </Swiper>
 
-        {/* CSS cho Swiper (ngay trong component) */}
         <style jsx>{`
           :global(.swiper-button-prev),
           :global(.swiper-button-next) {
@@ -91,11 +58,6 @@ function Post() {
             justify-content: center;
           }
 
-          :global(.swiper-button-prev)::after,
-          :global(.swiper-button-next)::after {
-            font-size: 14px;
-          }
-
           :global(.swiper-pagination-bullet) {
             background: rgba(255, 255, 255, 0.4);
           }
@@ -107,10 +69,10 @@ function Post() {
       </div>
 
       {/* Like + Comment icons */}
-      <div className="react flex space-x-4 mb-2 text-sm text-gray-600">
-        <div>
+      <div className="react flex justify-between items-center space-x-4 mb-2 text-sm text-gray-600">
+        <div className='flex w-auto gap-4'>
           <span className="flex items-center space-x-1">
-            <IconHeart />
+            <IconHeart postId={post.postId} initiallyLiked={post.likedByCurrentUser} />
             <span>{post.likes} likes</span>
           </span>
 
@@ -121,15 +83,14 @@ function Post() {
             <span>{post.comments} comments</span>
           </span>
         </div>
-
+        <IconSave />
       </div>
 
       <hr className="mb-4" />
 
-      {/* ✅ Preview bình luận với scroll */}
+      {/* Bình luận */}
       <div
-        className={`show-cmt text-sm mb-2 transition-all duration-300 ${showAllComments ? 'max-h-32 overflow-y-auto pr-1' : ''
-          }`}
+        className={`show-cmt text-sm mb-2 transition-all duration-300 ${showAllComments ? 'max-h-32 overflow-y-auto pr-1' : ''}`}
       >
         {(showAllComments ? post.commentPreview : post.commentPreview.slice(0, 3)).map((cmt, i) => (
           <div key={i} className="mb-1 leading-snug">
@@ -146,7 +107,6 @@ function Post() {
           </button>
         )}
       </div>
-
 
       <hr className="mb-2" />
 
