@@ -1,5 +1,6 @@
 import '../public/logo.png';
 import '../styles/global.scss';
+import { SocketProvider } from '@/context/SocketContext'
 export const metadata = {
   title: 'DrugConnectionV2', // tiêu đề
   icons: {
@@ -14,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <SocketProvider>{children}</SocketProvider>
     </html>
   );
 }

@@ -63,14 +63,20 @@ function SignIn() {
                 });
 
                 if (response.status === 200 || response.status === 204) {
-                  const token = response.data.token;
+                  //lấy token, idUser
+                  const { token, id } = response.data;
+
                   if (values.rememberMe) {
                     localStorage.setItem("token", token);
+                    localStorage.setItem("userId", id.toString());
                   } else {
                     sessionStorage.setItem("token", token);
+                    sessionStorage.setItem("userId", id.toString());
                   }
+
                   router.push("/home");
                 }
+
               } catch (error: any) {
                 console.error("Lỗi đăng nhập:", error);
               } finally {

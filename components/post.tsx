@@ -1,6 +1,7 @@
 'use client'
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useCommentSocket } from '../socket/comment'
+import { Comment } from '../socket/comment'
 import { PostType } from '../components/postFeed'
 import IconHeart from '../public/icon_heart'
 import IconSave from '../public/icon_save'
@@ -13,6 +14,30 @@ import 'swiper/css/pagination'
 
 function Post(post: PostType) {
   const [showAllComments, setShowAllComments] = useState(false)
+  const [newComments, setNewComments] = useState<string[]>([])
+  const [commentText, setCommentText] = useState('')
+  const [userId, setUserId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const id = sessionStorage.getItem('userId') || localStorage.getItem('userId')
+    setUserId(id)
+  }, [])
+
+  const { sendComment } = useCommentSocket(post.postId, (comment) => {
+    setNewComments((prev) => [...prev, comment.content])
+  })
+
+  // Gửi comment khi nhấn nút
+  const handleSendComment = () => {
+    if (commentText.trim() && userId) {
+      sendComment({
+        content: commentText,
+        authorId: userId,
+        postId: post.postId,
+      })
+      setCommentText('')
+    }
+  }
 
   return (
     <div className="post my-4 p-4 max-w-md border rounded-lg bg-white shadow">
@@ -89,12 +114,17 @@ function Post(post: PostType) {
       <hr className="mb-4" />
 
       {/* Bình luận */}
-      <div
-        className={`show-cmt text-sm mb-2 transition-all duration-300 ${showAllComments ? 'max-h-32 overflow-y-auto pr-1' : ''}`}
-      >
+      <div className={`show-cmt text-sm mb-2 transition-all duration-300 ${showAllComments ? 'max-h-32 overflow-y-auto pr-1' : ''}`}>
         {(showAllComments ? post.commentPreview : post.commentPreview.slice(0, 3)).map((cmt, i) => (
           <div key={i} className="mb-1 leading-snug">
             <span className="font-semibold">{post.username}</span> {cmt}
+          </div>
+        ))}
+
+        {/* 🆕 Hiển thị các comment mới được thêm vào qua socket */}
+        {newComments.map((cmt, i) => (
+          <div key={`new-${i}`} className="mb-1 leading-snug">
+            <span className="font-semibold">You</span> {cmt}
           </div>
         ))}
 
@@ -110,15 +140,30 @@ function Post(post: PostType) {
 
       <hr className="mb-2" />
 
-      {/* Form thêm bình luận */}
+      {/* 📝 Ô nhập comment + nút gửi */}
       <div className="flex items-center gap-2">
         <input
           type="text"
           placeholder="Add a comment..."
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
           className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm"
         />
-        <svg xmlns="http://www.w3.org/2000/svg" className="size-6 cursor-pointer" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+        {/* 🚀 Khi click sẽ gọi handleSendComment -> gửi bình luận qua socket */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="size-6 cursor-pointer"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          onClick={handleSendComment}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+          />
         </svg>
       </div>
     </div>

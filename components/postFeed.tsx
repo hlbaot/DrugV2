@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Post from '../ui/post'
+import Post from '../components/post'
 import { getAllPosts } from '../api/API_getPost';
 
 export interface PostType {
-    postId: number
+    postId: string
     username: string
     caption: string
     avatar_url: string

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 interface IconHeartProps {
-  postId: number;
+  postId: string;
   initiallyLiked?: boolean;
   onToggleLike?: (liked: boolean) => void;
 }
