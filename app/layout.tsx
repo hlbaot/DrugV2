@@ -1,10 +1,12 @@
+// app/layout.tsx
 import '../public/logo.png';
 import '../styles/global.scss';
-import { SocketProvider } from '@/context/SocketContext'
+// import { SocketProvider } from '@/context/SocketContext';
+
 export const metadata = {
-  title: 'DrugConnectionV2', // tiêu đề
+  title: 'DrugConnectionV2',
   icons: {
-    icon: '/logo.png', // logo
+    icon: '/logo.png',
   },
 };
 
@@ -15,7 +17,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <SocketProvider>{children}</SocketProvider>
+      <body>
+        {/* <SocketProvider> */}
+          {children}
+        {/* </SocketProvider> */}
+      </body>
     </html>
   );
 }

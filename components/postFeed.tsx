@@ -1,29 +1,22 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import Post from '../components/post'
+import { useEffect, useState } from 'react';
+import Post from '../components/post';
 import { getAllPosts } from '../api/API_getPost';
+import { PostType } from '../interfaces/post';
 
-export interface PostType {
-    postId: string
-    username: string
-    caption: string
-    avatar_url: string
-    images: string[]
-    likes: number
-    comments: number
-    commentPreview: string[]
-    likedByCurrentUser: boolean
-}
+const sortPostsByTime = (posts: PostType[]) => {
+    return posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+};
 
 export default function PostFeed() {
-    const [posts, setPosts] = useState<PostType[]>([])
-    //trả về danh sách bài posts
+    const [posts, setPosts] = useState<PostType[]>([]);
+
     useEffect(() => {
         const fetchAllPosts = async () => {
             try {
                 const postsData = await getAllPosts();
-                setPosts(postsData);
+                setPosts(sortPostsByTime(postsData));
             } catch (error) {
                 console.error('Lỗi khi lấy danh sách bài viết:', error);
             }
@@ -31,11 +24,12 @@ export default function PostFeed() {
 
         fetchAllPosts();
     }, []);
+
     return (
         <div className="flex flex-col items-center">
             {posts.map((post) => (
-                <Post key={post.postId} {...post} />
+                <Post key={post.id} {...post} />
             ))}
         </div>
-    )
+    );
 }

@@ -5,12 +5,7 @@ import Loader from "../../../public/Loader";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import API_SignIn from "@/api/API_Signin";
-
-interface Values {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
+import { Values } from "../../../interfaces/sigin";
 
 // Schema kiểm tra dữ liệu
 const SignInSchema = Yup.object({
@@ -64,14 +59,17 @@ function SignIn() {
 
                 if (response.status === 200 || response.status === 204) {
                   //lấy token, idUser
-                  const { token, id } = response.data;
+                  const { token, id, avatar } = response.data.data;
+                  const avatarUrl = avatar || "/avatar_default.jpg";
 
                   if (values.rememberMe) {
                     localStorage.setItem("token", token);
                     localStorage.setItem("userId", id.toString());
+                    localStorage.setItem("avatar", avatarUrl);
                   } else {
                     sessionStorage.setItem("token", token);
                     sessionStorage.setItem("userId", id.toString());
+                    sessionStorage.setItem("avatar", avatarUrl);
                   }
 
                   router.push("/home");

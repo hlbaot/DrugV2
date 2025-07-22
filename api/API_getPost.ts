@@ -1,14 +1,16 @@
-// api.ts
-
 import axios from 'axios';
-import { PostType } from '../components/postFeed';
+import { PostType } from '../interfaces/post';
 
-export const getAllPosts = async () => {
-    try {
-        const res = await axios.get<PostType[]>(`API_AllPost`);
-        return res.data;
-    } catch (error) {
-        console.error('Lỗi khi lấy danh sách bài viết:', error);
-        throw error;
-    }
+export const getAllPosts = async (): Promise<PostType[]> => {
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    if (!token) throw new Error('Không tìm thấy token');
+
+    const res = await axios.get('http://10.243.200.17:5050/api/posts', {
+        withCredentials: true,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    return res.data.data as PostType[];
 };

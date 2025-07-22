@@ -3,13 +3,8 @@ import { Formik, Field, Form, FormikHelpers, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import API_SignUp from "@/api/API_Signup";
+import {Values} from "../../../interfaces/signup"
 
-interface Values {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  rememberMe: boolean;
-}
 
 // ✅ Validation schema
 const SignUpSchema = Yup.object({
