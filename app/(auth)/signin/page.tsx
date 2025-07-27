@@ -59,7 +59,7 @@ function SignIn() {
 
                 if (response.status === 200 || response.status === 204) {
                   //lấy token, idUser
-                  const { token, id, avatar } = response.data.data;
+                  const { token, id, avatar } = response.data;
                   const avatarUrl = avatar || "/avatar_default.jpg";
 
                   if (values.rememberMe) {

@@ -1,10 +1,12 @@
 'use client';
 import Link from "next/link";
 import { useState } from "react";
+import CreateModal from "./modal_create";
 import "../styles/navbar.scss";
 
 function Navbar() {
   const [active, setActive] = useState("home");
+  const [openModal, setOpenModal] = useState(false);
 
   const isActive = (name: string) =>
     `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === name ? 'bg-rose-400 text-white' : ''
@@ -75,16 +77,20 @@ function Navbar() {
         </Link>
 
         {/* Create */}
-        <div className="menu-link p-2 flex items-center gap-4 cursor-pointer">
+        <div
+          onClick={() => setOpenModal(true)}
+          className="menu-link p-2 flex items-center gap-4 cursor-pointer"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
             className="icon w-7 h-7">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M12 9v6m3-3H9m12 0a9 9 0 
-          1 1-18 0 9 9 0 0 1 18 0Z" />
+        1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
           <span className="text hidden lg:block text-xl">Create</span>
         </div>
+        <CreateModal open={openModal} onClose={() => setOpenModal(false)} />
 
         {/* Profile */}
         <Link href="/profile" onClick={() => handleSetActive("profile")} className={isActive("profile")}>

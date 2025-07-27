@@ -26,10 +26,13 @@ export default function PostFeed() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center">
-            {posts.map((post) => (
-                <Post key={post.id} {...post} />
-            ))}
-        </div>
-    );
+    <div className="flex flex-col items-center">
+        {posts.length === 0 ? (
+            <p>Không có bài viết nào</p>
+        ) : (
+            posts.map((post) => <Post key={post.id} {...post} />)
+        )}
+    </div>
+);
+
 }

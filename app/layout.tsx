@@ -1,6 +1,6 @@
 // app/layout.tsx
 import '../public/logo.png';
-import '../styles/global.scss';
+import '../styles/global.css';
 // import { SocketProvider } from '@/context/SocketContext';
 
 export const metadata = {

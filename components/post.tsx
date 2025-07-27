@@ -40,7 +40,7 @@ function Post(post: PostType) {
   // }
 
   return (
-    <div className="post my-4 p-4 max-w-md border rounded-lg bg-white shadow">
+    <div className="post ml-[3rem] my-4 p-4 max-w-md border rounded-lg bg-white shadow">
       {/* Header */}
       <div className="head flex items-center mb-3 justify-between">
         <div className="left flex items-center space-x-2">
@@ -61,42 +61,47 @@ function Post(post: PostType) {
       <div className="mb-3 rounded-lg overflow-hidden relative">
         <Swiper
           modules={[Navigation, Pagination]}
-          navigation
-          pagination={{ clickable: true }}
+          navigation={post.images.length > 1}
+          pagination={post.images.length > 1 ? { clickable: true } : false}
           className="rounded-lg"
         >
           {post.images.map((img, idx) => (
             <SwiperSlide key={idx}>
-              <div className="w-full h-96 bg-black flex items-center justify-center overflow-hidden">
-                <img src={img} alt={`slide-${idx}`} className="w-full h-full object-cover" />
+              <div className="relative w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[2/3] mx-auto bg-black overflow-hidden">
+                <img
+                  src={img}
+                  alt={`slide-${idx}`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
 
         <style jsx>{`
-          :global(.swiper-button-prev),
-          :global(.swiper-button-next) {
-            color: white;
-            width: 24px;
-            height: 24px;
-            font-size: 14px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 9999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
+    :global(.swiper-button-prev),
+    :global(.swiper-button-next) {
+      color: white;
+      width: 18px;
+      height: 18px;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 9999px;
+      display: ${post.images.length > 1 ? 'flex' : 'none'};
+      align-items: center;
+      justify-content: center;
+    }
 
-          :global(.swiper-pagination-bullet) {
-            background: rgba(255, 255, 255, 0.4);
-          }
+    :global(.swiper-pagination-bullet) {
+      background: rgba(255, 255, 255, 0.4);
+    }
 
-          :global(.swiper-pagination-bullet-active) {
-            background: white;
-          }
-        `}</style>
+    :global(.swiper-pagination-bullet-active) {
+      background: white;
+    }
+  `}</style>
       </div>
+
 
       {/* Like + Comment icons */}
       <div className="react flex justify-between items-center space-x-4 mb-2 text-sm text-gray-600">
@@ -114,7 +119,8 @@ function Post(post: PostType) {
 
           </span>
         </div>
-        <IconSave />
+        {/* <IconSave isSaved={post.savedByCurrentUser} /> */}
+        <IconSave isSaved={false} />
       </div>
 
       <hr className="mb-4" />

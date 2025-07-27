@@ -50,7 +50,6 @@ function SignUp() {
                 const response = await API_SignUp({
                   email: values.email,
                   password: values.password,
-                  confirmPassword: values.confirmPassword,
                 });
 
                 router.push("/signin");
