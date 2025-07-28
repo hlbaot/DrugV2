@@ -12,7 +12,14 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
-function Post(post: PostType) {
+function Post({
+  id,
+  caption,
+  images,
+  user,
+  comments,
+  commentCount,
+}: PostType) {
   const [showAllComments, setShowAllComments] = useState(false)
   const [newComments, setNewComments] = useState<string[]>([])
   const [commentText, setCommentText] = useState('')
@@ -22,6 +29,7 @@ function Post(post: PostType) {
     const id = sessionStorage.getItem('userId') || localStorage.getItem('userId')
     setUserId(id)
   }, [])
+
 
   // const { sendComment } = useCommentSocket(post.postId, (comment) => {
   //   setNewComments((prev) => [...prev, comment.content])
@@ -44,28 +52,31 @@ function Post(post: PostType) {
       {/* Header */}
       <div className="head flex items-center mb-3 justify-between">
         <div className="left flex items-center space-x-2">
+
           <img
-            src={post.user.avatar_url || "/default-avatar.png"}
+            src={user.avatar_url ?? "/avatar_default.jpg"}
             alt="avatar"
             className="w-10 h-10 rounded-full object-cover"
           />
 
-          <span className="font-semibold">{post.user.username}</span>
+          <span className="font-semibold">{user.username}</span>
+
         </div>
         <ThreeDotModal />
       </div>
 
-      <span className="block mb-2">{post.caption}</span>
+      {/* caption */}
+      <span className="block mb-2">{caption}</span>
 
       {/* Slider hình ảnh */}
       <div className="mb-3 rounded-lg overflow-hidden relative">
         <Swiper
           modules={[Navigation, Pagination]}
-          navigation={post.images.length > 1}
-          pagination={post.images.length > 1 ? { clickable: true } : false}
+          navigation={images.length > 1}
+          pagination={images.length > 1 ? { clickable: true } : false}
           className="rounded-lg"
         >
-          {post.images.map((img, idx) => (
+          {images.map((img, idx) => (
             <SwiperSlide key={idx}>
               <div className="relative w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[2/3] mx-auto bg-black overflow-hidden">
                 <img
@@ -87,7 +98,7 @@ function Post(post: PostType) {
       font-size: 14px;
       background: rgba(0, 0, 0, 0.3);
       border-radius: 9999px;
-      display: ${post.images.length > 1 ? 'flex' : 'none'};
+      display: ${images.length > 1 ? 'flex' : 'none'};
       align-items: center;
       justify-content: center;
     }
@@ -115,7 +126,7 @@ function Post(post: PostType) {
             <svg xmlns="http://www.w3.org/2000/svg" className="size-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
             </svg>
-            <span>{post.comments.length} comments</span>
+            <span>{commentCount} comments</span>
 
           </span>
         </div>

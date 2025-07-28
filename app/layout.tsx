@@ -1,4 +1,3 @@
-// app/layout.tsx
 import '../public/logo.png';
 import '../styles/global.css';
 // import { SocketProvider } from '@/context/SocketContext';
@@ -17,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning={true}>
         {/* <SocketProvider> */}
           {children}
         {/* </SocketProvider> */}

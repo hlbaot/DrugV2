@@ -51,7 +51,6 @@ function SignUp() {
                   email: values.email,
                   password: values.password,
                 });
-
                 router.push("/signin");
               } catch (error: any) {
                 console.error("Lỗi đăng kí:", error);

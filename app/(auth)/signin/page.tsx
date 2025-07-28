@@ -59,17 +59,19 @@ function SignIn() {
 
                 if (response.status === 200 || response.status === 204) {
                   //lấy token, idUser
-                  const { token, id, avatar } = response.data;
+                  const { token, id, avatar, username } = response.data;
                   const avatarUrl = avatar || "/avatar_default.jpg";
 
                   if (values.rememberMe) {
                     localStorage.setItem("token", token);
                     localStorage.setItem("userId", id.toString());
                     localStorage.setItem("avatar", avatarUrl);
+                    localStorage.setItem("userName", username)
                   } else {
                     sessionStorage.setItem("token", token);
                     sessionStorage.setItem("userId", id.toString());
                     sessionStorage.setItem("avatar", avatarUrl);
+                    sessionStorage.setItem("userName", username)
                   }
 
                   router.push("/home");

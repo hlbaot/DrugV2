@@ -37,7 +37,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
 
       return fetch(CLOUDINARY_UPLOAD_URL, {
         method: 'POST',
-        body: formData, 
+        body: formData,
       })
         .then((res) => {
           if (!res.ok) throw new Error('Upload failed');
@@ -56,7 +56,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
       const imageUrls = await uploadImagesToCloudinary(files);
 
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-
+      const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
       if (!token) {
         throw new Error('Bạn chưa đăng nhập hoặc thiếu token');
       }
@@ -67,6 +67,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
           caption: content,
           images: imageUrls,
           is_public: true,
+          user_id: Number(userId),
         },
         {
           headers: {
@@ -103,7 +104,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
     } finally {
       setLoading(false);
     }
-    
+
   };
 
 

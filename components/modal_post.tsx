@@ -64,7 +64,7 @@ export default function ThreeDotModal() {
                 aria-describedby="modal-description"
             >
                 <Box sx={style}>
-                    <Typography sx={{ ...buttonStyle, color: 'red' }}>Unfollow</Typography>
+                    <Typography sx={{ ...buttonStyle, color: 'red' }}>Detele</Typography>
                     <Typography sx={buttonStyle}>Save</Typography>
                     <Typography sx={buttonStyle} onClick={handleClose}>Cancel</Typography>
                 </Box>
