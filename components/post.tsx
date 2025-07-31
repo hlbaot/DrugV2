@@ -19,6 +19,8 @@ function Post({
   user,
   comments,
   commentCount,
+  likeCount,
+  
 }: PostType) {
   const [showAllComments, setShowAllComments] = useState(false)
   const [newComments, setNewComments] = useState<string[]>([])
@@ -48,7 +50,7 @@ function Post({
   // }
 
   return (
-    <div className="post ml-[3rem] my-4 p-4 max-w-md border rounded-lg bg-white shadow">
+    <div className="post ml-[3rem] w-[100%] my-4 p-4 max-w-md border rounded-lg bg-white shadow">
       {/* Header */}
       <div className="head flex items-center mb-3 justify-between">
         <div className="left flex items-center space-x-2">
@@ -118,8 +120,8 @@ function Post({
       <div className="react flex justify-between items-center space-x-4 mb-2 text-sm text-gray-600">
         <div className='flex w-auto gap-4'>
           <span className="flex items-center space-x-1">
-            {/* <IconHeart postId={post.id} initiallyLiked={post.likedByCurrentUser} /> */}
-            {/* <span>{post.likes} likes</span> */}
+            {/* <IconHeart postId={id} initiallyLiked={post.likedByCurrentUser} /> */}
+            <span>{likeCount} likes</span>
           </span>
 
           <span className="flex items-center space-x-1">

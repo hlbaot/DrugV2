@@ -13,9 +13,39 @@
   }
 
   &:hover {
+
     .icon,
     .text {
       transform: scale(1.1);
     }
+  }
+}
+
+
+@media (max-width: 1023px) {
+  .navbar {
+    border-top: 1px solid rgb(186, 185, 185);
+    position: fixed ;
+    bottom: 0 !important;
+    width: 100%;
+    height: auto;
+    padding: 2;
+    .menu {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      .more, .noti{
+        display: none;
+      }
+    }
+
+    .logo {
+      display: none;
+    }
+  }
+
+  .menu-link span {
+    display: none;
   }
 }

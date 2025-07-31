@@ -9,6 +9,7 @@ const CLOUDINARY_UPLOAD_PRESET = 'img_post';
 interface CreateModalProps {
   open: boolean;
   onClose: () => void;
+  onPostCreated?: () => void;
 }
 
 export default function CreateModal({ open, onClose }: CreateModalProps) {

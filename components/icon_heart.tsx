@@ -1,8 +1,7 @@
 'use client';
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import { likePost, unlikePost } from '@/api/API_likePost';
 
 interface IconHeartProps {
   postId: string;
@@ -16,27 +15,23 @@ const Heart: React.FC<IconHeartProps> = ({
   onToggleLike,
 }) => {
   const [liked, setLiked] = useState<boolean>(initiallyLiked);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const handleToggleLike = async () => {
-    if (loading) return;
-    setLoading(true);
+    
 
     try {
       if (liked) {
-        await axios.delete(`/api/posts/${postId}/like`);
+        await unlikePost(postId);
         setLiked(false);
         onToggleLike?.(false);
       } else {
-        await axios.post(`/api/posts/${postId}/like`);
+        await likePost(postId);
         setLiked(true);
         onToggleLike?.(true);
       }
     } catch (err) {
       console.error('Toggle like failed', err);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   return (
@@ -46,7 +41,6 @@ const Heart: React.FC<IconHeartProps> = ({
           type="checkbox"
           checked={liked}
           onChange={handleToggleLike}
-          disabled={loading}
         />
         <div className="bookmark">
           <svg

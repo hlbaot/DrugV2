@@ -32,7 +32,7 @@ export default function PostFeed() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex mt-[4rem] flex-col items-center">
       {posts.length === 0 ? (
         <p>Không có bài viết nào</p>
       ) : (

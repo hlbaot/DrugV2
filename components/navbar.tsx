@@ -2,12 +2,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import CreateModal from "./modal_create";
+import ModalMore from "./modal_more";
 import "../styles/navbar.scss";
 
 function Navbar() {
   const [active, setActive] = useState("home");
-  const [openModal, setOpenModal] = useState(false);
-
+  const [modalCreate, setmodalCreate] = useState(false);
+  const [modalMore, setModalMore] = useState(false)
   const isActive = (name: string) =>
     `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === name ? 'bg-rose-400 text-white' : ''
     }`;
@@ -19,12 +20,17 @@ function Navbar() {
   const avatar = localStorage.getItem("avatar") || "/avatar_default.jpg";
 
   return (
-    <div className="fixed z-50 w-[4.5rem] lg:w-[20%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
+    <div className="navbar fixed z-50 w-[4.5rem] lg:w-[20%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
       {/* Logo */}
-      <img className="w-[10rem] h-auto" src="/logo.png" alt="logo" />
+      <img
+        src="/logo.png"
+        alt="logo"
+        className="hidden logo md:block w-[10rem] h-auto mb-4"
+      />
+
 
       {/* Menu items */}
-      <div className="flex flex-col justify-center gap-8">
+      <div className="menu flex flex-col justify-center gap-8">
         {/* Home */}
         <Link href="/home" onClick={() => handleSetActive("home")} className={isActive("home")}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -78,7 +84,7 @@ function Navbar() {
 
         {/* Create */}
         <div
-          onClick={() => setOpenModal(true)}
+          onClick={() => setmodalCreate(true)}
           className="menu-link p-2 flex items-center gap-4 cursor-pointer"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -90,7 +96,7 @@ function Navbar() {
           </svg>
           <span className="text hidden lg:block text-xl">Create</span>
         </div>
-        <CreateModal open={openModal} onClose={() => setOpenModal(false)} />
+        <CreateModal open={modalCreate} onClose={() => setmodalCreate(false)} />
 
         {/* Profile */}
         <Link href="/profile" onClick={() => handleSetActive("profile")} className={isActive("profile")}>
@@ -104,7 +110,7 @@ function Navbar() {
         </Link>
 
         {/* Notifications */}
-        <div className="menu-link p-2 flex items-center gap-4 cursor-pointer">
+        <div className="noti menu-link p-2 flex items-center gap-4 cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
             className="icon w-7 h-7">
@@ -121,7 +127,7 @@ function Navbar() {
         </div>
 
         {/* More */}
-        <div className="menu-link p-2 flex items-center gap-4 cursor-pointer">
+        <div className="more relative menu-link p-2 flex items-center gap-4 cursor-pointer" onClick={() => setModalMore(prev => !prev)}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
             className="icon w-7 h-7">
@@ -131,6 +137,7 @@ function Navbar() {
           4.5h16.5" />
           </svg>
           <span className="text hidden lg:block text-xl">More</span>
+           {modalMore && <ModalMore />}
         </div>
       </div>
     </div>

@@ -13,7 +13,6 @@ const SignInSchema = Yup.object({
     .email("Email không hợp lệ")
     .required("Email là bắt buộc"),
   password: Yup.string()
-    .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
     .required("Mật khẩu là bắt buộc"),
 });
 

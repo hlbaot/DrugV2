@@ -1,7 +1,7 @@
 export interface CommentType {
   id: number;
   content: string;
-  images: string[];
+  // images: string[];
   user: {
     username: string;
     avatar_url: string | null;
@@ -9,7 +9,7 @@ export interface CommentType {
 }
 
 export interface PostType {
-  id: number;
+  id: string;
   caption: string;
   images: string[];
   createdAt: string;
@@ -19,6 +19,8 @@ export interface PostType {
   };
   comments: CommentType[];
   commentCount: number;
+  likeCount: number;
+  likedByCurrentUser: boolean;
 }
 
 
