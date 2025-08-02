@@ -3,7 +3,8 @@
 import Navbar from '@/components/navbar';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Header from '@/components/header'
+import Header from '@/components/header';
+import { PostProvider } from '@/context/PostContext';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -21,23 +22,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!authChecked) return null;
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header/>
-      <Navbar />
-      <main className="flex-1">{children}</main>
-    </div>
+    <PostProvider>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <Navbar />
+        <main className="flex-1">{children}</main>
+      </div>
+    </PostProvider>
   );
 }
 
+
 // import Navbar from '@/components/navbar';
 // import Header from '@/components/header'
+// import { PostProvider } from '@/context/PostContext';
 
 // export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 //   return (
-//     <div className="flex flex-col min-h-screen">
-//       <Header/>
-//       <Navbar />
-//       <main className='flex-1'>{children}</main>
-//     </div>
+    // <PostProvider>
+    //   <div className="flex flex-col min-h-screen">
+    //     <Header />
+    //     <Navbar />
+    //     <main className="flex-1">{children}</main>
+    //   </div>
+    // </PostProvider>
 //   );
 // }

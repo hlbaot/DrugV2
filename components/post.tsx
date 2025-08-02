@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { PostType } from '../interfaces/post'
 import IconHeart from './icon_heart'
 import IconSave from './icon_save'
+import { usePostContext } from '@/context/PostContext';
 import ThreeDotModal from '../components/modal_post'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
@@ -19,19 +20,35 @@ function Post({
   user,
   comments,
   commentCount,
-  likeCount,
-  
+  likeCount: initialCount,
+  likedByCurrentUser: initialLiked,
 }: PostType) {
   const [showAllComments, setShowAllComments] = useState(false)
   const [newComments, setNewComments] = useState<string[]>([])
   const [commentText, setCommentText] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
+  const { updatePostLikeStatus } = usePostContext();
+  const [liked, setLiked] = useState<boolean>(initialLiked);
+  const [count, setCount] = useState<number>(initialCount);
 
   useEffect(() => {
     const id = sessionStorage.getItem('userId') || localStorage.getItem('userId')
     setUserId(id)
   }, [])
 
+  useEffect(() => {
+    setLiked(initialLiked);
+    setCount(initialCount);
+  }, [initialLiked, initialCount]);
+
+  const handleToggleLike = (nextLiked: boolean) => {
+    const newCount = nextLiked ? count + 1 : count - 1; // Cập nhật số lượt like
+    setLiked(nextLiked);
+    setCount(newCount);
+
+    // Cập nhật trạng thái like trong PostContext
+    updatePostLikeStatus(id.toString(), nextLiked, newCount);
+  };
 
   // const { sendComment } = useCommentSocket(post.postId, (comment) => {
   //   setNewComments((prev) => [...prev, comment.content])
@@ -120,8 +137,14 @@ function Post({
       <div className="react flex justify-between items-center space-x-4 mb-2 text-sm text-gray-600">
         <div className='flex w-auto gap-4'>
           <span className="flex items-center space-x-1">
-            {/* <IconHeart postId={id} initiallyLiked={post.likedByCurrentUser} /> */}
-            <span>{likeCount} likes</span>
+            <IconHeart
+              postId={id.toString()}
+              initiallyLiked={liked}
+              onToggleLike={handleToggleLike}
+              initialLikeCount={count}
+            />
+          
+            <span>{count} likes</span>
           </span>
 
           <span className="flex items-center space-x-1">

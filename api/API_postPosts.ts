@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-export const createPost = async ({
+export const CreatePost = async ({
     content,
     imageUrls,
-    isPublic = true,
+    // isPublic = true,
     userId,
 }: {
     content: string;
     imageUrls: string[];
-    isPublic?: boolean;
+    // isPublic?: boolean;
     userId: number;
 }): Promise<void> => {
     const token = sessionStorage.getItem('token') || localStorage.getItem('token');
@@ -19,7 +19,7 @@ export const createPost = async ({
         {
             caption: content,
             images: imageUrls,
-            is_public: isPublic,
+            // is_public: isPublic,
             user_id: userId,
         },
         {

@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Post from '../components/post';
-import { getAllPosts } from '../api/API_getPost';
 import { PostType } from '../interfaces/post';
+import { usePostContext } from '@/context/PostContext';
 
 const sortPostsByTime = (posts: PostType[]) => {
   return posts
@@ -15,29 +14,19 @@ const sortPostsByTime = (posts: PostType[]) => {
 };
 
 export default function PostFeed() {
-  const [posts, setPosts] = useState<PostType[]>([]);
 
-  useEffect(() => {
-    const fetchAllPosts = async () => {
-      try {
-        const postsData = await getAllPosts();
-        console.log('Data nhận được:', postsData);
-        setPosts(sortPostsByTime(postsData));
-      } catch (error) {
-        console.error('Lỗi khi lấy danh sách bài viết:', error);
-      }
-    };
+  const { posts } = usePostContext();
+  const sortedPosts = sortPostsByTime(posts);
 
-    fetchAllPosts();
-  }, []);
+  const postItems = sortedPosts.map((post) => {
+    console.log('Rendering post:', post.id, post.likeCount, post.likedByCurrentUser);
+    return <Post key={post.id} {...post} />;
+  });
 
   return (
     <div className="flex mt-[4rem] flex-col items-center">
-      {posts.length === 0 ? (
-        <p>Không có bài viết nào</p>
-      ) : (
-        posts.map((post) => <Post key={post.id} {...post} />)
-      )}
+      {posts.length === 0 ? <p>Không có bài viết nào</p> : postItems}
     </div>
   );
+
 }

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Modal } from '@mui/material';
+import { usePostContext } from '@/context/PostContext';
+import { CreatePost } from '@/api/API_postPosts';
 
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djpujlimr/image/upload';
 const CLOUDINARY_UPLOAD_PRESET = 'img_post';
@@ -9,7 +10,6 @@ const CLOUDINARY_UPLOAD_PRESET = 'img_post';
 interface CreateModalProps {
   open: boolean;
   onClose: () => void;
-  onPostCreated?: () => void;
 }
 
 export default function CreateModal({ open, onClose }: CreateModalProps) {
@@ -18,15 +18,18 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [previewFiles, setPreviewFiles] = useState<{ url: string; file: File }[]>([]);
+  const { refreshPosts } = usePostContext(); //dùng để cập nhật bài viết
 
 
   useEffect(() => {
     if (!open) {
       setContent('');
       setFiles(null);
-      setPreviewUrls([]);
+      setPreviewUrls([]);    
+      setPreviewFiles([]);  
     }
   }, [open]);
+
 
   const uploadImagesToCloudinary = async (files: FileList | null): Promise<string[]> => {
     if (!files) return [];
@@ -62,20 +65,14 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
         throw new Error('Bạn chưa đăng nhập hoặc thiếu token');
       }
 
-      await axios.post(
-        'http://10.243.200.17:5050/api/posts',
-        {
-          caption: content,
-          images: imageUrls,
-          is_public: true,
-          user_id: Number(userId),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await CreatePost({
+        content,
+        imageUrls,
+        userId: Number(userId),
+        // isPublic: true,
+      });
+
+      refreshPosts(); // Cập nhật lại danh sách bài viết ngay sau khi post
 
       Swal.fire({
         title: 'Post created!',
@@ -134,32 +131,44 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
           />
 
           {/* Upload Button */}
-          <label className="block border border-dashed border-gray-400 rounded-md p-4 text-center cursor-pointer mb-4">
+          <label
+            htmlFor="file-upload"
+            className="block border border-dashed border-gray-400 rounded-md p-4 text-center cursor-pointer mb-4"
+          >
             Choose file upload
-            <input
-              type="file"
-              hidden
-              multiple
-              accept="image/*"
-              onChange={(e) => {
-                const selectedFiles = e.target.files;
-                if (selectedFiles) {
-                  const fileArray = Array.from(selectedFiles).map((file) => ({
-                    file,
-                    url: URL.createObjectURL(file),
-                  }));
-                  setFiles(selectedFiles);
-                  setPreviewFiles(fileArray);
-                }
-              }}
-            />
           </label>
+          <input
+            id="file-upload"
+            type="file"
+            hidden
+            multiple
+            accept="image/*"
+            onChange={(e) => {
+              if (!e.target.files) return;
+              const newFiles = Array.from(e.target.files);
+              // Merge với file cũ
+              const prevFiles = files ? Array.from(files) : [];
+              const allFiles = [...prevFiles, ...newFiles];
+
+              // Tạo FileList mới
+              const dt = new DataTransfer();
+              allFiles.forEach(f => dt.items.add(f));
+              setFiles(dt.files);
+
+              // Tạo preview mới
+              const newPreviews = newFiles.map(file => ({
+                file,
+                url: URL.createObjectURL(file),
+              }));
+              setPreviewFiles(prev => [...prev, ...newPreviews]);
+            }}
+          />
 
 
           {/* Image Previews */}
           {previewFiles.length > 0 && (
             <div className="overflow-x-auto mb-4">
-              <div className="flex gap-2 w-max pr-2">
+              <div className="flex gap-2 w-max px-2">
                 {previewFiles.map((item, index) => (
                   <div
                     key={index}

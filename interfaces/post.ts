@@ -9,7 +9,7 @@ export interface CommentType {
 }
 
 export interface PostType {
-  id: string;
+  id: number;
   caption: string;
   images: string[];
   createdAt: string;
