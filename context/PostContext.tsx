@@ -1,7 +1,7 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { PostType } from '@/interfaces/post';
-import { getAllPosts } from '@/api/API_getPost'; // API lấy bài viết
+import { getAllPosts } from '@/api/API_getPost';
 
 interface PostContextType {
   posts: PostType[];
