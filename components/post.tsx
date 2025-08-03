@@ -20,7 +20,7 @@ function Post({ postId }: { postId: number }) {
   const [userId, setUserId] = useState<string | null>(null)
 
   const { updatePostLikeStatus } = usePostContext();
-  const { posts } = usePostContext(); 
+  const { posts } = usePostContext();
   const post = posts.find((p) => p.id === postId);
   if (!post) return null;
 
@@ -74,7 +74,9 @@ function Post({ postId }: { postId: number }) {
   // }
 
   return (
-    <div className="post  w-[100%] my-4 p-4 max-w-md border rounded-lg bg-white shadow">
+    <div className="w-full mx-auto my-4 p-4 border rounded-lg bg-white shadow
+  max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl">
+
       {/* Header */}
       <div className="head flex items-center mb-3 justify-between">
         <div className="left flex items-center space-x-2">
@@ -103,7 +105,13 @@ function Post({ postId }: { postId: number }) {
         >
           {images.map((img, idx) => (
             <SwiperSlide key={idx}>
-              <div className="relative w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[2/3] mx-auto bg-black overflow-hidden">
+              <div
+                className="relative w-full mx-auto overflow-hidden rounded-md"
+                style={{
+                  aspectRatio: '4/5',
+                  maxHeight: '500px' 
+                }}
+              >
                 <img
                   src={img}
                   alt={`slide-${idx}`}
@@ -113,6 +121,7 @@ function Post({ postId }: { postId: number }) {
             </SwiperSlide>
           ))}
         </Swiper>
+
 
         <style jsx>{`
     :global(.swiper-button-prev),
