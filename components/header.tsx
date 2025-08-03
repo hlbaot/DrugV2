@@ -17,7 +17,7 @@ function Header() {
             </div>
 
             {/* noti & more */}
-            <div className="w-[25%] flex items-center justify-between">
+            <div className="w-[25%] flex items-center justify-around">
                 {/* noti */}
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"

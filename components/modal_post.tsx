@@ -20,15 +20,19 @@ const style = {
 };
 
 const buttonStyle = {
-    py: 2,
-    textAlign: 'center' as const,
-    cursor: 'pointer',
-    fontWeight: 500,
-    fontSize: '16px',
-    '&:not(:last-child)': {
-        borderBottom: '1px solid black',
-    },
+  py: 2,
+  textAlign: 'center' as const,
+  cursor: 'pointer',
+  fontWeight: 500,
+  fontSize: '16px',
+  '&:not(:last-child)': {
+    borderBottom: '1px solid black',
+  },
+  '&:hover': {
+    backgroundColor: '#e0e0e0',
+  },
 };
+
 
 export default function ThreeDotModal() {
     const [open, setOpen] = useState(false);
@@ -65,7 +69,8 @@ export default function ThreeDotModal() {
             >
                 <Box sx={style}>
                     <Typography sx={{ ...buttonStyle, color: 'red' }}>Detele</Typography>
-                    <Typography sx={buttonStyle}>Save</Typography>
+                    <Typography sx={{ ...buttonStyle, color: 'blue' }}>Follow</Typography>
+                    <Typography sx={{ ...buttonStyle, color: '#FFCC33'}}>Save</Typography>
                     <Typography sx={buttonStyle} onClick={handleClose}>Cancel</Typography>
                 </Box>
             </Modal>

@@ -1,8 +1,7 @@
 'use client'
-
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@/interfaces/user'
-import { useState, useEffect } from 'react'
 
 export default function LeftHome({ user }: { user: User }) {
   const router = useRouter()
@@ -18,6 +17,10 @@ export default function LeftHome({ user }: { user: User }) {
     setUsername(storedUsername || user.username);
   }, [user]);
 
+  const handleInfo = () => {
+    router.push('/profile')
+  } 
+
   const handleLogout = () => {
     localStorage.removeItem('token')
     sessionStorage.removeItem('token')
@@ -26,7 +29,7 @@ export default function LeftHome({ user }: { user: User }) {
 
   return (
     <div className="fixed hidden lg:flex right-2 top-12 rounded-full border bg-white shadow-lg items-center gap-14 py-2 px-4">
-      <div className="flex items-center gap-4 cursor-pointer">
+      <div onClick={handleInfo} className="flex items-center gap-2 cursor-pointer">
         <img
           src={avatar}
           alt="User Avatar"

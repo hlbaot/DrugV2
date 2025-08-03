@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import { Modal } from '@mui/material';
 import { usePostContext } from '@/context/PostContext';
 import { CreatePost } from '@/api/API_postPosts';
+import { useRouter } from "next/navigation";
 
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djpujlimr/image/upload';
 const CLOUDINARY_UPLOAD_PRESET = 'img_post';
@@ -13,9 +14,9 @@ interface CreateModalProps {
 }
 
 export default function CreateModal({ open, onClose }: CreateModalProps) {
+  const router = useRouter();
   const [content, setContent] = useState('');
   const [files, setFiles] = useState<FileList | null>(null);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [previewFiles, setPreviewFiles] = useState<{ url: string; file: File }[]>([]);
   const { refreshPosts } = usePostContext(); //dùng để cập nhật bài viết
@@ -25,7 +26,6 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
     if (!open) {
       setContent('');
       setFiles(null);
-      setPreviewUrls([]);    
       setPreviewFiles([]);  
     }
   }, [open]);
@@ -73,7 +73,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
       });
 
       refreshPosts(); // Cập nhật lại danh sách bài viết ngay sau khi post
-
+      router.push("/home");
       Swal.fire({
         title: 'Post created!',
         icon: 'success',

@@ -35,6 +35,7 @@ function Post({ postId }: { postId: number }) {
     likedByCurrentUser,
   } = post;
 
+  //id người dùng comment post
   useEffect(() => {
     const id = sessionStorage.getItem('userId') || localStorage.getItem('userId')
     setUserId(id)
@@ -44,7 +45,7 @@ function Post({ postId }: { postId: number }) {
     const nextLiked = !likedByCurrentUser;
     const newCount = nextLiked ? likeCount + 1 : likeCount - 1;
 
-    // Gửi lên server (likePost/unlikePost)
+    // liked / unliked
     if (nextLiked) {
       await likePost(id.toString());
     } else {
@@ -55,7 +56,9 @@ function Post({ postId }: { postId: number }) {
     updatePostLikeStatus(id.toString(), nextLiked, newCount);
   };
 
+  const handleToggleSave = async () => {
 
+  }
 
   // const { sendComment } = useCommentSocket(post.postId, (comment) => {
   //   setNewComments((prev) => [...prev, comment.content])
@@ -171,8 +174,9 @@ function Post({ postId }: { postId: number }) {
 
           </span>
         </div>
-        {/* <IconSave isSaved={post.savedByCurrentUser} /> */}
-        <IconSave isSaved={false} />
+        {/* <IconSave isSaved={saved} onToggleSave={() => handleToggleSave(postId)} /> */}
+
+        {/* <IconSave isSaved={false} /> */}
       </div>
 
       <hr className="mb-4" />

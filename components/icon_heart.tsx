@@ -11,7 +11,7 @@ interface IconHeartProps {
 
 const IconHeart: React.FC<IconHeartProps> = ({
   liked,
-  likeCount,
+  // likeCount,
   onToggleLike,
 }) => {
   return (

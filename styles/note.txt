@@ -1,3 +1,3 @@
 - xoá bài post (chỉ có chính chủ mới được xoá)
-- làm save ( get, detele)
+- làm save / unsave
 - trả ra danh sách người dung drug
