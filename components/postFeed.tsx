@@ -26,7 +26,7 @@ export default function PostFeed() {
 
 
   return (
-    <div className="flex flex-col items-center mx-auto mt-16 sm:mt-8 w-full px-2 max-w-md sm:max-w-lg md:max-w-lg lg:max-w-xl xl:max-w-xl 2xl:max-w-2xl
+    <div className="flex flex-col items-center mx-auto mt-16 sm:mt-12 w-full px-2 max-w-md sm:max-w-lg md:max-w-lg lg:max-w-xl xl:max-w-xl 2xl:max-w-2xl
 ">
       {posts.length === 0 ? (
         <p className="text-2xl text-gray-400">No Post ...</p>
