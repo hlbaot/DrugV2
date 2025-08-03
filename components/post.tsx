@@ -2,53 +2,60 @@
 import { useState, useEffect } from 'react'
 // import { useCommentSocket } from '../socket/comment'
 // import { Comment } from '../socket/comment'
-import { PostType } from '../interfaces/post'
 import IconHeart from './icon_heart'
 import IconSave from './icon_save'
 import { usePostContext } from '@/context/PostContext';
 import ThreeDotModal from '../components/modal_post'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
+import { likePost, unlikePost } from '@/api/API_likePost'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
-function Post({
-  id,
-  caption,
-  images,
-  user,
-  comments,
-  commentCount,
-  likeCount: initialCount,
-  likedByCurrentUser: initialLiked,
-}: PostType) {
+function Post({ postId }: { postId: number }) {
   const [showAllComments, setShowAllComments] = useState(false)
   const [newComments, setNewComments] = useState<string[]>([])
   const [commentText, setCommentText] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
+
   const { updatePostLikeStatus } = usePostContext();
-  const [liked, setLiked] = useState<boolean>(initialLiked);
-  const [count, setCount] = useState<number>(initialCount);
+  const { posts } = usePostContext(); 
+  const post = posts.find((p) => p.id === postId);
+  if (!post) return null;
+
+  const {
+    id,
+    caption,
+    images,
+    user,
+    comments,
+    commentCount,
+    likeCount,
+    likedByCurrentUser,
+  } = post;
 
   useEffect(() => {
     const id = sessionStorage.getItem('userId') || localStorage.getItem('userId')
     setUserId(id)
   }, [])
 
-  useEffect(() => {
-    setLiked(initialLiked);
-    setCount(initialCount);
-  }, [initialLiked, initialCount]);
+  const handleToggleLike = async () => {
+    const nextLiked = !likedByCurrentUser;
+    const newCount = nextLiked ? likeCount + 1 : likeCount - 1;
 
-  const handleToggleLike = (nextLiked: boolean) => {
-    const newCount = nextLiked ? count + 1 : count - 1; // Cập nhật số lượt like
-    setLiked(nextLiked);
-    setCount(newCount);
+    // Gửi lên server (likePost/unlikePost)
+    if (nextLiked) {
+      await likePost(id.toString());
+    } else {
+      await unlikePost(id.toString());
+    }
 
-    // Cập nhật trạng thái like trong PostContext
+    // Cập nhật lại context
     updatePostLikeStatus(id.toString(), nextLiked, newCount);
   };
+
+
 
   // const { sendComment } = useCommentSocket(post.postId, (comment) => {
   //   setNewComments((prev) => [...prev, comment.content])
@@ -67,11 +74,10 @@ function Post({
   // }
 
   return (
-    <div className="post ml-[3rem] w-[100%] my-4 p-4 max-w-md border rounded-lg bg-white shadow">
+    <div className="post  w-[100%] my-4 p-4 max-w-md border rounded-lg bg-white shadow">
       {/* Header */}
       <div className="head flex items-center mb-3 justify-between">
         <div className="left flex items-center space-x-2">
-
           <img
             src={user.avatar_url ?? "/avatar_default.jpg"}
             alt="avatar"
@@ -139,12 +145,13 @@ function Post({
           <span className="flex items-center space-x-1">
             <IconHeart
               postId={id.toString()}
-              initiallyLiked={liked}
+              liked={likedByCurrentUser}
+              likeCount={likeCount}
               onToggleLike={handleToggleLike}
-              initialLikeCount={count}
             />
-          
-            <span>{count} likes</span>
+
+
+            <span>{likeCount} likes</span>
           </span>
 
           <span className="flex items-center space-x-1">

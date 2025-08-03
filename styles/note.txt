@@ -1,4 +1,2 @@
 - xoá bài post (chỉ có chính chủ mới được xoá)
-- lỗi post tạo mới hiển thị countLike
 - làm save
-- like rồi khi chuyển sang menu khác và trở lại thì lỗi hiển thị

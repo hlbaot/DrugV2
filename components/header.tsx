@@ -6,7 +6,7 @@ import { useState } from 'react'
 function Header() {
     const [modalMore, setModalMore] = useState(false)
     return (
-        <div className=" flex justify-around items-center w-[100%] h-[auto] fixed top-0 bg-white lg:hidden py-2 border-b border-gray">
+        <div className=" flex justify-around items-center w-[100%] h-[auto] fixed top-0 bg-white lg:hidden py-2 border-b border-gray z-40">
 
             {/* search */}
             <div className="w-[60%] bg-white border border-black rounded-full flex justify-around items-center gap-2">

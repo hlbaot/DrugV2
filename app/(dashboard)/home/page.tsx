@@ -1,16 +1,25 @@
+'use client'
+
 import React from 'react'
-import PostFeed from '../../../components/postFeed'
+import PostFeed from '@/components/postFeed'
+import LeftHome from '@/components/leftHome'
+import { User } from '@/interfaces/user'
 
+function Page() {
+  const user: User = {
+    id: parseInt(localStorage.getItem("userId") ?? sessionStorage.getItem("userId") ?? "0"),
+    email: "",
+    username: localStorage.getItem("userName") ?? sessionStorage.getItem("userName") ?? "",
+    roles: [],
+    avatarUrl: localStorage.getItem("avatar") ?? sessionStorage.getItem("avatar") ?? null
+  };
 
-function page() {
   return (
-    <div className='flex justify-center'>
-      <div className="flex flex-col">
-        <PostFeed />
-      </div>
-
+    <div className='relative w-[100%] h-full flex justify-center'>
+      <PostFeed />
+      <LeftHome user={user} />
     </div>
-  )
+  );
 }
 
-export default page
+export default Page;

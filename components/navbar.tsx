@@ -17,7 +17,7 @@ function Navbar() {
     setActive(name);
   };
 
-  const avatar = localStorage.getItem("avatar") || "/avatar_default.jpg";
+  const avatar = localStorage.getItem("avatar_url") ?? sessionStorage.getItem("avatar_url") ?? "/avatar_default.jpg";
 
   return (
     <div className="navbar fixed z-50 w-[4.5rem] lg:w-[20%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
@@ -25,7 +25,7 @@ function Navbar() {
       <img
         src="/logo.png"
         alt="logo"
-        className="hidden logo md:block w-[10rem] h-auto mb-4"
+        className="hidden lg:block w-[10rem] h-auto mb-4"
       />
 
 
@@ -137,7 +137,7 @@ function Navbar() {
           4.5h16.5" />
           </svg>
           <span className="text hidden lg:block text-xl">More</span>
-           {modalMore && <ModalMore />}
+          {modalMore && <ModalMore />}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import Post from '../components/post';
 import { PostType } from '../interfaces/post';
 import { usePostContext } from '@/context/PostContext';
 
+// Sắp xếp bài post theo thời gian mới nhất
 const sortPostsByTime = (posts: PostType[]) => {
   return posts
     .filter((post) => post.createdAt)
@@ -14,19 +15,24 @@ const sortPostsByTime = (posts: PostType[]) => {
 };
 
 export default function PostFeed() {
-
   const { posts } = usePostContext();
+
+  // Sắp xếp trước khi render
   const sortedPosts = sortPostsByTime(posts);
 
-  const postItems = sortedPosts.map((post) => {
-    console.log('Rendering post:', post.id, post.likeCount, post.likedByCurrentUser);
-    return <Post key={post.id} {...post} />;
-  });
+  const postItems = sortedPosts.map((post) => (
+    <Post key={post.id} postId={post.id} />
+  ));
+
 
   return (
-    <div className="flex mt-[4rem] flex-col items-center">
-      {posts.length === 0 ? <p>Không có bài viết nào</p> : postItems}
+    <div className="flex mt-[4rem] sm:mt-[2rem] bg-[10rem] flex-col items-center">
+      {posts.length === 0 ? (
+        <p className="text-2xl text-gray-400">No Post ...</p>
+      ) : (
+        postItems
+      )}
     </div>
-  );
 
+  );
 }
