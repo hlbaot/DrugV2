@@ -1,3 +1,6 @@
-- xoá bài post (chỉ có chính chủ mới được xoá)
+- UI show list post saved
 - làm save / unsave
-- trả ra danh sách người dung drug
+- Request các acc người dùng drug (search)
+- UI Profile
+- UI noti
+- Followed / Unfollowed

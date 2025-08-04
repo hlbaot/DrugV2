@@ -40,7 +40,7 @@ function Post({ postId }: { postId: number }) {
     setUserId(id)
   }, [])
 
-  //kiểm tra id account == với id post không
+  //check id account == với id post không
   const isOwner = userId === post.user.user_id.toString();
 
   // handle like
@@ -54,7 +54,6 @@ function Post({ postId }: { postId: number }) {
     } else {
       await unlikePost(id);
     }
-
     // Cập nhật lại context
     updatePostLikeStatus(id.toString(), nextLiked, newCount);
   };
