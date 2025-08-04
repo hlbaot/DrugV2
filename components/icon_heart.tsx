@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface IconHeartProps {
-  postId: string;
+  postId: number;
   liked: boolean;
   likeCount: number;
   onToggleLike: () => void;
@@ -11,7 +11,6 @@ interface IconHeartProps {
 
 const IconHeart: React.FC<IconHeartProps> = ({
   liked,
-  // likeCount,
   onToggleLike,
 }) => {
   return (
@@ -24,7 +23,6 @@ const IconHeart: React.FC<IconHeartProps> = ({
                   c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
         </HeartIcon>
       </Button>
-      {/* <span>{likeCount} likes</span> */}
     </div>
   );
 };

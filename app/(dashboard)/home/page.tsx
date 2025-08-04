@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PostFeed from '@/components/postFeed'
-import LeftHome from '@/components/leftHome'
+import RightHome from '@/components/rightHome'
 import { User } from '@/interfaces/user'
 
 function Page() {
@@ -17,7 +17,7 @@ function Page() {
   return (
     <div className='relative w-[100%] h-full flex justify-center'>
       <PostFeed />
-      <LeftHome user={user} />
+      <RightHome user={user} />
     </div>
   );
 }

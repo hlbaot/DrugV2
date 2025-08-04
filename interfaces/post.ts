@@ -14,6 +14,7 @@ export interface PostType {
   images: string[];
   createdAt: string;
   user: {
+    user_id: number,
     username: string;
     avatar_url: string | null;
   };
@@ -21,6 +22,7 @@ export interface PostType {
   commentCount: number;
   likeCount: number;
   likedByCurrentUser: boolean;
+  // savedByCurrentUser: boolean;
 }
 
 

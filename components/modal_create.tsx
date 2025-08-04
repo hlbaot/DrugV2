@@ -19,7 +19,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
   const [files, setFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
   const [previewFiles, setPreviewFiles] = useState<{ url: string; file: File }[]>([]);
-  const { refreshPosts } = usePostContext(); //dùng để cập nhật bài viết
+  const { refreshPosts } = usePostContext(); 
 
 
   useEffect(() => {

@@ -19,8 +19,7 @@ function Post({ postId }: { postId: number }) {
   const [commentText, setCommentText] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
 
-  const { updatePostLikeStatus } = usePostContext();
-  const { posts } = usePostContext();
+  const { posts, setPosts, updatePostLikeStatus } = usePostContext();
   const post = posts.find((p) => p.id === postId);
   if (!post) return null;
 
@@ -35,27 +34,32 @@ function Post({ postId }: { postId: number }) {
     likedByCurrentUser,
   } = post;
 
-  //id người dùng comment post
+  //lấy id người dùng
   useEffect(() => {
     const id = sessionStorage.getItem('userId') || localStorage.getItem('userId')
     setUserId(id)
   }, [])
 
+  //kiểm tra id account == với id post không
+  const isOwner = userId === post.user.user_id.toString();
+
+  // handle like
   const handleToggleLike = async () => {
     const nextLiked = !likedByCurrentUser;
     const newCount = nextLiked ? likeCount + 1 : likeCount - 1;
 
     // liked / unliked
     if (nextLiked) {
-      await likePost(id.toString());
+      await likePost(id);
     } else {
-      await unlikePost(id.toString());
+      await unlikePost(id);
     }
 
     // Cập nhật lại context
     updatePostLikeStatus(id.toString(), nextLiked, newCount);
   };
 
+  // hadle save
   const handleToggleSave = async () => {
 
   }
@@ -92,7 +96,11 @@ function Post({ postId }: { postId: number }) {
           <span className="font-semibold">{user.username}</span>
 
         </div>
-        <ThreeDotModal />
+        <ThreeDotModal
+          showDelete={isOwner}
+          onDelete={() => setPosts(posts.filter((p) => p.id !== id))}
+          postId={id}
+        />
       </div>
 
       {/* caption */}
@@ -112,7 +120,7 @@ function Post({ postId }: { postId: number }) {
                 className="relative w-full mx-auto overflow-hidden rounded-md"
                 style={{
                   aspectRatio: '4/5',
-                  maxHeight: '500px' 
+                  maxHeight: '500px'
                 }}
               >
                 <img
@@ -156,7 +164,7 @@ function Post({ postId }: { postId: number }) {
         <div className='flex w-auto gap-4'>
           <span className="flex items-center space-x-1">
             <IconHeart
-              postId={id.toString()}
+              postId={id}
               liked={likedByCurrentUser}
               likeCount={likeCount}
               onToggleLike={handleToggleLike}

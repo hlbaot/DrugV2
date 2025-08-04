@@ -1,8 +1,15 @@
-// components/ThreeDotModal.tsx
+'use client'
 import { useState } from "react";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
+import { API_deletePost } from "@/api/API_deletePost";
+
+interface ThreeDotModalProps {
+    showDelete: boolean;
+    postId: number;
+    onDelete: () => void;
+}
 
 const style = {
     position: 'absolute' as const,
@@ -20,25 +27,41 @@ const style = {
 };
 
 const buttonStyle = {
-  py: 2,
-  textAlign: 'center' as const,
-  cursor: 'pointer',
-  fontWeight: 500,
-  fontSize: '16px',
-  '&:not(:last-child)': {
-    borderBottom: '1px solid black',
-  },
-  '&:hover': {
-    backgroundColor: '#e0e0e0',
-  },
+    py: 2,
+    textAlign: 'center' as const,
+    cursor: 'pointer',
+    fontWeight: 500,
+    fontSize: '16px',
+    '&:not(:last-child)': {
+        borderBottom: '1px solid black',
+    },
+    '&:hover': {
+        backgroundColor: '#e0e0e0',
+    },
 };
 
-
-export default function ThreeDotModal() {
+export default function ThreeDotModal({
+    showDelete,
+    onDelete,
+    postId
+}: ThreeDotModalProps) {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    
+    const handleDelete = async () => {
+        try {
+            await API_deletePost(postId.toString());
+            onDelete?.();
+        } catch (error) {
+            console.error("Xoá thất bại:", error);
+        } finally {
+            handleClose();
+        }
+    };
+
+
 
     return (
         <>
@@ -68,12 +91,27 @@ export default function ThreeDotModal() {
                 aria-describedby="modal-description"
             >
                 <Box sx={style}>
-                    <Typography sx={{ ...buttonStyle, color: 'red' }}>Detele</Typography>
-                    <Typography sx={{ ...buttonStyle, color: 'blue' }}>Follow</Typography>
-                    <Typography sx={{ ...buttonStyle, color: '#FFCC33'}}>Save</Typography>
-                    <Typography sx={buttonStyle} onClick={handleClose}>Cancel</Typography>
+                    {showDelete && (
+                        <Typography
+                            sx={{ ...buttonStyle, color: 'red' }}
+                            onClick={handleDelete}
+                        >
+                            Delete
+                        </Typography>
+                    )}
+                    <Typography sx={{ ...buttonStyle, color: 'blue' }}>
+                        Follow
+                    </Typography>
+                    <Typography sx={{ ...buttonStyle, color: '#FFCC33' }}>
+                        Save
+                    </Typography>
+                    <Typography sx={buttonStyle} onClick={handleClose}>
+                        Cancel
+                    </Typography>
                 </Box>
             </Modal>
         </>
     );
 }
+
+

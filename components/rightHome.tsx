@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@/interfaces/user'
 
-export default function LeftHome({ user }: { user: User }) {
+export default function RightHome({ user }: { user: User }) {
   const router = useRouter()
 
   const [avatar, setAvatar] = useState('/avatar_default.jpg')
