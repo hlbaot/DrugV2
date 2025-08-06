@@ -5,10 +5,12 @@ import { useState, useEffect } from 'react'
 import IconHeart from './icon_heart'
 import IconSave from './icon_save'
 import { usePostContext } from '@/context/PostContext';
+import { useSavePostContext } from '@/context/SavePostContext';
 import ThreeDotModal from '../components/modal_post'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import { likePost, unlikePost } from '@/api/API_likePost'
+import { savePost, unSavePost } from '@/api/API_savePost';
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
@@ -20,6 +22,7 @@ function Post({ postId }: { postId: number }) {
   const [userId, setUserId] = useState<string | null>(null)
 
   const { posts, setPosts, updatePostLikeStatus } = usePostContext();
+  const { savedPosts, setSavedPosts, updateSavedStatus } = useSavePostContext();
   const post = posts.find((p) => p.id === postId);
   if (!post) return null;
 
@@ -32,9 +35,9 @@ function Post({ postId }: { postId: number }) {
     commentCount,
     likeCount,
     likedByCurrentUser,
+    savedByCurrentUser
   } = post;
 
-  //lấy id người dùng
   useEffect(() => {
     const id = sessionStorage.getItem('userId') || localStorage.getItem('userId')
     setUserId(id)
@@ -47,7 +50,6 @@ function Post({ postId }: { postId: number }) {
   const handleToggleLike = async () => {
     const nextLiked = !likedByCurrentUser;
     const newCount = nextLiked ? likeCount + 1 : likeCount - 1;
-
     // liked / unliked
     if (nextLiked) {
       await likePost(id);
@@ -55,13 +57,26 @@ function Post({ postId }: { postId: number }) {
       await unlikePost(id);
     }
     // Cập nhật lại context
-    updatePostLikeStatus(id.toString(), nextLiked, newCount);
+    updatePostLikeStatus(id, nextLiked, newCount);
   };
 
-  // hadle save
+  // handle save
   const handleToggleSave = async () => {
+    try {
+      const nextSaved = !savedByCurrentUser;
 
-  }
+      if (nextSaved) {
+        await savePost(id);
+      } else {
+        await unSavePost(id);
+      }
+
+      // Cập nhật trạng thái lưu trong context
+      updateSavedStatus(id, nextSaved);
+    } catch (error) {
+      console.error("Lỗi khi lưu/huỷ lưu bài viết:", error);
+    }
+  };
 
   // const { sendComment } = useCommentSocket(post.postId, (comment) => {
   //   setNewComments((prev) => [...prev, comment.content])
@@ -161,7 +176,7 @@ function Post({ postId }: { postId: number }) {
       {/* Like + Comment icons */}
       <div className="react flex justify-between items-center space-x-4 mb-2 text-sm text-gray-600">
         <div className='flex w-auto gap-4'>
-          <span className="flex items-center space-x-1">
+          <span className="flex items-center space-x-2">
             <IconHeart
               postId={id}
               liked={likedByCurrentUser}
@@ -181,9 +196,8 @@ function Post({ postId }: { postId: number }) {
 
           </span>
         </div>
-        {/* <IconSave isSaved={saved} onToggleSave={() => handleToggleSave(postId)} /> */}
 
-        {/* <IconSave isSaved={false} /> */}
+        <IconSave postId={id} saved={savedByCurrentUser} onToggleSave={handleToggleSave} />
       </div>
 
       <hr className="mb-4" />

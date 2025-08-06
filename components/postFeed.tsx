@@ -1,7 +1,6 @@
 'use client';
-
-import Post from '../components/post';
-import { PostType } from '../interfaces/post';
+import Post from './post';
+import { PostType } from '@/interfaces/post';
 import { usePostContext } from '@/context/PostContext';
 
 // Sắp xếp bài post theo thời gian mới nhất

@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+// create post
 export const CreatePost = async ({
     content,
     imageUrls,

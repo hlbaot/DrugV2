@@ -3,11 +3,11 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { PostType } from '@/interfaces/post';
 import { getAllPosts } from '@/api/API_getPost';
 
-interface PostContextType {
+export interface PostContextType {
   posts: PostType[];
-  setPosts: (posts: PostType[]) => void;
+  setPosts: React.Dispatch<React.SetStateAction<PostType[]>>;
   refreshPosts: () => void;
-  updatePostLikeStatus: (postId: string, liked: boolean, likeCount: number) => void;
+  updatePostLikeStatus: (postId: number, liked: boolean, likeCount: number) => void;
 }
 
 const PostContext = createContext<PostContextType | undefined>(undefined);
@@ -16,10 +16,10 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const [posts, setPosts] = useState<PostType[]>([]);
 
   // Cập nhật thông tin bài viết, đặc biệt là trạng thái like
-  const updatePostLikeStatus = (postId: string, liked: boolean, likeCount: number) => {
+  const updatePostLikeStatus = (postId: number, liked: boolean, likeCount: number) => {
     setPosts((prevPosts) =>
       prevPosts.map((post) =>
-        post.id.toString() === postId
+        post.id === postId
           ? { ...post, likedByCurrentUser: liked, likeCount: likeCount }
           : post
       )

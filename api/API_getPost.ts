@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { PostType } from '../interfaces/post';
-
+// get post after user created
 export const getAllPosts = async (): Promise<PostType[]> => {
     const token = sessionStorage.getItem('token') || localStorage.getItem('token');
     if (!token) throw new Error('Không tìm thấy token');

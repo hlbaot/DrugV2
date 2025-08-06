@@ -22,7 +22,7 @@ export interface PostType {
   commentCount: number;
   likeCount: number;
   likedByCurrentUser: boolean;
-  // savedByCurrentUser: boolean;
+  savedByCurrentUser: boolean;
 }
 
 

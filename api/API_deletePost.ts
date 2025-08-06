@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+// delete post
 export const API_deletePost = async (postId: string) => {
     const token = sessionStorage.getItem('token') || localStorage.getItem('token');
     if (!token) throw new Error('Không tìm thấy token');

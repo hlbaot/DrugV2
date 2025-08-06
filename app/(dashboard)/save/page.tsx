@@ -5,7 +5,10 @@ import SavePostFeed from '@/components/savePostFeed';
 
 function Save() {
     return (
-        <SavePostFeed/>
+        <div className='relative w-[100%] h-full flex justify-center'>
+            <SavePostFeed/>
+        </div>
+        
     )
 }
 

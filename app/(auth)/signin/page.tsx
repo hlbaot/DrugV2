@@ -1,23 +1,24 @@
 "use client";
-import { Formik, Field, Form, FormikHelpers, ErrorMessage } from "formik";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Loader from "../../../public/Loader";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import API_SignIn from "@/api/API_Signin";
 import { Values } from "../../../interfaces/sigin";
+import { useUser } from "@/context/UserContext";
 
 // Schema kiểm tra dữ liệu
 const SignInSchema = Yup.object({
   email: Yup.string()
     .email("Email không hợp lệ")
     .required("Email là bắt buộc"),
-  password: Yup.string()
-    .required("Mật khẩu là bắt buộc"),
+  password: Yup.string().required("Mật khẩu là bắt buộc"),
 });
 
 function SignIn() {
   const router = useRouter();
+  const { setUser } = useUser(); 
   const handleClickSignUp = () => {
     router.push("/signup");
   };
@@ -38,17 +39,14 @@ function SignIn() {
             <h2 className="text-white text-center text-[40px]">Sign in</h2>
           </div>
 
-          <Formik
+          <Formik<Values>
             initialValues={{
               email: "",
               password: "",
               rememberMe: false,
             }}
             validationSchema={SignInSchema}
-            onSubmit={async (
-              values: Values,
-              { setSubmitting }: FormikHelpers<Values>
-            ) => {
+            onSubmit={async (values, { setSubmitting }) => {
               setLoading(true);
               try {
                 const response = await API_SignIn({
@@ -57,26 +55,28 @@ function SignIn() {
                 });
 
                 if (response.status === 200 || response.status === 204) {
-                  //lấy token, idUser
                   const { token, id, avatar, username } = response.data;
                   const avatarUrl = avatar || "/avatar_default.jpg";
 
+                  setUser({
+                    id,
+                    email: values.email,
+                    username,
+                    avatarUrl,
+                  });
+
+                  // Set token vào local/sessionStorage
                   if (values.rememberMe) {
                     localStorage.setItem("token", token);
                     localStorage.setItem("userId", id.toString());
-                    localStorage.setItem("avatar", avatarUrl);
-                    localStorage.setItem("userName", username)
                   } else {
                     sessionStorage.setItem("token", token);
                     sessionStorage.setItem("userId", id.toString());
-                    sessionStorage.setItem("avatar", avatarUrl);
-                    sessionStorage.setItem("userName", username)
                   }
 
                   router.push("/home");
                 }
-
-              } catch (error: any) {
+              } catch (error) {
                 console.error("Lỗi đăng nhập:", error);
               } finally {
                 setLoading(false);
@@ -96,8 +96,8 @@ function SignIn() {
                   placeholder="Email"
                   type="email"
                   className={`border-[2px] rounded-[20px] p-4 ${errors.email && touched.email
-                    ? "border-red-500"
-                    : "border-black"
+                      ? "border-red-500"
+                      : "border-black"
                     }`}
                 />
                 <ErrorMessage
@@ -116,8 +116,8 @@ function SignIn() {
                   placeholder="Password"
                   type="password"
                   className={`border-[2px] rounded-[20px] p-4 ${errors.password && touched.password
-                    ? "border-red-500"
-                    : "border-black"
+                      ? "border-red-500"
+                      : "border-black"
                     }`}
                 />
                 <ErrorMessage
