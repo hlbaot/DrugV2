@@ -1,6 +1,6 @@
 import '../public/logo.png';
 import '../styles/global.css';
-// import { SocketProvider } from '@/context/SocketContext';
+import { UserProvider } from '@/context/UserContext';
 
 export const metadata = {
   title: 'DrugConnectionV2',
@@ -17,9 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        {/* <SocketProvider> */}
+        <UserProvider>
           {children}
-        {/* </SocketProvider> */}
+        </UserProvider>
       </body>
     </html>
   );

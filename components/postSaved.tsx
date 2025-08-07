@@ -12,8 +12,8 @@ interface PostSavedProps {
 
 export default function PostSaved({ savedPost }: PostSavedProps) {
   const { updateSavedStatus } = useSavePostContext()
-  const { posts: post } = savedPost
-  const { user, caption, images, id, savedByCurrentUser } = post
+   const { posts: post, user } = savedPost;
+  const { id, caption, images, savedByCurrentUser } = post;
 
   // handle unSave
   const handleUnsave = async () => {
@@ -41,7 +41,8 @@ export default function PostSaved({ savedPost }: PostSavedProps) {
         {/* icon save */}
         <IconSave
           postId={id}
-          saved={true}
+          // saved={true}
+          saved = {savedByCurrentUser}
           onToggleSave={handleUnsave}
         />
 

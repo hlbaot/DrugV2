@@ -21,8 +21,8 @@ function Post({ postId }: { postId: number }) {
   const [commentText, setCommentText] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
 
-  const { posts, setPosts, updatePostLikeStatus } = usePostContext();
-  const { savedPosts, setSavedPosts, updateSavedStatus } = useSavePostContext();
+  const { posts, setPosts, updatePostLikeStatus, updatePostSaveStatus } = usePostContext();
+  const {  updateSavedStatus } = useSavePostContext();
   const post = posts.find((p) => p.id === postId);
   if (!post) return null;
 
@@ -61,22 +61,22 @@ function Post({ postId }: { postId: number }) {
   };
 
   // handle save
-  const handleToggleSave = async () => {
-    try {
-      const nextSaved = !savedByCurrentUser;
-
-      if (nextSaved) {
-        await savePost(id);
-      } else {
-        await unSavePost(id);
-      }
-
-      // Cập nhật trạng thái lưu trong context
-      updateSavedStatus(id, nextSaved);
-    } catch (error) {
-      console.error("Lỗi khi lưu/huỷ lưu bài viết:", error);
+ const handleToggleSave = async () => {
+  const nextSaved = !savedByCurrentUser;
+  try {
+    if (nextSaved) {
+      await savePost(id);
+    } else {
+      await unSavePost(id);
     }
-  };
+    // cập nhật ngay trong PostContext để UI đổi màu
+    updatePostSaveStatus(id, nextSaved);
+    // cập nhật SavePostContext để list “Saved Posts” cũng đồng bộ
+    updateSavedStatus(id, nextSaved);
+  } catch (error) {
+    console.error("Lỗi khi lưu/huỷ lưu bài viết:", error);
+  }
+};
 
   // const { sendComment } = useCommentSocket(post.postId, (comment) => {
   //   setNewComments((prev) => [...prev, comment.content])

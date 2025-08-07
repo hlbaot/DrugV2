@@ -29,20 +29,31 @@ export const SavePostProvider = ({ children }: { children: React.ReactNode }) =>
     saved: boolean,
     newSavedPostData?: SavedPostType
   ) => {
-    setSavedPosts((prev) => {
-      const exists = prev.some((item) => item.post_id === postId);
+    setSavedPosts(prev => {
+      const exists = prev.some(item => item.post_id === postId);
 
-      if (saved && !exists && newSavedPostData) {
-        return [newSavedPostData, ...prev];
+      if (saved) {
+        if (exists) {
+          return prev.map(item =>
+            item.post_id === postId
+              ? { ...item, savedByCurrentUser: true }
+              : item
+          );
+        }
+        if (newSavedPostData) {
+          return [newSavedPostData, ...prev];
+        }
+        return prev;
       }
 
       if (!saved && exists) {
-        return prev.filter((item) => item.post_id !== postId);
+        return prev.filter(item => item.post_id !== postId);
       }
 
       return prev;
     });
   };
+
 
 
   useEffect(() => {
