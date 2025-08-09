@@ -24,7 +24,7 @@ function Navbar() {
     "/avatar_default.jpg";
 
   return (
-    <div className="navbar fixed z-50 w-[4.5rem] lg:w-[20%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
+    <div className="navbar fixed z-50 w-[4.5rem] lg:w-[18%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
       {/* Logo */}
       <img
         src="/logo.png"

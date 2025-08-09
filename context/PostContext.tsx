@@ -7,6 +7,7 @@ import { getAllPostsSaved } from '@/api/API_getPostSaved';
 export interface PostContextType {
   posts: PostType[];
   setPosts: React.Dispatch<React.SetStateAction<PostType[]>>;
+  isLoading: boolean;
   refreshPosts: () => void;
   updatePostLikeStatus: (postId: number, liked: boolean, likeCount: number) => void;
   updatePostSaveStatus: (postId: number, saved: boolean) => void;
@@ -16,6 +17,7 @@ const PostContext = createContext<PostContextType | undefined>(undefined);
 
 export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const [posts, setPosts] = useState<PostType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Cập nhật trạng thái like của bài viết
   const updatePostLikeStatus = (postId: number, liked: boolean, likeCount: number) => {
@@ -41,22 +43,32 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Refresh lại danh sách bài viết
   const refreshPosts = async () => {
-  try {
-    const [feed, saved] = await Promise.all([
-      getAllPosts(),
-      getAllPostsSaved()
-    ]);
-    const savedIds = new Set<number>(saved.map(s => s.post_id));
-    setPosts(
-      feed.map(p => ({
-        ...p,
-        savedByCurrentUser: savedIds.has(p.id)
-      }))
-    );
-  } catch (err) {
-    console.error('Lỗi khi làm mới danh sách post:', err);
-  }
-};
+    try {
+      setIsLoading(true);
+      const [feed, saved] = await Promise.all([
+        getAllPosts(),
+        getAllPostsSaved()
+      ]);
+
+      const savedIds = new Set<number>(saved.map(s => s.post_id));
+
+      setPosts(
+        feed.map(p => ({
+          ...p,
+          savedByCurrentUser: savedIds.has(p.id)
+        }))
+      );
+
+      // Giả lập loading chỉnh time hiện
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+    } catch (err) {
+      console.error('Lỗi khi làm mới danh sách post:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     refreshPosts();
@@ -64,7 +76,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <PostContext.Provider
-      value={{ posts, setPosts, refreshPosts, updatePostLikeStatus, updatePostSaveStatus }}
+      value={{ posts, setPosts, isLoading, refreshPosts, updatePostLikeStatus, updatePostSaveStatus }}
     >
       {children}
     </PostContext.Provider>
