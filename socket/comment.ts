@@ -2,7 +2,7 @@
 // import { useSocket } from '@/context/SocketContext'
 
 // export interface Comment {
-//   id: string
+//   id: number
 //   content: string
 //   authorId: string
 //   time: string

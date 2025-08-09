@@ -1,6 +1,5 @@
 'use client';
 import { useEffect } from 'react';
-import { SavedPostType } from '@/interfaces/savedPost';
 import { useSavePostContext } from '@/context/SavePostContext';
 import PostSaved from './postSaved';
 
@@ -13,7 +12,15 @@ export default function SavePostFeed() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 mx-auto mt-16 sm:mt-12 w-full px-2 max-w-md sm:max-w-lg md:max-w-lg lg:max-w-xl xl:max-w-xl 2xl:max-w-2xl">
+<div
+  className="grid w-full px-2 mx-auto gap-3
+             grid-cols-1 place-items-center mt-16
+             sm:grid-cols-2 sm:place-items-stretch sm:mt-16
+             md:grid-cols-3 md:mt-16
+             lg:grid-cols-4 lg:ml-64 lg:mt-4
+             xl:ml-72"
+>
+
       {savedPosts.map((item) => (
         <PostSaved key={item.post_id} savedPost={item} />
       ))}

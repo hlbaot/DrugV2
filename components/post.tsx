@@ -99,15 +99,15 @@ function Post({ postId }: { postId: number }) {
   max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl">
 
       {/* Header */}
-      <div className="head flex items-center mb-3 justify-between">
-        <div className="left flex items-center space-x-2">
+      <div className="w-full flex items-center mb-3 justify-between">
+        <div className="left flex items-center space-x-4">
           <img
             src={user.avatar_url ?? "/avatar_default.jpg"}
             alt="avatar"
-            className="w-10 h-10 rounded-full object-cover"
+            className="w-10 h-10 rounded-full object-cover cursor-pointer"
           />
 
-          <span className="font-semibold">{user.username}</span>
+          <span className="font-semibold cursor-pointer">{user.username}</span>
 
         </div>
         <ThreeDotModal
@@ -131,7 +131,7 @@ function Post({ postId }: { postId: number }) {
           {images.map((img, idx) => (
             <SwiperSlide key={idx}>
               <div
-                className="relative w-full mx-auto overflow-hidden rounded-md"
+                className="relative bg-white w-full mx-auto overflow-hidden rounded-md"
                 style={{
                   aspectRatio: '4/5',
                   maxHeight: '500px'
@@ -140,7 +140,7 @@ function Post({ postId }: { postId: number }) {
                 <img
                   src={img}
                   alt={`slide-${idx}`}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-contain"
                 />
               </div>
             </SwiperSlide>

@@ -43,12 +43,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 // import Navbar from '@/components/navbar';
 // import Header from '@/components/header';
 // import { PostProvider } from '@/context/PostContext';
-// import { UserProvider } from '@/context/UserContext';
 // import { SavePostProvider } from '@/context/SavePostContext';
 
 // export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 //   return (
-//     <UserProvider>
 //       <PostProvider>
 //         <SavePostProvider>
 //           <div className="flex flex-col min-h-screen">
@@ -58,6 +56,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 //           </div>
 //         </SavePostProvider>
 //       </PostProvider>
-//     </UserProvider>
 //   );
 // }

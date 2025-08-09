@@ -1,14 +1,14 @@
 'use client';
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname } from "next/navigation"; // ✅ thêm dòng này
+import { usePathname } from "next/navigation";
 import CreateModal from "./modal_create";
 import ModalMore from "./modal_more";
 import "../styles/navbar.scss";
 
 function Navbar() {
-  const pathname = usePathname(); // ✅ tự động lấy đường dẫn
-  const active = pathname.split('/')[1] || "home"; // ✅ tính toán active từ URL
+  const pathname = usePathname(); 
+  const active = pathname.split('/')[1] || "home"; 
 
   const [modalCreate, setmodalCreate] = useState(false);
   const [modalMore, setModalMore] = useState(false);

@@ -18,11 +18,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const [posts, setPosts] = useState<PostType[]>([]);
 
   // Cập nhật trạng thái like của bài viết
-  const updatePostLikeStatus = (
-    postId: number,
-    liked: boolean,
-    likeCount: number
-  ) => {
+  const updatePostLikeStatus = (postId: number, liked: boolean, likeCount: number) => {
     setPosts(prevPosts =>
       prevPosts.map(post =>
         post.id === postId
