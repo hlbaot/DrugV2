@@ -4,9 +4,7 @@ import { Modal } from '@mui/material';
 import { usePostContext } from '@/context/PostContext';
 import { CreatePost } from '@/api/API_postPosts';
 import { useRouter } from "next/navigation";
-
-const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/djpujlimr/image/upload';
-const CLOUDINARY_UPLOAD_PRESET = 'img_post';
+import { uploadMultipleImages } from '@/feature/cloudinaryUpload';
 
 interface CreateModalProps {
   open: boolean;
@@ -30,34 +28,10 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
     }
   }, [open]);
 
-
-  const uploadImagesToCloudinary = async (files: FileList | null): Promise<string[]> => {
-    if (!files) return [];
-
-    const uploadPromises = Array.from(files).map((file) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
-      return fetch(CLOUDINARY_UPLOAD_URL, {
-        method: 'POST',
-        body: formData,
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error('Upload failed');
-          return res.json();
-        })
-        .then((data) => data.secure_url);
-    });
-
-    return await Promise.all(uploadPromises);
-  };
-
-
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const imageUrls = await uploadImagesToCloudinary(files);
+      const imageUrls = await uploadMultipleImages(files); 
 
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
@@ -71,8 +45,8 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
         userId: Number(userId),
         // isPublic: true,
       });
-
-      refreshPosts(); // Cập nhật lại danh sách bài viết ngay sau khi post
+       // Cập nhật lại danh sách bài viết ngay sau khi post
+      refreshPosts();
       router.push("/home");
       Swal.fire({
         title: 'Post created!',

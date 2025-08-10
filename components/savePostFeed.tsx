@@ -6,7 +6,6 @@ import PostSaved from './postSaved';
 export default function SavePostFeed() {
   const { savedPosts, refreshSavedPosts } = useSavePostContext();
 
-  // Gọi lại dữ liệu mỗi khi vào trang
   useEffect(() => {
     refreshSavedPosts();
   }, []);
