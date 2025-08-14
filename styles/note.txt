@@ -3,4 +3,3 @@
 - UI noti
 - Followed / Unfollowed
 - ui settings
--TEST up nhiu anh va 1 anh

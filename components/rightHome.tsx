@@ -1,6 +1,7 @@
 'use client';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function RightHome() {
   const router = useRouter();
@@ -18,10 +19,12 @@ export default function RightHome() {
   return (
     <div className="fixed hidden lg:flex right-2 top-12 rounded-full border bg-white shadow-lg items-center gap-14 py-2 px-4">
       <div onClick={handleInfo} className="flex items-center gap-2 cursor-pointer">
-        <img
+        <Image
           src={user.avatarUrl ?? '/avatar_default.jpg'}
           alt={user.username}
-          className="w-10 h-10 rounded-full object-cover"
+          width={40}
+          height={40}
+          className="rounded-full object-contain"
         />
         <span className="font-bold">{user.username}</span>
       </div>

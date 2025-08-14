@@ -7,15 +7,14 @@ import ModalMore from "./modal_more";
 import "../styles/navbar.scss";
 
 function Navbar() {
-  const pathname = usePathname(); 
-  const active = pathname.split('/')[1] || "home"; 
+  const pathname = usePathname();
+  const active = pathname.split('/')[1] || "home";
 
   const [modalCreate, setmodalCreate] = useState(false);
   const [modalMore, setModalMore] = useState(false);
 
   const isActive = (name: string) =>
-    `menu-link p-2 rounded-[30px] flex items-center gap-4 ${
-      active === name ? 'bg-rose-400 text-white' : ''
+    `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === name ? 'bg-rose-400 text-white' : ''
     }`;
 
   const avatar =

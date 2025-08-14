@@ -2,8 +2,9 @@
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 import API_SignUp from "@/api/API_Signup";
-import {Values} from "../../../interfaces/signup"
+import { Values } from "../../../interfaces/signup"
 
 
 // ✅ Validation schema
@@ -71,8 +72,8 @@ function SignUp() {
                   placeholder="Email"
                   type="email"
                   className={`border-[2px] rounded-[20px] p-4 ${errors.email && touched.email
-                      ? "border-red-500"
-                      : "border-black"
+                    ? "border-red-500"
+                    : "border-black"
                     }`}
                 />
                 <ErrorMessage
@@ -91,8 +92,8 @@ function SignUp() {
                   placeholder="Password"
                   type="password"
                   className={`border-[2px] rounded-[20px] p-4 ${errors.password && touched.password
-                      ? "border-red-500"
-                      : "border-black"
+                    ? "border-red-500"
+                    : "border-black"
                     }`}
                 />
                 <ErrorMessage
@@ -111,8 +112,8 @@ function SignUp() {
                   placeholder="Confirm password"
                   type="password"
                   className={`border-[2px] rounded-[20px] p-4 ${errors.confirmPassword && touched.confirmPassword
-                      ? "border-red-500"
-                      : "border-black"
+                    ? "border-red-500"
+                    : "border-black"
                     }`}
                 />
                 <ErrorMessage
@@ -166,11 +167,14 @@ function SignUp() {
               <i>DrugConnection</i>
             </span>
           </h1>
-          <img
-            className="w-[24rem] h-[20rem] mx-auto"
-            src="/logo1.png"
-            alt=""
-          />
+          <div className="relative w-[24rem] h-[20rem] mx-auto">
+            <Image
+              src="/logo1.png"
+              alt="Logo"
+              fill
+              className="object-contain"
+            />
+          </div>
         </div>
       </div>
     </>

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/header';
 import { PostProvider } from '@/context/PostContext';
 import { SavePostProvider } from '@/context/SavePostContext';
+import { ProfileProvider } from '@/context/ProfileContext';
 // import { SocketProvider } from '@/context/SocketContext';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -25,7 +26,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <>
-      {/* <SocketProvider> */}
+      <ProfileProvider>
+        {/* <SocketProvider> */}
         < PostProvider >
           <SavePostProvider>
             <div className="flex flex-col min-h-screen">
@@ -35,7 +37,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </SavePostProvider>
         </PostProvider >
-      {/* </SocketProvider> */}
+        {/* </SocketProvider> */}
+      </ProfileProvider>
     </>
   );
 }

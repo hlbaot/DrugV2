@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 // import { useCommentSocket } from '../socket/comment'
 // import { Comment } from '../socket/comment'
+import Image from 'next/image';
 import IconHeart from './icon_heart'
 import IconSave from './icon_save'
 import { usePostContext } from '@/context/PostContext';
@@ -22,7 +23,7 @@ function Post({ postId }: { postId: number }) {
   const [userId, setUserId] = useState<string | null>(null)
 
   const { posts, setPosts, updatePostLikeStatus, updatePostSaveStatus } = usePostContext();
-  const {  updateSavedStatus } = useSavePostContext();
+  const { updateSavedStatus } = useSavePostContext();
   const post = posts.find((p) => p.id === postId);
   if (!post) return null;
 
@@ -43,7 +44,6 @@ function Post({ postId }: { postId: number }) {
     setUserId(id)
   }, [])
 
-  //check id account == với id post không
   const isOwner = userId === post.user.user_id.toString();
 
   // handle like
@@ -61,22 +61,22 @@ function Post({ postId }: { postId: number }) {
   };
 
   // handle save
- const handleToggleSave = async () => {
-  const nextSaved = !savedByCurrentUser;
-  try {
-    if (nextSaved) {
-      await savePost(id);
-    } else {
-      await unSavePost(id);
+  const handleToggleSave = async () => {
+    const nextSaved = !savedByCurrentUser;
+    try {
+      if (nextSaved) {
+        await savePost(id);
+      } else {
+        await unSavePost(id);
+      }
+      // cập nhật ngay trong PostContext để UI đổi màu
+      updatePostSaveStatus(id, nextSaved);
+      // cập nhật SavePostContext để list “Saved Posts” cũng đồng bộ
+      updateSavedStatus(id, nextSaved);
+    } catch (error) {
+      console.error("Lỗi khi lưu/huỷ lưu bài viết:", error);
     }
-    // cập nhật ngay trong PostContext để UI đổi màu
-    updatePostSaveStatus(id, nextSaved);
-    // cập nhật SavePostContext để list “Saved Posts” cũng đồng bộ
-    updateSavedStatus(id, nextSaved);
-  } catch (error) {
-    console.error("Lỗi khi lưu/huỷ lưu bài viết:", error);
-  }
-};
+  };
 
   // const { sendComment } = useCommentSocket(post.postId, (comment) => {
   //   setNewComments((prev) => [...prev, comment.content])
@@ -101,11 +101,15 @@ function Post({ postId }: { postId: number }) {
       {/* Header */}
       <div className="w-full flex items-center mb-3 justify-between">
         <div className="left flex items-center space-x-4">
-          <img
+          <Image
             src={user.avatar_url ?? "/avatar_default.jpg"}
             alt="avatar"
-            className="w-10 h-10 rounded-full object-cover cursor-pointer"
+            width={40}
+            height={40}
+            className="rounded-full object-cover cursor-pointer"
+            priority
           />
+
 
           <span className="font-semibold cursor-pointer">{user.username}</span>
 
@@ -137,10 +141,13 @@ function Post({ postId }: { postId: number }) {
                   maxHeight: '500px'
                 }}
               >
-                <img
+                <Image
                   src={img}
                   alt={`slide-${idx}`}
-                  className="absolute inset-0 w-full h-full object-contain"
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
+                  priority={idx === 0} // preload ảnh đầu tiên
                 />
               </div>
             </SwiperSlide>

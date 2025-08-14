@@ -1,8 +1,12 @@
+
 import React from 'react'
+import Profile from '@/components/profile'
 
 function profile() {
   return (
-    <div>profile</div>
+    <div>
+      <Profile/>
+    </div>
   )
 }
 

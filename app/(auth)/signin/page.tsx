@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import Loader from "../../../public/Loader";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from 'next/image';
 import API_SignIn from "@/api/API_Signin";
 import { Values } from "../../../interfaces/sigin";
 import { useUser } from "@/context/UserContext";
@@ -18,7 +19,7 @@ const SignInSchema = Yup.object({
 
 function SignIn() {
   const router = useRouter();
-  const { setUser } = useUser(); 
+  const { setUser } = useUser();
   const handleClickSignUp = () => {
     router.push("/signup");
   };
@@ -96,8 +97,8 @@ function SignIn() {
                   placeholder="Email"
                   type="email"
                   className={`border-[2px] rounded-[20px] p-4 ${errors.email && touched.email
-                      ? "border-red-500"
-                      : "border-black"
+                    ? "border-red-500"
+                    : "border-black"
                     }`}
                 />
                 <ErrorMessage
@@ -116,8 +117,8 @@ function SignIn() {
                   placeholder="Password"
                   type="password"
                   className={`border-[2px] rounded-[20px] p-4 ${errors.password && touched.password
-                      ? "border-red-500"
-                      : "border-black"
+                    ? "border-red-500"
+                    : "border-black"
                     }`}
                 />
                 <ErrorMessage
@@ -176,11 +177,15 @@ function SignIn() {
               <i>DrugConnection</i>
             </span>
           </h1>
-          <img
-            className="w-[24rem] h-[20rem] mx-auto"
-            src="/logo1.png"
-            alt=""
-          />
+          <div className="relative w-[24rem] h-[20rem] mx-auto">
+            <Image
+              src="/logo1.png"
+              alt="Logo"
+              fill
+              sizes="(max-width: 768px) 100vw, 200px"
+              priority
+            />
+          </div>
         </div>
       </div>
     </div>
