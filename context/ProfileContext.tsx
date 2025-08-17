@@ -5,35 +5,36 @@ import { UserProfile } from '@/interfaces/userProfile';
 import { getUserProfile } from '@/api/API_getUserProfile';
 
 interface ProfileContextType {
-    userProfile: UserProfile | null;
-    setUserProfile: (profile: UserProfile) => void;
+  userProfile: UserProfile | null;
+  setUserProfile: (profile: UserProfile) => void;
+  refreshProfile: () => Promise<void>;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
-    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
-    useEffect(() => {
-        const loadProfile = async () => {
-            try {
-                const data = await getUserProfile();
-                console.log('✅ Fetched profile:', data); // 👈 log toàn bộ profile
-                console.log('📝 Posts:', data.posts); // 👈 log riêng posts
-                setUserProfile(data);
-            } catch (error) {
-                console.error('Error fetching profile:', error);
-            }
-        };
-        loadProfile();
-    }, []);
+  const refreshProfile = async () => {
+    try {
+      const data = await getUserProfile();
+      setUserProfile(data);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
 
-    return (
-        <ProfileContext.Provider value={{ userProfile, setUserProfile }}>
-            {children}
-        </ProfileContext.Provider>
-    );
+  useEffect(() => {
+    refreshProfile();
+  }, []);
+
+  return (
+    <ProfileContext.Provider value={{ userProfile, setUserProfile, refreshProfile }}>
+      {children}
+    </ProfileContext.Provider>
+  );
 };
+
 
 export const useProfile = () => {
     const context = useContext(ProfileContext);

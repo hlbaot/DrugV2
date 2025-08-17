@@ -44,11 +44,11 @@ export default function Profile() {
 
       {/* Grid posts */}
       <div className="grid grid-cols-3 gap-1 sm:gap-2 mt-4 w-full">
-        {userProfile.posts.map((post) => {
+        {userProfile.posts.map((post, idx) => {
           const hasImage = post.images.length > 0;
           return (
             <div
-              key={post.id}
+              key={post.id ?? `post-${idx}`}
               className="relative group aspect-square bg-gray-100 overflow-hidden flex items-center justify-center"
             >
               {/* Ảnh hoặc caption */}

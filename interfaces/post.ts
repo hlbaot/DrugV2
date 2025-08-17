@@ -1,7 +1,7 @@
 export interface CommentType {
   id: number;
   content: string;
-  // images: string[];
+  images: string[];
   user: {
     username: string;
     avatar_url: string | null;

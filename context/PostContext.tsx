@@ -8,7 +8,7 @@ export interface PostContextType {
   posts: PostType[];
   setPosts: React.Dispatch<React.SetStateAction<PostType[]>>;
   isLoading: boolean;
-  refreshPosts: () => void;
+  refreshPosts: () => Promise<void>;
   updatePostLikeStatus: (postId: number, liked: boolean, likeCount: number) => void;
   updatePostSaveStatus: (postId: number, saved: boolean) => void;
 }
@@ -51,14 +51,15 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
       ]);
 
       const savedIds = new Set<number>(saved.map(s => s.post_id));
+      const updatedPosts = feed.map(p => ({
+      ...p,
+      savedByCurrentUser: savedIds.has(p.id)
+    }));
 
-      setPosts(
-        feed.map(p => ({
-          ...p,
-          savedByCurrentUser: savedIds.has(p.id)
-        }))
-      );
+    // Log dữ liệu posts để kiểm tra
+    // console.log("Fetched posts:", updatedPosts); 
 
+    setPosts(updatedPosts);
       // Giả lập loading chỉnh time hiện
       await new Promise(resolve => setTimeout(resolve, 1200));
 

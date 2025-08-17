@@ -22,7 +22,6 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  // 1) Khởi tạo từ localStorage (hydrate)
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('user');

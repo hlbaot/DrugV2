@@ -147,7 +147,6 @@ function Post({ postId }: { postId: number }) {
                   fill
                   className="object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
-                  priority={idx === 0} // preload ảnh đầu tiên
                 />
               </div>
             </SwiperSlide>
@@ -244,7 +243,6 @@ function Post({ postId }: { postId: number }) {
           onChange={(e) => setCommentText(e.target.value)}
           className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm"
         />
-
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="size-6 cursor-pointer"

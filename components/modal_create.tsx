@@ -5,6 +5,7 @@ import { usePostContext } from '@/context/PostContext';
 import { CreatePost } from '@/api/API_postPosts';
 import { useRouter } from "next/navigation";
 import { uploadMultipleImages } from '@/feature/cloudinaryUpload';
+import { useProfile } from '@/context/ProfileContext';
 
 interface CreateModalProps {
   open: boolean;
@@ -17,21 +18,21 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
   const [files, setFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
   const [previewFiles, setPreviewFiles] = useState<{ url: string; file: File }[]>([]);
-  const { refreshPosts } = usePostContext(); 
-
+  const { refreshPosts } = usePostContext();
+  const { userProfile, setUserProfile } = useProfile();
 
   useEffect(() => {
     if (!open) {
       setContent('');
       setFiles(null);
-      setPreviewFiles([]);  
+      setPreviewFiles([]);
     }
   }, [open]);
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const imageUrls = await uploadMultipleImages(files); 
+      const imageUrls = await uploadMultipleImages(files);
 
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
@@ -39,14 +40,22 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
         throw new Error('Bạn chưa đăng nhập hoặc thiếu token');
       }
 
-      await CreatePost({
+      const newPostFromApi = await CreatePost({
         content,
         imageUrls,
         userId: Number(userId),
-        // isPublic: true,
       });
-       // Cập nhật lại danh sách bài viết ngay sau khi post
+      // Cập nhật lại danh sách bài viết ngay sau khi post
       refreshPosts();
+
+      if (userProfile && newPostFromApi) {
+        setUserProfile({
+          ...userProfile,
+          posts: [newPostFromApi, ...userProfile.posts], // thêm post mới từ API
+          postsCount: userProfile.postsCount + 1,          // tăng số lượng post
+        });
+      }
+
       router.push("/home");
       Swal.fire({
         title: 'Post created!',

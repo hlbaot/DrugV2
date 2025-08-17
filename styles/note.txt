@@ -3,3 +3,4 @@
 - UI noti
 - Followed / Unfollowed
 - ui settings
+- đường dẫn /username
