@@ -1,9 +1,14 @@
 'use client';
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { useProfile } from '@/context/ProfileContext';
 
 export default function Profile() {
-  const { userProfile } = useProfile();
+  const { userProfile, refreshProfile } = useProfile();
+
+  useEffect(() => {
+    refreshProfile();
+  }, []);
 
   if (!userProfile) return null;
 
@@ -57,14 +62,14 @@ export default function Profile() {
                   src={post.images[0]}
                   alt={post.caption || 'Post image'}
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
                 <p className="p-2 text-center text-sm sm:text-base text-gray-800 font-medium z-10">
                   {post.caption}
                 </p>
               )}
-              {/* over lay */}
+              {/* overlay */}
               <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-6 text-white text-lg font-semibold z-20">
                 <div className="flex items-center gap-1">
                   ❤️ {post.likeCount ?? 0}
@@ -74,6 +79,7 @@ export default function Profile() {
                 </div>
               </div>
             </div>
+
           );
         })}
       </div>

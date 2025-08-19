@@ -8,12 +8,14 @@ interface ProfileContextType {
   userProfile: UserProfile | null;
   setUserProfile: (profile: UserProfile) => void;
   refreshProfile: () => Promise<void>;
+  updatePostCounts: (postId: number, likeCount: number, commentCount: number) => void;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
 
   const refreshProfile = async () => {
     try {
@@ -24,12 +26,32 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Hàm cập nhật likeCount và commentCount trong profile người dùng
+  const updatePostCounts = (postId: number, likeCount: number, commentCount: number) => {
+  setUserProfile(prev => {
+    if (prev && prev.posts) {
+      const updatedPosts = prev.posts.map(post => {
+        if (post.id === postId) {
+          return { ...post, likeCount, commentCount };  // Đảm bảo cập nhật đúng giá trị mới
+        }
+        return post;
+      });
+
+      // Trả về state đã thay đổi
+      return { ...prev, posts: updatedPosts };
+    }
+    return prev;  // Nếu không có dữ liệu, trả lại state cũ
+  });
+};
+
+
+
   useEffect(() => {
     refreshProfile();
   }, []);
 
   return (
-    <ProfileContext.Provider value={{ userProfile, setUserProfile, refreshProfile }}>
+    <ProfileContext.Provider value={{ userProfile, setUserProfile, refreshProfile, updatePostCounts }}>
       {children}
     </ProfileContext.Provider>
   );
@@ -37,9 +59,9 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
 
 
 export const useProfile = () => {
-    const context = useContext(ProfileContext);
-    if (!context) {
-        throw new Error('useProfile must be used within a ProfileProvider');
-    }
-    return context;
+  const context = useContext(ProfileContext);
+  if (!context) {
+    throw new Error('useProfile must be used within a ProfileProvider');
+  }
+  return context;
 };

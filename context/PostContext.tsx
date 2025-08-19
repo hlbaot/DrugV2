@@ -11,6 +11,7 @@ export interface PostContextType {
   refreshPosts: () => Promise<void>;
   updatePostLikeStatus: (postId: number, liked: boolean, likeCount: number) => void;
   updatePostSaveStatus: (postId: number, saved: boolean) => void;
+  updatePostCommentCount: (postId: number, newCount: number) => void;
 }
 
 const PostContext = createContext<PostContextType | undefined>(undefined);
@@ -41,6 +42,18 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
+  // Cập nhật số lượng bình luận của bài viết
+  const updatePostCommentCount = (postId: number, newCount: number) => {
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === postId
+          ? { ...post, commentCount: newCount }
+          : post
+      )
+    );
+  };
+
+
   // Refresh lại danh sách bài viết
   const refreshPosts = async () => {
     try {
@@ -52,14 +65,11 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
       const savedIds = new Set<number>(saved.map(s => s.post_id));
       const updatedPosts = feed.map(p => ({
-      ...p,
-      savedByCurrentUser: savedIds.has(p.id)
-    }));
+        ...p,
+        savedByCurrentUser: savedIds.has(p.id)
+      }));
 
-    // Log dữ liệu posts để kiểm tra
-    // console.log("Fetched posts:", updatedPosts); 
-
-    setPosts(updatedPosts);
+      setPosts(updatedPosts);
       // Giả lập loading chỉnh time hiện
       await new Promise(resolve => setTimeout(resolve, 1200));
 
@@ -77,7 +87,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <PostContext.Provider
-      value={{ posts, setPosts, isLoading, refreshPosts, updatePostLikeStatus, updatePostSaveStatus }}
+      value={{ posts, setPosts, isLoading, refreshPosts, updatePostLikeStatus, updatePostSaveStatus, updatePostCommentCount }}
     >
       {children}
     </PostContext.Provider>
