@@ -1,10 +1,12 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useProfile } from '@/context/ProfileContext';
-import IconGear from './modal_create';
+import IconGear from './moda_gear';
+import ModalAva from './modal_avaProfile';
 
 export default function Profile() {
+  const [modalAva, setModalAva] = useState(false);
   const { userProfile, refreshProfile } = useProfile();
 
   useEffect(() => {
@@ -18,7 +20,10 @@ export default function Profile() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-12 w-full px-4">
         {/* Avatar */}
-        <div className="flex justify-center sm:justify-start w-full sm:w-auto">
+        <div
+          className="relative group flex cursor-pointer justify-center sm:justify-start w-full sm:w-auto"
+          onClick={() => setModalAva(true)}
+        >
           <Image
             src={userProfile.avatarUrl || '/avatar_default.jpg'}
             alt="Avatar"
@@ -26,7 +31,11 @@ export default function Profile() {
             height={150}
             className="aspect-square w-24 sm:w-32 md:w-36 rounded-full object-cover"
           />
+
+          {/* Overlay */}
+          <div className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center" />
         </div>
+        <ModalAva open={modalAva} onClose={() => setModalAva(false)} />
 
         {/* Info */}
         <section className="flex flex-col gap-4 flex-1">
@@ -36,7 +45,7 @@ export default function Profile() {
             <button className="rounded-md border border-gray-300 bg-gray-100 px-3 py-1 text-sm font-medium hover:bg-gray-200">
               Edit profile
             </button>
-            <IconGear/>
+            <IconGear />
           </div>
 
           {/* Stats */}
