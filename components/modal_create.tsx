@@ -1,198 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
-import { Modal } from '@mui/material';
-import { usePostContext } from '@/context/PostContext';
-import { CreatePost } from '@/api/API_postPosts';
-import { useRouter } from "next/navigation";
-import { uploadMultipleImages } from '@/feature/cloudinaryUpload';
-import { useProfile } from '@/context/ProfileContext';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 
-interface CreateModalProps {
-  open: boolean;
-  onClose: () => void;
-}
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
-export default function CreateModal({ open, onClose }: CreateModalProps) {
-  const router = useRouter();
-  const [content, setContent] = useState('');
-  const [files, setFiles] = useState<FileList | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [previewFiles, setPreviewFiles] = useState<{ url: string; file: File }[]>([]);
-  const { refreshPosts } = usePostContext();
-  const { userProfile, setUserProfile } = useProfile();
-
-  useEffect(() => {
-    if (!open) {
-      setContent('');
-      setFiles(null);
-      setPreviewFiles([]);
-    }
-  }, [open]);
-
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      const imageUrls = await uploadMultipleImages(files);
-
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
-      if (!token) {
-        throw new Error('Bạn chưa đăng nhập hoặc thiếu token');
-      }
-
-      const newPostFromApi = await CreatePost({
-        content,
-        imageUrls,
-        userId: Number(userId),
-      });
-      // Cập nhật lại danh sách bài viết ngay sau khi post
-      refreshPosts();
-
-      if (userProfile && newPostFromApi) {
-        setUserProfile({
-          ...userProfile,
-          posts: [newPostFromApi, ...userProfile.posts], // thêm post mới từ API
-          postsCount: userProfile.postsCount + 1,          // tăng số lượng post
-        });
-      }
-
-      router.push("/home");
-      Swal.fire({
-        title: 'Post created!',
-        icon: 'success',
-        text: 'Your post has been successfully published.',
-        timer: 2500,
-        showConfirmButton: false,
-        didOpen: () => {
-          const container = document.querySelector('.swal2-container') as HTMLElement;
-          if (container) container.style.zIndex = '9999';
-        },
-      });
-
-      onClose();
-    } catch (err) {
-      console.error('🔴 Post error:', err);
-      Swal.fire({
-        title: 'Failed to post!',
-        icon: 'error',
-        text: 'Something went wrong. Please try again.',
-        showConfirmButton: true,
-        didOpen: () => {
-          const container = document.querySelector('.swal2-container') as HTMLElement;
-          if (container) container.style.zIndex = '9999';
-        },
-      });
-    } finally {
-      setLoading(false);
-    }
-
-  };
-
+export default function IconGear() {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-        <div className="relative w-[90%] max-w-md bg-white rounded-2xl p-6 shadow-lg">
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
-          >
-            ✕
-          </button>
+    <div>
+      <svg onClick={handleOpen} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6 cursor-pointer">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+      </svg>
 
-          {/* Header */}
-          <h2 className="text-xl font-bold text-center mb-4">Create new post</h2>
-
-          {/* Content Input */}
-          <textarea
-            className="w-full border-b p-2 resize-none placeholder-gray-400 outline-none mb-4"
-            placeholder="Contents..."
-            rows={3}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-
-          {/* Upload Button */}
-          <label
-            htmlFor="file-upload"
-            className="block border border-dashed border-gray-400 rounded-md p-4 text-center cursor-pointer mb-4"
-          >
-            Choose file upload
-          </label>
-          <input
-            id="file-upload"
-            type="file"
-            hidden
-            multiple
-            accept="image/*"
-            onChange={(e) => {
-              if (!e.target.files) return;
-              const newFiles = Array.from(e.target.files);
-              // Merge với file cũ
-              const prevFiles = files ? Array.from(files) : [];
-              const allFiles = [...prevFiles, ...newFiles];
-
-              // Tạo FileList mới
-              const dt = new DataTransfer();
-              allFiles.forEach(f => dt.items.add(f));
-              setFiles(dt.files);
-
-              // Tạo preview mới
-              const newPreviews = newFiles.map(file => ({
-                file,
-                url: URL.createObjectURL(file),
-              }));
-              setPreviewFiles(prev => [...prev, ...newPreviews]);
-            }}
-          />
-
-
-          {/* Image Previews */}
-          {previewFiles.length > 0 && (
-            <div className="overflow-x-auto mb-4">
-              <div className="flex gap-2 w-max px-2">
-                {previewFiles.map((item, index) => (
-                  <div
-                    key={index}
-                    className="relative flex-shrink-0 w-20 h-20 rounded overflow-hidden"
-                  >
-                    <img
-                      src={item.url}
-                      alt={`preview-${index}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = [...previewFiles];
-                        updated.splice(index, 1);
-                        setPreviewFiles(updated);
-
-                        const dt = new DataTransfer();
-                        updated.forEach((item) => dt.items.add(item.file));
-                        setFiles(dt.files);
-                      }}
-                      className="absolute -top-1 -right-1 bg-black text-white text-xs w-5 h-5 rounded-full flex items-center justify-center"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full border rounded-full py-2 hover:bg-gray-100 transition"
-          >
-            {loading ? 'Uploading...' : 'Submit'}
-          </button>
-        </div>
-      </div>
-    </Modal>
+      {/* Modal */}
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <Typography variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+      </Modal>
+    </div>
   );
 }
