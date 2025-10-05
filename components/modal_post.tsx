@@ -49,7 +49,7 @@ export default function ThreeDotModal({
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    
+
     const handleDelete = async () => {
         try {
             await API_deletePost(postId.toString());

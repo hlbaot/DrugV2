@@ -2,7 +2,7 @@
 import Post from './post';
 import { PostType } from '@/interfaces/post';
 import { usePostContext } from '@/context/PostContext';
-import PostSkeleton from '@/public/skeletonPost'; 
+import PostSkeleton from '@/public/skeletonPost';
 
 const sortPostsByTime = (posts: PostType[]) =>
   posts

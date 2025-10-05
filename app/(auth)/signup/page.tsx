@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import API_SignUp from "@/api/API_Signup";
-import { Values } from "../../../interfaces/signup"
+import { Values } from "@/interfaces/signup"
 
 
 // ✅ Validation schema

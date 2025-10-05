@@ -5,7 +5,7 @@ import Profile from '@/components/profile'
 function profile() {
   return (
     <div>
-      <Profile/>
+      <Profile />
     </div>
   )
 }

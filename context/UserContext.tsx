@@ -6,18 +6,7 @@ import {
   ReactNode,
   useEffect,
 } from 'react';
-
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-  avatarUrl?: string | null;
-}
-
-interface UserContextType {
-  user: User | null;
-  setUser: (user: User) => void;
-}
+import { User, UserContextType } from '@/interfaces/user';
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 

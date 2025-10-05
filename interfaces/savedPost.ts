@@ -9,3 +9,9 @@ export interface SavedPostType {
   }
 }
 
+export interface SavePostContextType {
+  savedPosts: SavedPostType[];
+  setSavedPosts: React.Dispatch<React.SetStateAction<SavedPostType[]>>;
+  refreshSavedPosts: () => Promise<void>;
+  updateSavedStatus: (postId: number, saved: boolean, newSavedPostData?: SavedPostType) => void;
+}

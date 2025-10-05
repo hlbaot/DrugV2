@@ -26,3 +26,10 @@ export interface UserProfile {
   followingPreview: UserPreview[];
   posts: UserPost[];
 }
+
+export interface ProfileContextType {
+  userProfile: UserProfile | null;
+  setUserProfile: (profile: UserProfile) => void;
+  refreshProfile: () => Promise<void>;
+  updatePostCounts: (postId: number, likeCount: number, commentCount: number) => void;
+}

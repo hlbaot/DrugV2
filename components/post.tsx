@@ -8,7 +8,7 @@ import IconSave from './icon_save'
 import { usePostContext } from '@/context/PostContext';
 import { useSavePostContext } from '@/context/SavePostContext';
 import { useProfile } from '@/context/ProfileContext';
-import ThreeDotModal from '../components/modal_post'
+import ThreeDotModal from './modal_post'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import { likePost, unlikePost } from '@/api/API_likePost'
@@ -25,7 +25,7 @@ function Post({ postId }: { postId: number }) {
 
   const { posts, setPosts, updatePostLikeStatus, updatePostSaveStatus } = usePostContext();
   const { updateSavedStatus } = useSavePostContext();
-  const {updatePostCounts} = useProfile();
+  const { updatePostCounts } = useProfile();
   const post = posts.find((p) => p.id === postId);
   if (!post) return null;
 
@@ -48,39 +48,39 @@ function Post({ postId }: { postId: number }) {
 
   const isOwner = userId === post.user.user_id.toString();
 
- const handleToggleLike = async () => {
-  const nextLiked = !likedByCurrentUser;
-  const newLikeCount = nextLiked ? likeCount + 1 : likeCount - 1;
-  // liked / unliked
-  if (nextLiked) {
-    await likePost(id);
-  } else {
-    await unlikePost(id);
-  }
-
-  // Cập nhật lại context
-  updatePostLikeStatus(id, nextLiked, newLikeCount);
-  // Cập nhật số lượng like trong profile của người dùng
-  updatePostCounts(id, newLikeCount, commentCount);
-};
-
-const handleToggleSave = async () => {
-  const nextSaved = !savedByCurrentUser;
-  try {
-    if (nextSaved) {
-      await savePost(id);
+  const handleToggleLike = async () => {
+    const nextLiked = !likedByCurrentUser;
+    const newLikeCount = nextLiked ? likeCount + 1 : likeCount - 1;
+    // liked / unliked
+    if (nextLiked) {
+      await likePost(id);
     } else {
-      await unSavePost(id);
+      await unlikePost(id);
     }
 
-    // Cập nhật ngay trong PostContext để UI đổi màu
-    updatePostSaveStatus(id, nextSaved);
-    // Cập nhật SavePostContext để list “Saved Posts” cũng đồng bộ
-    updateSavedStatus(id, nextSaved);
-  } catch (error) {
-    console.error("Lỗi khi lưu/huỷ lưu bài viết:", error);
-  }
-};
+    // Cập nhật lại context
+    updatePostLikeStatus(id, nextLiked, newLikeCount);
+    // Cập nhật số lượng like trong profile của người dùng
+    updatePostCounts(id, newLikeCount, commentCount);
+  };
+
+  const handleToggleSave = async () => {
+    const nextSaved = !savedByCurrentUser;
+    try {
+      if (nextSaved) {
+        await savePost(id);
+      } else {
+        await unSavePost(id);
+      }
+
+      // Cập nhật ngay trong PostContext để UI đổi màu
+      updatePostSaveStatus(id, nextSaved);
+      // Cập nhật SavePostContext để list “Saved Posts” cũng đồng bộ
+      updateSavedStatus(id, nextSaved);
+    } catch (error) {
+      console.error("Lỗi khi lưu/huỷ lưu bài viết:", error);
+    }
+  };
 
 
   // const { sendComment } = useCommentSocket(post.postId, (comment) => {

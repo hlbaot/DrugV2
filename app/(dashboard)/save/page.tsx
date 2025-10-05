@@ -6,9 +6,9 @@ import SavePostFeed from '@/components/savePostFeed';
 function Save() {
     return (
         <div className=' w-[100%] h-full flex justify-center'>
-            <SavePostFeed/>
+            <SavePostFeed />
         </div>
-        
+
     )
 }
 

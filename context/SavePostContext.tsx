@@ -1,14 +1,7 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
-import { SavedPostType } from '@/interfaces/savedPost';
+import { SavedPostType, SavePostContextType } from '@/interfaces/savedPost';
 import { getAllPostsSaved } from '@/api/API_getPostSaved';
-
-interface SavePostContextType {
-  savedPosts: SavedPostType[];
-  setSavedPosts: React.Dispatch<React.SetStateAction<SavedPostType[]>>;
-  refreshSavedPosts: () => Promise<void>;
-  updateSavedStatus: (postId: number, saved: boolean, newSavedPostData?: SavedPostType) => void;
-}
 
 const SavePostContext = createContext<SavePostContextType | undefined>(undefined);
 

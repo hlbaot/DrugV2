@@ -1,12 +1,12 @@
 "use client";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import Loader from "../../../public/Loader";
+import Loader from "@/public/Loader";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from 'next/image';
 import API_SignIn from "@/api/API_Signin";
-import { Values } from "../../../interfaces/sigin";
+import { Values } from "@/interfaces/signin";
 import { useUser } from "@/context/UserContext";
 
 // Schema kiểm tra dữ liệu

@@ -1,18 +1,9 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
-import { PostType } from '@/interfaces/post';
+import { PostType, PostContextType } from '@/interfaces/post';
 import { getAllPosts } from '@/api/API_getPost';
 import { getAllPostsSaved } from '@/api/API_getPostSaved';
 
-export interface PostContextType {
-  posts: PostType[];
-  setPosts: React.Dispatch<React.SetStateAction<PostType[]>>;
-  isLoading: boolean;
-  refreshPosts: () => Promise<void>;
-  updatePostLikeStatus: (postId: number, liked: boolean, likeCount: number) => void;
-  updatePostSaveStatus: (postId: number, saved: boolean) => void;
-  updatePostCommentCount: (postId: number, newCount: number) => void;
-}
 
 const PostContext = createContext<PostContextType | undefined>(undefined);
 

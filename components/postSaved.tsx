@@ -18,7 +18,7 @@ export default function PostSaved({ savedPost }: PostSavedProps) {
   const { id, caption, images, savedByCurrentUser } = post
 
   const handleUnsave = async () => {
-  const nextSaved = !savedByCurrentUser;
+    const nextSaved = !savedByCurrentUser;
     try {
       await unSavePost(id)
       // cập nhật ngay trong PostContext để UI đổi màu

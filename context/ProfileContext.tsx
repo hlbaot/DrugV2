@@ -1,15 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { UserProfile } from '@/interfaces/userProfile';
+import { UserProfile, ProfileContextType } from '@/interfaces/userProfile';
 import { getUserProfile } from '@/api/API_getUserProfile';
-
-interface ProfileContextType {
-  userProfile: UserProfile | null;
-  setUserProfile: (profile: UserProfile) => void;
-  refreshProfile: () => Promise<void>;
-  updatePostCounts: (postId: number, likeCount: number, commentCount: number) => void;
-}
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
@@ -28,21 +21,21 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
 
   // Hàm cập nhật likeCount và commentCount trong profile người dùng
   const updatePostCounts = (postId: number, likeCount: number, commentCount: number) => {
-  setUserProfile(prev => {
-    if (prev && prev.posts) {
-      const updatedPosts = prev.posts.map(post => {
-        if (post.id === postId) {
-          return { ...post, likeCount, commentCount };  // Đảm bảo cập nhật đúng giá trị mới
-        }
-        return post;
-      });
+    setUserProfile(prev => {
+      if (prev && prev.posts) {
+        const updatedPosts = prev.posts.map(post => {
+          if (post.id === postId) {
+            return { ...post, likeCount, commentCount };
+          }
+          return post;
+        });
 
-      // Trả về state đã thay đổi
-      return { ...prev, posts: updatedPosts };
-    }
-    return prev;  // Nếu không có dữ liệu, trả lại state cũ
-  });
-};
+        // Trả về state đã thay đổi
+        return { ...prev, posts: updatedPosts };
+      }
+      return prev;  // Nếu không có dữ liệu, trả lại state cũ
+    });
+  };
 
 
 
