@@ -1,16 +1,16 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { PostType } from '../interfaces/post';
 // get post after user created
 export const getAllPosts = async (): Promise<PostType[]> => {
-    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
-    if (!token) throw new Error('Không tìm thấy token');
+    const token = Cookies.get('token');
 
-    const res = await axios.get('http://10.243.200.17:5050/api/posts', {
-        withCredentials: true,
+    const res = await axios.get('http://10.243.200.17:5050/posts', {
+        // withCredentials: true,
         headers: {
             Authorization: `Bearer ${token}`,
         },
     });
 
-    return res.data.data as PostType[];
+    return res.data.data;
 };

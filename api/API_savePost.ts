@@ -1,10 +1,11 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
+const token = Cookies.get('token');
 // save post
 export const savePost = async (postId: number) => {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   await axios.post(
-    `http://10.243.200.17:5050/api/posts/save/${postId}`,
+    `http://10.243.200.17:5050/posts/save/${postId}`,
     {},
     {
       headers: { Authorization: `Bearer ${token}` },
@@ -14,9 +15,8 @@ export const savePost = async (postId: number) => {
 
 // Bỏ lưu bài post
 export const unSavePost = async (postId: number) => {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   await axios.delete(
-    `http://10.243.200.17:5050/api/posts/unsave/${postId}`,
+    `http://10.243.200.17:5050/posts/unsave/${postId}`,
     {
       headers: { Authorization: `Bearer ${token}` },
     }

@@ -8,7 +8,7 @@ type Props = {
   onClose: () => void;
 };
 
-export default function ModalAva({ open, onClose }: Props) {
+export const ModalAva = ({ open, onClose }: Props) => {
   return (
     <Modal
       aria-labelledby="change-profile-title"

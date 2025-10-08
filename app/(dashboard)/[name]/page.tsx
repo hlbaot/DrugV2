@@ -1,6 +1,6 @@
 
 import React from 'react'
-import Profile from '@/components/profile'
+import Profile from '@/pages/profile'
 
 function profile() {
   return (

@@ -40,11 +40,11 @@ const buttonStyle = {
     },
 };
 
-export default function ThreeDotModal({
+export const ThreeDotModal = ({
     showDelete,
     onDelete,
     postId
-}: ThreeDotModalProps) {
+}: ThreeDotModalProps) => {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);

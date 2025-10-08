@@ -34,3 +34,9 @@ export interface PostContextType {
   updatePostSaveStatus: (postId: number, saved: boolean) => void;
   updatePostCommentCount: (postId: number, newCount: number) => void;
 }
+
+export interface CreatePostRequest {
+  content: string;
+  imageUrls: string[];
+  // isPublic?: boolean; 
+}

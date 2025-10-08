@@ -2,17 +2,17 @@
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Cookies from 'js-cookie';
 
-export default function RightHome() {
+export const RightHome = () => {
   const router = useRouter();
   const { user } = useUser();
 
   if (!user) return null;
 
-  const handleInfo = () => router.push('/profile');
+  const handleInfo = () => router.push('/${user.username}');
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    Cookies.remove('token');
     router.push('/signin');
   };
 

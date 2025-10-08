@@ -1,7 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 import { useSavePostContext } from '@/context/SavePostContext';
-import PostSaved from './postSaved';
+import PostSaved from '../components/postSaved';
 
 export default function SavePostFeed() {
   const { savedPosts, refreshSavedPosts } = useSavePostContext();

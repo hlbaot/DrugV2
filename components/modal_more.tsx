@@ -1,13 +1,13 @@
 'use client'
 import React from 'react'
+import Cookies from 'js-cookie'
 import { useRouter } from 'next/navigation'
 
 const ModalMore = () => {
     const router = useRouter();
 
     const handleLogout = () => {
-        localStorage.removeItem('token')
-        sessionStorage.removeItem('token')
+        Cookies.remove('token');
         router.push("/signin");
     }
 

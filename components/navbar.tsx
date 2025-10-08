@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import CreateModal from "./modal_create";
 import ModalMore from "./modal_more";
+import { useUser } from '@/context/UserContext';
 import "../styles/navbar.scss";
 
 function Navbar() {
@@ -12,15 +13,12 @@ function Navbar() {
 
   const [modalCreate, setmodalCreate] = useState(false);
   const [modalMore, setModalMore] = useState(false);
+  const { user } = useUser();
 
   const isActive = (name: string) =>
     `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === name ? 'bg-rose-400 text-white' : ''
     }`;
 
-  const avatar =
-    localStorage.getItem("avatar_url") ??
-    sessionStorage.getItem("avatar_url") ??
-    "/avatar_default.jpg";
 
   return (
     <div className="navbar fixed z-50 w-[4.5rem] lg:w-[18%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
@@ -101,9 +99,9 @@ function Navbar() {
         <CreateModal open={modalCreate} onClose={() => setmodalCreate(false)} />
 
         {/* Profile */}
-        <Link href="/profile" className={isActive("profile")}>
+        <Link href="/${user.username}" className={isActive("profile")}>
           <img
-            src={avatar}
+            src={user?.avatarUrl ?? "/avatar_default.jpg"}
             alt="User Avatar"
             className="w-8 h-8 rounded-full object-cover"
           />

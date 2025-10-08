@@ -1,5 +1,3 @@
-'use client'
-
 import ModalMore from './modal_more'
 import { useState } from 'react'
 

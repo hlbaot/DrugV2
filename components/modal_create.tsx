@@ -6,6 +6,7 @@ import { CreatePost } from '@/api/API_postPosts';
 import { useRouter } from "next/navigation";
 import { uploadMultipleImages } from '@/feature/cloudinaryUpload';
 import { useProfile } from '@/context/ProfileContext';
+import Cookies from 'js-cookie';
 
 interface CreateModalProps {
   open: boolean;
@@ -34,12 +35,9 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
       setLoading(true);
       const imageUrls = await uploadMultipleImages(files);
 
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
-      if (!token) {
-        throw new Error('Bạn chưa đăng nhập hoặc thiếu token');
-      }
-
+      const userId = Cookies.get('userId');
+      const token = Cookies.get('token');
+      
       const newPostFromApi = await CreatePost({
         content,
         imageUrls,

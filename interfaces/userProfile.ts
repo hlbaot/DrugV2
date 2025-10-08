@@ -1,6 +1,6 @@
 export interface UserPreview {
   username: string;
-  avatar_url: string | null;
+  avatarUrl: string | null;
   isFollowing: boolean;
 }
 
@@ -17,7 +17,7 @@ export interface UserProfile {
   id: number; 
   username: string;
   avatarUrl: string | null;
-  bio: string | null;
+  bioText: string | null;
   followersCount: number;
   followingsCount: number;
   postsCount: number;
@@ -30,6 +30,6 @@ export interface UserProfile {
 export interface ProfileContextType {
   userProfile: UserProfile | null;
   setUserProfile: (profile: UserProfile) => void;
-  refreshProfile: () => Promise<void>;
+  refreshProfile: (username: string) => Promise<void>;
   updatePostCounts: (postId: number, likeCount: number, commentCount: number) => void;
 }

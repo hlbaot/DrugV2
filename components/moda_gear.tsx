@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useRouter } from 'next/navigation'
+import Cookies from "js-cookie";
 import Modal from "@mui/material/Modal";
 
 export default function IconGearModal() {
@@ -9,8 +10,7 @@ export default function IconGearModal() {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    sessionStorage.removeItem('token')
+    Cookies.remove("token");
     router.push("/signin");
   }
 

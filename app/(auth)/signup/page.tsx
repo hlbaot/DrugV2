@@ -3,11 +3,10 @@ import { Formik, Field, Form, FormikHelpers, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
-import API_SignUp from "@/api/API_Signup";
-import { Values } from "@/interfaces/signup"
+import { API_SignUp } from "@/api/API_Signup";
+import { SignUpRequest } from "@/interfaces/auth";
 
 
-// ✅ Validation schema
 const SignUpSchema = Yup.object({
   email: Yup.string()
     .email("Email không hợp lệ")
@@ -20,7 +19,7 @@ const SignUpSchema = Yup.object({
     .required("Xác nhận mật khẩu là bắt buộc"),
 });
 
-function SignUp() {
+export default function SignUp() {
   const router = useRouter();
   const handleClickSignIn = () => {
     router.push("/signin");
@@ -40,18 +39,15 @@ function SignUp() {
               email: "",
               password: "",
               confirmPassword: "",
-              rememberMe: false,
             }}
             validationSchema={SignUpSchema}
             onSubmit={async (
-              values: Values,
-              { setSubmitting }: FormikHelpers<Values>
+              values: SignUpRequest,
+              { setSubmitting }: FormikHelpers<SignUpRequest>
             ) => {
               try {
-                const response = await API_SignUp({
-                  email: values.email,
-                  password: values.password,
-                });
+                const { email, password } = values;
+                await API_SignUp({ email, password });
                 router.push("/signin");
               } catch (error: any) {
                 console.error("Lỗi đăng kí:", error);
@@ -122,18 +118,6 @@ function SignUp() {
                   className="text-red-500 text-sm"
                 />
 
-                {/* Remember me */}
-                <div className="w-full flex justify-between">
-                  <div className="left flex gap-[1rem]">
-                    <Field
-                      type="checkbox"
-                      name="rememberMe"
-                      className="w-[20px] h-[20px] my-auto"
-                    />
-                    <p className="my-auto">Remember me</p>
-                  </div>
-                </div>
-
                 {/* Submit button */}
                 <button
                   type="submit"
@@ -158,7 +142,7 @@ function SignUp() {
           </Formik>
         </div>
 
-        {/* Right side (image...) */}
+        {/* Right */}
         <div className="w-full sm:w-[70%] hidden sm:flex flex-col gap-4">
           <h1 className="text-[2.5rem] text-center drop-shadow-lg leading-tight font-bold text-gray-800">
             Welcome to,
@@ -172,7 +156,8 @@ function SignUp() {
               src="/logo1.png"
               alt="Logo"
               fill
-              className="object-contain"
+              sizes="(max-width: 768px) 100vw, 200px"
+              priority
             />
           </div>
         </div>
@@ -181,4 +166,3 @@ function SignUp() {
   );
 }
 
-export default SignUp;

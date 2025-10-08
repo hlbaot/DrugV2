@@ -3,16 +3,17 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserProfile, ProfileContextType } from '@/interfaces/userProfile';
 import { getUserProfile } from '@/api/API_getUserProfile';
+import { useUser } from './UserContext';
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const { user } = useUser();
 
-
-  const refreshProfile = async () => {
+  const refreshProfile = async (username: string) => {
     try {
-      const data = await getUserProfile();
+      const data = await getUserProfile(username);
       setUserProfile(data);
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -37,11 +38,13 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-
-
   useEffect(() => {
-    refreshProfile();
-  }, []);
+    if (user?.username) {
+      refreshProfile(user.username);
+    }else{
+      setUserProfile(null);
+    }
+  }, [user]);  
 
   return (
     <ProfileContext.Provider value={{ userProfile, setUserProfile, refreshProfile, updatePostCounts }}>
@@ -49,7 +52,6 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     </ProfileContext.Provider>
   );
 };
-
 
 export const useProfile = () => {
   const context = useContext(ProfileContext);

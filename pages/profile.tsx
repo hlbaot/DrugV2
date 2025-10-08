@@ -1,19 +1,23 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { useProfile } from '@/context/ProfileContext';
-import IconGear from './moda_gear';
-import ModalAva from './modal_avaProfile';
+import IconGear from '../components/moda_gear';
+import { ModalAva } from '../components/modal_avaProfile';
 
 export default function Profile() {
   const [modalAva, setModalAva] = useState(false);
   const { userProfile, refreshProfile } = useProfile();
+  const {username} = useParams();
 
   useEffect(() => {
-    refreshProfile();
-  }, []);
+    if(username){
+      refreshProfile(username as string);
+    }
+  }, [username]);
 
-  if (!userProfile) return null;
+  if (!username || !userProfile) return null;
 
   return (
     <div className="flex flex-col mx-auto mt-16 sm:mt-12 w-full px-2 max-w-3xl">
@@ -62,7 +66,7 @@ export default function Profile() {
           </div>
 
           {/* Bio */}
-          <p className="text-sm sm:text-base">{userProfile.bio || 'No bio yet'}</p>
+          <p className="text-sm sm:text-base">{userProfile.bioText || 'No bio yet'}</p>
         </section>
       </div>
 

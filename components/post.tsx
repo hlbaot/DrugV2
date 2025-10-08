@@ -8,7 +8,7 @@ import IconSave from './icon_save'
 import { usePostContext } from '@/context/PostContext';
 import { useSavePostContext } from '@/context/SavePostContext';
 import { useProfile } from '@/context/ProfileContext';
-import ThreeDotModal from './modal_post'
+import {ThreeDotModal} from './modal_post'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import { likePost, unlikePost } from '@/api/API_likePost'

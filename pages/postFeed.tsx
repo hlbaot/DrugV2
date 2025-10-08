@@ -1,5 +1,5 @@
 'use client';
-import Post from './post';
+import Post from '../components/post';
 import { PostType } from '@/interfaces/post';
 import { usePostContext } from '@/context/PostContext';
 import PostSkeleton from '@/public/skeletonPost';

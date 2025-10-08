@@ -1,7 +1,7 @@
+// API_SignUp.ts
 import axios from "axios";
-// Sign up
-const API_SignUp = (data: { email: string; password: string }) => {
-  return axios.post("http://10.243.200.17:5050/api/users/register", data);
-};
 
-export default API_SignUp;
+export const API_SignUp = async (data: { email: string; password: string }) => {
+  const res = await axios.post("http://10.243.200.17:5050/users/register", data);
+  return res.data;
+};

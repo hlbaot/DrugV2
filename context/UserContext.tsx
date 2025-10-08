@@ -13,7 +13,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('user');
+      const stored = sessionStorage.getItem('user');
       return stored ? JSON.parse(stored) : null;
     }
     return null;
@@ -21,9 +21,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
+      sessionStorage.setItem('user', JSON.stringify(user));
     } else {
-      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
     }
   }, [user]);
 
