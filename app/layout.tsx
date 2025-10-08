@@ -1,5 +1,7 @@
 import '../public/logo.png';
 import '../styles/global.css';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import { UserProvider } from '@/context/UserContext';
 
 export const metadata = {
@@ -19,6 +21,7 @@ export default function RootLayout({
       <body suppressHydrationWarning={true}>
         <UserProvider>
           {children}
+          <ToastContainer position="top-right" />
         </UserProvider>
       </body>
     </html>
