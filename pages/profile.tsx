@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useUser } from '@/context/UserContext';
 import Image from 'next/image';
 import { useProfile } from '@/context/ProfileContext';
 import IconGear from '../components/moda_gear';
@@ -8,16 +9,21 @@ import { ModalAva } from '../components/modal_avaProfile';
 
 export default function Profile() {
   const [modalAva, setModalAva] = useState(false);
-  const { userProfile, refreshProfile } = useProfile();
-  const {username} = useParams();
+  const { myProfile, viewedProfile, refreshMyProfile, refreshViewedProfile } = useProfile();
+  const { username } = useParams<{ username: string }>();
+  const { user } = useUser();
+
+  const isMyProfile = username === user?.username;
 
   useEffect(() => {
-    if(username){
-      refreshProfile(username as string);
+    // Nếu là người khác -> gọi API
+    if (username && !isMyProfile) {
+      refreshViewedProfile(username);
     }
-  }, [username]);
+  }, [username, isMyProfile]);
+  const profile = isMyProfile ? myProfile : viewedProfile;
 
-  if (!username || !userProfile) return null;
+  if (!profile) return null;
 
   return (
     <div className="flex flex-col mx-auto mt-16 sm:mt-12 w-full px-2 max-w-3xl">
@@ -29,7 +35,7 @@ export default function Profile() {
           onClick={() => setModalAva(true)}
         >
           <Image
-            src={userProfile.avatarUrl || '/avatar_default.jpg'}
+            src={profile.avatarUrl || '/avatar_default.jpg'}
             alt="Avatar"
             width={150}
             height={150}
@@ -45,7 +51,7 @@ export default function Profile() {
         <section className="flex flex-col gap-4 flex-1">
           {/* Username + Buttons */}
           <div className="flex flex-wrap items-center gap-3">
-            <p className="text-xl sm:text-2xl font-semibold">{userProfile.username}</p>
+            <p className="text-xl sm:text-2xl font-semibold">{profile.username}</p>
             <button className="rounded-md border border-gray-300 bg-gray-100 px-3 py-1 text-sm font-medium hover:bg-gray-200">
               Edit profile
             </button>
@@ -55,18 +61,18 @@ export default function Profile() {
           {/* Stats */}
           <div className="flex gap-6 text-sm sm:text-base">
             <p>
-              <span className="font-semibold">{userProfile.postsCount}</span> posts
+              <span className="font-semibold">{profile.postsCount}</span> posts
             </p>
             <p>
-              <span className="font-semibold">{userProfile.followersCount}</span> followers
+              <span className="font-semibold">{profile.followersCount}</span> followers
             </p>
             <p>
-              <span className="font-semibold">{userProfile.followingsCount}</span> following
+              <span className="font-semibold">{profile.followingsCount}</span> following
             </p>
           </div>
 
           {/* Bio */}
-          <p className="text-sm sm:text-base">{userProfile.bioText || 'No bio yet'}</p>
+          <p className="text-sm sm:text-base">{profile.bioText || 'No bio yet'}</p>
         </section>
       </div>
 
@@ -75,7 +81,7 @@ export default function Profile() {
 
       {/* Grid posts */}
       <div className="grid grid-cols-3 gap-1 sm:gap-2 mt-4 w-full">
-        {userProfile.posts.map((post, idx) => {
+        {profile.posts.map((post, idx) => {
           const hasImage = post.images.length > 0;
           return (
             <div

@@ -5,54 +5,90 @@ import { UserProfile, ProfileContextType } from '@/interfaces/userProfile';
 import { getUserProfile } from '@/api/API_getUserProfile';
 import { useUser } from './UserContext';
 
+// ✅ Tạo Context
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  // 🧱 Tách rõ: profile của chính mình và profile đang xem
+  const [myProfile, setMyProfile] = useState<UserProfile | null>(null);
+  const [viewedProfile, setViewedProfile] = useState<UserProfile | null>(null);
+
   const { user } = useUser();
 
-  const refreshProfile = async (username: string) => {
+  // 🔹 API: Lấy profile của người khác (hoặc ai đó theo username)
+  const refreshViewedProfile = async (username: string) => {
     try {
       const data = await getUserProfile(username);
-      setUserProfile(data);
+      setViewedProfile(data);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('Lỗi khi lấy profile người khác:', error);
     }
   };
 
-  // Hàm cập nhật likeCount và commentCount trong profile người dùng
-  const updatePostCounts = (postId: number, likeCount: number, commentCount: number) => {
-    setUserProfile(prev => {
-      if (prev && prev.posts) {
-        const updatedPosts = prev.posts.map(post => {
-          if (post.id === postId) {
-            return { ...post, likeCount, commentCount };
-          }
-          return post;
-        });
+  // 🔹 API: Lấy profile của chính mình
+  const refreshMyProfile = async () => {
+    if (!user?.username) return;
+    try {
+      const data = await getUserProfile(user.username);
+      setMyProfile(data);
+    } catch (error) {
+      console.error('Lỗi khi lấy profile của chính mình:', error);
+    }
+  };
 
-        // Trả về state đã thay đổi
+  // 🔁 Tự động gọi khi user login
+  useEffect(() => {
+    if (user?.username) {
+      refreshMyProfile();
+    } else {
+      setMyProfile(null);
+    }
+  }, [user]);
+
+  // 🔧 Cập nhật likeCount và commentCount của bài post trong profile
+  const updatePostCounts = (postId: number, likeCount: number, commentCount: number) => {
+    // Cập nhật cho myProfile
+    setMyProfile(prev => {
+      if (prev && prev.posts) {
+        const updatedPosts = prev.posts.map(post =>
+          post.id === postId ? { ...post, likeCount, commentCount } : post
+        );
         return { ...prev, posts: updatedPosts };
       }
-      return prev;  // Nếu không có dữ liệu, trả lại state cũ
+      return prev;
+    });
+
+    // Cập nhật cho viewedProfile
+    setViewedProfile(prev => {
+      if (prev && prev.posts) {
+        const updatedPosts = prev.posts.map(post =>
+          post.id === postId ? { ...post, likeCount, commentCount } : post
+        );
+        return { ...prev, posts: updatedPosts };
+      }
+      return prev;
     });
   };
 
-  useEffect(() => {
-    if (user?.username) {
-      refreshProfile(user.username);
-    }else{
-      setUserProfile(null);
-    }
-  }, [user]);  
-
+  // ✅ Trả về context value
   return (
-    <ProfileContext.Provider value={{ userProfile, setUserProfile, refreshProfile, updatePostCounts }}>
+    <ProfileContext.Provider
+      value={{
+        myProfile,
+        setMyProfile,
+        viewedProfile,
+        setViewedProfile,
+        refreshMyProfile,
+        refreshViewedProfile,
+        updatePostCounts,
+      }}
+    >
       {children}
     </ProfileContext.Provider>
   );
 };
 
+// ✅ Hook sử dụng context
 export const useProfile = () => {
   const context = useContext(ProfileContext);
   if (!context) {

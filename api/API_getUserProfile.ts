@@ -5,7 +5,6 @@ import { UserProfile } from "@/interfaces/userProfile";
 export const getUserProfile = async (username: string): Promise<UserProfile> => {
     const token = Cookies.get('token');
     const res = await axios.get(`http://10.243.200.17:5050/users/profiles/${username}`, {
-        // withCredentials: true,
          headers: {
             Authorization: `Bearer ${token}`,
         },

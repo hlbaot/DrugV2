@@ -2,7 +2,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
-import Loader from "@/public/Loader";
+import Loader from "@/public/loaderPost";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";

@@ -28,8 +28,18 @@ export interface UserProfile {
 }
 
 export interface ProfileContextType {
-  userProfile: UserProfile | null;
-  setUserProfile: (profile: UserProfile) => void;
-  refreshProfile: (username: string) => Promise<void>;
+  // Profile của chính mình (user đang đăng nhập)
+  myProfile: UserProfile | null;
+  setMyProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
+
+  // Profile của người đang được xem (theo /[username])
+  viewedProfile: UserProfile | null;
+  setViewedProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
+
+  // API gọi lại dữ liệu
+  refreshMyProfile: () => Promise<void>;
+  refreshViewedProfile: (username: string) => Promise<void>;
+
+  // Cập nhật số lượng like/comment của bài post
   updatePostCounts: (postId: number, likeCount: number, commentCount: number) => void;
 }

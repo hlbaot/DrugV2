@@ -15,8 +15,8 @@ function Navbar() {
   const [modalMore, setModalMore] = useState(false);
   const { user } = useUser();
 
-  const isActive = (name: string) =>
-    `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === name ? 'bg-rose-400 text-white' : ''
+  const isActive = (nameRouter: string) =>
+    `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === nameRouter? 'bg-rose-400 text-white' : ''
     }`;
 
 
