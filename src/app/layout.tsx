@@ -1,6 +1,4 @@
-import '../public/logo.png';
-import '../styles/global.css';
-import "react-toastify/dist/ReactToastify.css";
+import '@/src/styles/global.css';
 import { ToastContainer } from "react-toastify";
 import { UserProvider } from '@/src/context/UserContext';
 
