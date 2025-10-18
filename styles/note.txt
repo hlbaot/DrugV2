@@ -1,6 +1,0 @@
-- Suggested các acc người dùng drug (search)
-- UI Profile
-- UI noti
-- Followed / Unfollowed
-- ui settings
-- đường dẫn /username

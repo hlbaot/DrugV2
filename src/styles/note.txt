@@ -1,0 +1,6 @@
+- Suggested các acc người dùng drug (search)
+- UI Profile
+- UI noti
+- Followed / Unfollowed
+- ui settings
+- click vô router tới /name
