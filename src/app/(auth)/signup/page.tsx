@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { API_SignUp } from "@/src/api/API_Signup";
 import { SignUpRequest } from "@/src/interfaces/auth";
 
-
 const SignUpSchema = Yup.object({
   email: Yup.string()
     .email("Email không hợp lệ")
@@ -22,7 +21,7 @@ const SignUpSchema = Yup.object({
 export default function SignUp() {
   const router = useRouter();
   const handleClickSignIn = () => {
-    router.push("/signin");
+    router.push("/src/signin");
   };
 
   return (

@@ -7,7 +7,7 @@ export interface SignInResponse {
     token: string;
     email: string;
     id: number;
-    avatar: string | null;
+    avatarUrl: string | null;
     username: string;
 }
 

@@ -3,19 +3,19 @@ import styled from 'styled-components';
 
 interface IconHeartProps {
   postId: number;
-  liked: boolean;
+  isLiked: boolean;
   likeCount: number;
   onToggleLike: () => void;
 }
 
 const IconHeart: React.FC<IconHeartProps> = ({
-  liked,
+  isLiked,
   onToggleLike,
 }) => {
   return (
     <div className="flex items-center gap-1">
-      <Button onClick={onToggleLike} aria-label={liked ? 'Unlike' : 'Like'}>
-        <HeartIcon $liked={liked} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <Button onClick={onToggleLike} aria-label={isLiked ? 'Unlike' : 'Like'}>
+        <HeartIcon $liked={isLiked} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
                   2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
                   C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5

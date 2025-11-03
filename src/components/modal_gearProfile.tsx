@@ -1,12 +1,15 @@
 import * as React from "react";
+import { useState } from "react";
 import { useRouter } from 'next/navigation'
 import Cookies from "js-cookie";
 import Modal from "@mui/material/Modal";
+import { ModalEdit } from "./modal_editProfile";
 
 export default function IconGearModal() {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [modalGear, setModalGear] = React.useState(false);
+  const handleOpen = () => setModalGear(true);
+  const handleClose = () => setModalGear(false);
+  const [modalEdit, setModalEdit] = useState(false);
   const router = useRouter();
 
   const handleLogout = () => {
@@ -22,7 +25,7 @@ export default function IconGearModal() {
       </svg>
 
       {/* Modal */}
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={modalGear} onClose={handleClose}>
         <div
           className="
             absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
@@ -30,9 +33,10 @@ export default function IconGearModal() {
           "
         >
           {/* Settings */}
-          <div className="w-full py-4 text-center text-lg font-medium hover:bg-gray-50 cursor-pointer">
+          <div onClick={() => setModalEdit(true)} className="w-full py-4 text-center text-lg font-medium hover:bg-gray-50 cursor-pointer">
             Settings
           </div>
+          <ModalEdit open={modalEdit} onClose={() => setModalEdit(false)} />
 
           {/* Divider */}
           <div className="mx-4 h-px bg-gray-200" />

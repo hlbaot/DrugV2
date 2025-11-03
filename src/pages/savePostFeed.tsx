@@ -22,7 +22,7 @@ export default function SavePostFeed() {
       "
       >
         {savedPosts.map((item) => (
-          <PostSaved key={item.post_id} savedPost={item} />
+          <PostSaved key={item.id} savedPost={item} />
         ))}
       </div>
     </div>

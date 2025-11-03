@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import CreateModal from "./modal_create";
 import ModalMore from "./modal_more";
 import { useUser } from '@/src/context/UserContext';
-import "../styles/navbar.scss";
+import '@/src/styles/navbar.scss'
 
-function Navbar() {
+export default function Navbar() {
   const pathname = usePathname();
   if (!pathname) return null;
   const active = pathname.split('/')[1] || "home";
@@ -144,4 +144,3 @@ function Navbar() {
   );
 }
 
-export default Navbar;

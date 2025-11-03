@@ -1,9 +1,8 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
-import { PostType, PostContextType } from '@/src/interfaces/post';
+import { PostType, PostContextType, CommentType } from '@/src/interfaces/post';
 import { getAllPosts } from '@/src/api/API_getPost';
 import { getAllPostsSaved } from '@/src/api/API_getPostSaved';
-
 
 const PostContext = createContext<PostContextType | undefined>(undefined);
 
@@ -12,33 +11,47 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Cập nhật trạng thái like của bài viết
-  const updatePostLikeStatus = (postId: number, liked: boolean, likeCount: number) => {
-    setPosts(prevPosts =>
-      prevPosts.map(post =>
-        post.id === postId
-          ? { ...post, likedByCurrentUser: liked, likeCount }
-          : post
-      )
-    );
-  };
+  const updatePostLikeStatus = (id: number, isLiked: boolean, likeCount: number) => {
+  setPosts(prevPosts =>
+    prevPosts.map(post => ({
+      ...post, // ép copy hết để đổi reference
+      ...(post.id === id ? { isLiked, likeCount } : {})
+    }))
+  );
+};
+
 
   // Cập nhật trạng thái save của bài viết
-  const updatePostSaveStatus = (postId: number, saved: boolean) => {
+  const updatePostSaveStatus = (id: number, isSaved: boolean) => {
     setPosts(prevPosts =>
       prevPosts.map(post =>
-        post.id === postId
-          ? { ...post, savedByCurrentUser: saved }
+        post.id === id
+          ? { ...post, isSaved: isSaved }
           : post
       )
     );
   };
 
   // Cập nhật số lượng bình luận của bài viết
-  const updatePostCommentCount = (postId: number, newCount: number) => {
+  const updatePostCommentCount = (id: number, newCount: number) => {
     setPosts(prevPosts =>
       prevPosts.map(post =>
-        post.id === postId
+        post.id === id
           ? { ...post, commentCount: newCount }
+          : post
+      )
+    );
+  };
+
+  // Cập nhật danh sách comment của 1 bài viết
+  const updatePostComments = (id: number) => {
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === id
+          ? {
+            ...post,
+            commentCount: post.commentCount + 1,
+          }
           : post
       )
     );
@@ -49,20 +62,23 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const refreshPosts = async () => {
     try {
       setIsLoading(true);
-      const [feed, saved] = await Promise.all([
-        getAllPosts(),
-        getAllPostsSaved()
-      ]);
 
-      const savedIds = new Set<number>(saved.map(s => s.post_id));
+      // 🟢 Gọi API lấy danh sách bài viết chính (đã test OK)
+      const feed = await getAllPosts();
+
+      // 🔸 Tạm thời chưa có API getAllPostsSaved — comment lại
+      const saved = await getAllPostsSaved();
+      const savedIds = new Set<number>(saved.map(s => s.id));
+
+      // 🔹 Khi có API saved thì mở lại 2 dòng trên, và giữ code này:
       const updatedPosts = feed.map(p => ({
         ...p,
-        savedByCurrentUser: savedIds.has(p.id)
+        isSaved: savedIds.has(p.id)
       }));
 
       setPosts(updatedPosts);
-      // Giả lập loading chỉnh time hiện
-      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
     } catch (err) {
       console.error('Lỗi khi làm mới danh sách post:', err);
@@ -78,7 +94,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <PostContext.Provider
-      value={{ posts, setPosts, isLoading, refreshPosts, updatePostLikeStatus, updatePostSaveStatus, updatePostCommentCount }}
+      value={{ posts, setPosts, isLoading, refreshPosts, updatePostLikeStatus, updatePostSaveStatus, updatePostCommentCount, /*, updatePostComments*/ }}
     >
       {children}
     </PostContext.Provider>

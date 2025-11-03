@@ -1,6 +1,8 @@
 - Suggested các acc người dùng drug (search)
-- UI Profile
 - UI noti
 - Followed / Unfollowed
-- ui settings
-- click vô router tới /name
+- tách api get profile người dùng ra làm 3 phần
++ phần thông tin
++ phần danh sách ngườgi fl
++ phần post
+ 

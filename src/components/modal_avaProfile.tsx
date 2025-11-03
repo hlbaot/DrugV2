@@ -3,12 +3,12 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
 
-type Props = {
+type ModalAva = {
   open: boolean;
   onClose: () => void;
 };
 
-export const ModalAva = ({ open, onClose }: Props) => {
+export const ModalAva = ({ open, onClose }: ModalAva) => {
   return (
     <Modal
       aria-labelledby="change-profile-title"

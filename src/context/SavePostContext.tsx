@@ -18,18 +18,18 @@ export const SavePostProvider = ({ children }: { children: React.ReactNode }) =>
   };
 
   const updateSavedStatus = (
-    postId: number,
-    saved: boolean,
+    id: number,
+    isSaved: boolean,
     newSavedPostData?: SavedPostType
   ) => {
     setSavedPosts(prev => {
-      const exists = prev.some(item => item.post_id === postId);
+      const exists = prev.some(item => item.id === id);
 
-      if (saved) {
+      if (isSaved) {
         if (exists) {
           return prev.map(item =>
-            item.post_id === postId
-              ? { ...item, savedByCurrentUser: true }
+            item.id === id
+              ? { ...item, isSaved: true }
               : item
           );
         }
@@ -39,8 +39,8 @@ export const SavePostProvider = ({ children }: { children: React.ReactNode }) =>
         return prev;
       }
 
-      if (!saved && exists) {
-        return prev.filter(item => item.post_id !== postId);
+      if (!isSaved && exists) {
+        return prev.filter(item => item.id !== id);
       }
 
       return prev;

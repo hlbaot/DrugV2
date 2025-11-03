@@ -8,9 +8,7 @@ export const uploadSingleImage = async (file: File): Promise<string> => {
   formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
   const res = await axios.post(CLOUDINARY_UPLOAD_URL, formData);
-
   if (!res.data?.secure_url) throw new Error('Upload failed');
-
   return res.data.secure_url;
 };
 

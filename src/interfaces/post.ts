@@ -1,11 +1,19 @@
+export interface CommentRequest {
+  content: string;
+  postId: number;
+}
+
 export interface CommentType {
   id: number;
   content: string;
-  images: string[];
   user: {
+    id: number;
     username: string;
-    avatar_url: string | null;
   };
+}
+
+export interface CommentResponse {
+  comments: CommentType[];
 }
 
 export interface PostType {
@@ -14,15 +22,15 @@ export interface PostType {
   images: string[];
   createdAt: string;
   user: {
-    user_id: number,
+    id: number,
     username: string;
-    avatar_url: string | null;
+    avatarUrl: string | null;
   };
-  comments: CommentType[];
+  //comments: CommentType[];
   commentCount: number;
   likeCount: number;
-  likedByCurrentUser: boolean;
-  savedByCurrentUser: boolean;
+  isLiked: boolean;  
+  isSaved: boolean;
 }
 
 export interface PostContextType {
@@ -33,10 +41,11 @@ export interface PostContextType {
   updatePostLikeStatus: (postId: number, liked: boolean, likeCount: number) => void;
   updatePostSaveStatus: (postId: number, saved: boolean) => void;
   updatePostCommentCount: (postId: number, newCount: number) => void;
+  //updatePostComments: (postId: number, newComment: CommentType) => void;
 }
 
 export interface CreatePostRequest {
-  content: string;
+  caption: string;
   imageUrls: string[];
   // isPublic?: boolean; 
 }

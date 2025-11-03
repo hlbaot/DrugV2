@@ -1,45 +1,70 @@
-export interface UserPreview {
+// Một người trong danh sách follower hoặc following
+export interface FollowItem {
+  id: number;
   username: string;
-  avatarUrl: string | null;
+  avatar: string;
   isFollowing: boolean;
 }
 
+// Danh sách những người mình đang theo dõi (following)
+export interface ListFollowing {
+  followings: FollowItem[];
+}
+
+// Danh sách những người đang theo dõi mình (followers)
+export interface ListFollowers {
+  followers: FollowItem[];
+}
+
+// Bài viết trong profile
 export interface UserPost {
   id: number;
   caption: string;
   images: string[];
   likeCount: number;
   commentCount: number;
-  createdAt: string;
 }
 
-export interface UserProfile {
-  id: number; 
-  username: string;
-  avatarUrl: string | null;
-  bioText: string | null;
-  followersCount: number;
-  followingsCount: number;
-  postsCount: number;
-  isFollowing: boolean;
-  followerPreview: UserPreview[];
-  followingPreview: UserPreview[];
+// Gói post cho API trả về dạng { posts: [...] }
+export interface Postprofile {
   posts: UserPost[];
 }
 
+// Thông tin profile người dùng
+export interface UserProfile {
+  id: number;
+  email: string;
+  username: string;
+  avatarUrl: string;
+  bioText: string;
+  followerCount: number;
+  followingCount: number;
+  postCount: number;
+}
+
+// Interface cho ProfileContext
 export interface ProfileContextType {
-  // Profile của chính mình (user đang đăng nhập)
   myProfile: UserProfile | null;
   setMyProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
 
-  // Profile của người đang được xem (theo /[username])
   viewedProfile: UserProfile | null;
   setViewedProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
 
-  // API gọi lại dữ liệu
+  myPosts: UserPost[];
+  setMyPosts: React.Dispatch<React.SetStateAction<UserPost[]>>;
+
+  viewedPosts: UserPost[] | null;
+  setViewedPosts: React.Dispatch<React.SetStateAction<UserPost[]>>;
+
+  followers: FollowItem[];
+  setFollowers: React.Dispatch<React.SetStateAction<FollowItem[]>>;
+
+  following: FollowItem[];
+  setFollowing: React.Dispatch<React.SetStateAction<FollowItem[]>>;
+
   refreshMyProfile: () => Promise<void>;
   refreshViewedProfile: (username: string) => Promise<void>;
-
-  // Cập nhật số lượng like/comment của bài post
   updatePostCounts: (postId: number, likeCount: number, commentCount: number) => void;
+  updateProfile: (data: any) => Promise<void>;
 }
+

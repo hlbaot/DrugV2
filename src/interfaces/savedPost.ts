@@ -1,17 +1,23 @@
-import { PostType } from "./post";
 export interface SavedPostType {
-  // user_id: number
-  post_id: number
-  posts: PostType & { savedByCurrentUser: boolean }
+  id: number;
+  images: string | string[]; 
+  caption: string;
+  isSaved: boolean;
   user: {
-    username: string
-    avatar_url: string | null
-  }
+    id: number;
+    username: string;
+    avatarUrl: string | null;
+  };
+}
+
+
+export interface SavedPostResponse {
+  posts: SavedPostType[];
 }
 
 export interface SavePostContextType {
   savedPosts: SavedPostType[];
   setSavedPosts: React.Dispatch<React.SetStateAction<SavedPostType[]>>;
   refreshSavedPosts: () => Promise<void>;
-  updateSavedStatus: (postId: number, saved: boolean, newSavedPostData?: SavedPostType) => void;
+  updateSavedStatus: (id: number, isSaved: boolean, newSavedPostData?: SavedPostType) => void;
 }

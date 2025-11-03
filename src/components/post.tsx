@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-// import { useCommentSocket } from '../socket/comment'
-// import { Comment } from '../socket/comment'
+import { useCommentSocket } from '../socket/comment'
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import IconHeart from './icon_heart'
@@ -12,19 +11,20 @@ import { useProfile } from '@/src/context/ProfileContext';
 import { ThreeDotModal } from './modal_post'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
-import { likePost, unlikePost } from '@/src/api/API_likePost'
-import { savePost, unSavePost } from '@/src/api/API_savePost';
+import { stateLike } from '@/src/api/API_likePost'
+import { stateSave } from '@/src/api/API_savePost'
+import { getCommentsPostId } from '@/src/api/API_getPost'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
+import { CommentType } from '../interfaces/post'
 
 function Post({ postId }: { postId: number }) {
   const [showAllComments, setShowAllComments] = useState(false)
-  const [newComments, setNewComments] = useState<string[]>([])
-  const [commentText, setCommentText] = useState('')
+  const [commentText, setCommentText] = useState<string>('')
+  const [comments, setComments] = useState<CommentType[]>([])
   const router = useRouter();
-  const [userId, setUserId] = useState<string | null>(null)
-
+  const [userId, setUserId] = useState<string>()
   const { posts, setPosts, updatePostLikeStatus, updatePostSaveStatus } = usePostContext();
   const { updateSavedStatus } = useSavePostContext();
   const { updatePostCounts } = useProfile();
@@ -36,81 +36,97 @@ function Post({ postId }: { postId: number }) {
     caption,
     images,
     user,
-    comments,
     commentCount,
     likeCount,
-    likedByCurrentUser,
-    savedByCurrentUser
+    isLiked,
+    isSaved
   } = post;
 
+  // ✅ Fetch comments từ API khi load post
   useEffect(() => {
-    const id = sessionStorage.getItem('userId') || localStorage.getItem('userId')
-    setUserId(id)
-  }, [])
-
-  const isOwner = userId === post.user.user_id.toString();
-
-  const handleToggleLike = async () => {
-    const nextLiked = !likedByCurrentUser;
-    const newLikeCount = nextLiked ? likeCount + 1 : likeCount - 1;
-    // liked / unliked
-    if (nextLiked) {
-      await likePost(id);
-    } else {
-      await unlikePost(id);
-    }
-
-    // Cập nhật lại context
-    updatePostLikeStatus(id, nextLiked, newLikeCount);
-    // Cập nhật số lượng like trong profile của người dùng
-    updatePostCounts(id, newLikeCount, commentCount);
-  };
-
-  const handleToggleSave = async () => {
-    const nextSaved = !savedByCurrentUser;
-    try {
-      if (nextSaved) {
-        await savePost(id);
-      } else {
-        await unSavePost(id);
+    const fetchComments = async () => {
+      try {
+        const data = await getCommentsPostId(id);
+        setComments(data);
+      } catch (err) {
+        console.error('Lỗi khi lấy danh sách comment:', err);
       }
+    };
+    fetchComments();
+  }, [id]);
 
-      // Cập nhật ngay trong PostContext để UI đổi màu
-      updatePostSaveStatus(id, nextSaved);
-      // Cập nhật SavePostContext để list “Saved Posts” cũng đồng bộ
-      updateSavedStatus(id, nextSaved);
+  // kiểm tra nếu là chủ bài viết thì có quyền xoá
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        setUserId(parsed.id?.toString() || '');
+      } catch (err) {
+        console.error('Lỗi khi parse user từ localStorage:', err);
+      }
+    }
+  }, []);
+
+  const isOwner = userId === post.user.id.toString();
+
+  // ✅ Xử lý like
+  const handleToggleLike = async () => {
+    try {
+      const optimisticLiked = !isLiked;
+      const optimisticCount = likeCount + (optimisticLiked ? 1 : -1);
+      updatePostLikeStatus(id, optimisticLiked, optimisticCount);
+
+      const data = await stateLike(id);
+      const { likeCount: serverCount, isLiked: serverLiked } = data;
+      updatePostLikeStatus(id, serverLiked, serverCount);
+      updatePostCounts(id, serverCount, commentCount);
     } catch (error) {
-      console.error("Lỗi khi lưu/huỷ lưu bài viết:", error);
+      console.log(error);
+      updatePostLikeStatus(id, isLiked, likeCount);
     }
   };
 
-  const handleInfo = () => router.push(`/${user.username}`)
+  // ✅ Xử lý save
+  const handleToggleSave = async () => {
+    try {
+      const optimisticSaved = !isSaved;
+      updatePostSaveStatus(id, optimisticSaved);
 
-  // const { sendComment } = useCommentSocket(post.postId, (comment) => {
-  //   setNewComments((prev) => [...prev, comment.content])
-  // })
+      const data = await stateSave(id);
+      const { isSaved: serverSaved } = data;
+      updatePostSaveStatus(id, serverSaved);
+      updateSavedStatus(id, serverSaved);
+    } catch (error) {
+      console.log(error);
+      updatePostSaveStatus(id, isSaved);
+    }
+  };
 
+  const handleInfo = () => router.push(`/${user.username}`);
 
-  // const handleSendComment = () => {
-  //   if (commentText.trim() && userId) {
-  //     sendComment({
-  //       content: commentText,
-  //       authorId: userId,
-  //       postId: post.postId,
-  //     })
-  //     setCommentText('')
-  //   }
-  // }
+  // ✅ Socket comment (thêm comment mới vào danh sách)
+  const { sendComment } = useCommentSocket(post.id, (comment) => {
+    setComments((prev) => [...prev, comment]); // thêm comment mới từ socket
+  });
+
+  const handleSendComment = () => {
+    if (!commentText.trim()) return;
+    sendComment({
+      postId: post.id,
+      content: commentText,
+    });
+    setCommentText("");
+  };
 
   return (
-    <div className="w-full mx-auto my-4 p-4 border rounded-lg bg-white shadow
-  max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl">
+    <div className="w-full mx-auto my-4 p-4 border rounded-lg bg-white shadow max-w-3xl">
 
       {/* Header */}
       <div className="w-full flex items-center mb-3 justify-between">
         <div className="left flex items-center space-x-4">
           <Image
-            src={user.avatar_url ?? "/avatar_default.jpg"}
+            src={user.avatarUrl || "/avatar_default.jpg"}
             alt="avatar"
             width={40}
             height={40}
@@ -118,14 +134,15 @@ function Post({ postId }: { postId: number }) {
             priority
             onClick={handleInfo}
           />
-
           <span onClick={handleInfo} className="font-semibold cursor-pointer">{user.username}</span>
-
         </div>
+
         <ThreeDotModal
           showDelete={isOwner}
           onDelete={() => setPosts(posts.filter((p) => p.id !== id))}
-          postId={id}
+          onToggleSave={handleToggleSave}
+          isSaved={isSaved}
+          id={id}
         />
       </div>
 
@@ -142,130 +159,90 @@ function Post({ postId }: { postId: number }) {
         >
           {images.map((img, idx) => (
             <SwiperSlide key={idx}>
-              <div
-                className="relative bg-white w-full mx-auto overflow-hidden rounded-md"
-                style={{
-                  aspectRatio: '4/5',
-                  maxHeight: '500px'
-                }}
-              >
-                <Image
-                  src={img}
-                  alt={`slide-${idx}`}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
-                />
+              <div className="relative bg-white w-full mx-auto overflow-hidden rounded-md" style={{ aspectRatio: '4/5', maxHeight: '500px' }}>
+                <Image src={img} alt={`slide-${idx}`} fill className="object-contain" />
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
-
-
-        <style jsx>{`
-    :global(.swiper-button-prev),
-    :global(.swiper-button-next) {
-      color: white;
-      width: 18px;
-      height: 18px;
-      font-size: 14px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 9999px;
-      display: ${images.length > 1 ? 'flex' : 'none'};
-      align-items: center;
-      justify-content: center;
-    }
-
-    :global(.swiper-pagination-bullet) {
-      background: rgba(255, 255, 255, 0.4);
-    }
-
-    :global(.swiper-pagination-bullet-active) {
-      background: white;
-    }
-  `}</style>
       </div>
-
 
       {/* Like + Comment icons */}
       <div className="react flex justify-between items-center space-x-4 mb-2 text-sm text-gray-600">
         <div className='flex w-auto gap-4'>
           <span className="flex items-center space-x-2">
-            <IconHeart
-              postId={id}
-              liked={likedByCurrentUser}
-              likeCount={likeCount}
-              onToggleLike={handleToggleLike}
-            />
-
-
+            <IconHeart postId={id} isLiked={isLiked} likeCount={likeCount} onToggleLike={handleToggleLike} />
             <span>{likeCount} likes</span>
           </span>
 
           <span className="flex items-center space-x-1">
-            <svg xmlns="http://www.w3.org/2000/svg" className="size-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 20.25c4.97 0 9-3.694 9-8.25S16.97 3.75 12 3.75 3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.48 4.48 0 01-.923 1.785A5.97 5.97 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"
+              />
             </svg>
-            <span>{commentCount} comments</span>
 
+            <span>{comments.length} comments</span>
           </span>
         </div>
 
-        <IconSave postId={id} saved={savedByCurrentUser} onToggleSave={handleToggleSave} />
+        <IconSave postId={id} isSaved={isSaved} onToggleSave={handleToggleSave} />
       </div>
 
       <hr className="mb-4" />
 
-      {/* Bình luận */}
-      {/* <div className={`show-cmt text-sm mb-2 transition-all duration-300 ${showAllComments ? 'max-h-32 overflow-y-auto pr-1' : ''}`}>
-        {(showAllComments ? post.commentPreview : post.commentPreview.slice(0, 3)).map((cmt, i) => (
-          <div key={i} className="mb-1 leading-snug">
-            <span className="font-semibold">{post.username}</span> {cmt}
+      {/* Hiển thị comment */}
+      <div className={`text-sm mb-2 transition-all duration-300 ${showAllComments ? 'max-h-32 overflow-y-auto pr-1' : ''}`}>
+        {(showAllComments ? comments : comments.slice(0, 3)).map((cmt) => (
+          <div key={cmt.id} className="mb-1 leading-snug">
+            <span className="font-semibold">{cmt.user.username}</span> {cmt.content}
           </div>
         ))}
 
-        {newComments.map((cmt, i) => (
-          <div key={`new-${i}`} className="mb-1 leading-snug">
-            <span className="font-semibold">You</span> {cmt}
-          </div>
-        ))}
-
-        {post.commentPreview.length > 3 && (
-          <button
-            className="text-blue-500 text-xs mt-1"
-            onClick={() => setShowAllComments(!showAllComments)}
-          >
+        {comments.length > 3 && (
+          <button className="text-blue-500 text-xs mt-1" onClick={() => setShowAllComments(!showAllComments)}>
             {showAllComments ? 'Hide comments' : 'See all comments'}
           </button>
         )}
-      </div> */}
+      </div>
 
       <hr className="mb-2" />
 
-
+      {/* Ô nhập comment */}
       <div className="flex items-center gap-2">
         <input
           type="text"
-          placeholder="Add a comment..."
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
+          placeholder="Add a comment..."
           className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="size-6 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-        // onClick={handleSendComment}
+          className="size-6 cursor-pointer"
+          onClick={handleSendComment}
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+            d="M6 12L3.269 3.125A59.769 59.769 0 0121.485 12 59.768 59.768 0 013.27 20.875L6 12zm0 0h7.5"
           />
         </svg>
+
       </div>
     </div>
   )

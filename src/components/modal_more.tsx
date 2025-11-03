@@ -8,6 +8,7 @@ const ModalMore = () => {
 
     const handleLogout = () => {
         Cookies.remove('token');
+        localStorage.clear();
         router.push("/signin");
     }
 

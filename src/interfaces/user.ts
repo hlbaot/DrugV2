@@ -2,11 +2,11 @@ export interface User {
     id: number;
     email: string;
     username: string;
-    // roles: string[];
-    avatarUrl?: string | null;
-}
+    avatarUrl: string | null;
+} 
 
 export interface UserContextType {
   user: User | null;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
+  updateUser: (newData: Partial<User>) => void;
 }

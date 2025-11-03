@@ -8,7 +8,7 @@ import Header from '@/src/components/header';
 import { PostProvider } from '@/src/context/PostContext';
 import { SavePostProvider } from '@/src/context/SavePostContext';
 import { ProfileProvider } from '@/src/context/ProfileContext';
-// import { SocketProvider } from '@/context/SocketContext';
+//import { SocketProvider } from '@/src/context/SocketContext';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -49,19 +49,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 // import { PostProvider } from '@/src/context/PostContext';
 // import { SavePostProvider } from '@/src/context/SavePostContext';
 // import { ProfileProvider } from '@/src/context/ProfileContext';
+// import { SocketProvider } from '@/src/context/SocketContext';
 
 // export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 //   return (
 //     <ProfileProvider>
-//       <PostProvider>
-//         <SavePostProvider>
-//           <div className="flex flex-col min-h-screen">
-//             <Header />
-//             <Navbar />
-//             <main className="flex-1">{children}</main>
-//           </div>
-//         </SavePostProvider>
-//       </PostProvider>
+//       <SocketProvider>
+//         <PostProvider>
+//           <SavePostProvider>
+//             <div className="flex flex-col min-h-screen">
+//               <Header />
+//               <Navbar />
+//               <main className="flex-1">{children}</main>
+//             </div>
+//           </SavePostProvider>
+//         </PostProvider>
+//       </SocketProvider>
 //     </ProfileProvider>
 //   );
 // }

@@ -30,17 +30,18 @@ export default function SignIn() {
     validationSchema: SignInSchema,
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       setLoading(true);
+      // chỉnh lại để không reload mà user => null
       try {
         const data = await API_SignIn(values);
         if (data.token) {
-          const { token, id, avatar, username, email } = data;
-          const avatarUrl = avatar || "/avatar_default.jpg";
+          const { token, id, avatarUrl, username, email } = data;
+          const avatar = avatarUrl || "/avatar_default.jpg";
           //lưu thông tin user nào userContext
           setUser({
             id,
             email,
             username,
-            avatarUrl,
+            avatarUrl: avatar,
           });
           Cookies.set("token", token);
           router.push("/home");

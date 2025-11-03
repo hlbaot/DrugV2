@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { Modal } from '@mui/material';
 import { usePostContext } from '@/src/context/PostContext';
-import { CreatePost } from '@/src/api/API_postPosts';
+import { CreatePost } from '@/src/api/API_createPost';
 import { useRouter } from "next/navigation";
 import { uploadMultipleImages } from '@/src/feature/cloudinaryUpload';
 import { useProfile } from '@/src/context/ProfileContext';
@@ -15,16 +15,16 @@ interface CreateModalProps {
 
 export default function CreateModal({ open, onClose }: CreateModalProps) {
   const router = useRouter();
-  const [content, setContent] = useState('');
+  const [caption, setCaption] = useState('');
   const [files, setFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
   const [previewFiles, setPreviewFiles] = useState<{ url: string; file: File }[]>([]);
   const { refreshPosts } = usePostContext();
-  const { myProfile, setMyProfile } = useProfile();
+  const { myProfile, setMyProfile, setMyPosts } = useProfile();
 
   useEffect(() => {
     if (!open) {
-      setContent('');
+      setCaption('');
       setFiles(null);
       setPreviewFiles([]);
     }
@@ -39,7 +39,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
       const token = Cookies.get('token');
 
       const newPostFromApi = await CreatePost({
-        content,
+        caption,
         imageUrls,
         // userId: Number(userId),
       });
@@ -47,11 +47,13 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
       refreshPosts();
 
       if (myProfile && newPostFromApi) {
-        setMyProfile({
-          ...myProfile,
-          posts: [newPostFromApi, ...myProfile.posts],
-          postsCount: myProfile.postsCount + 1,
-        });
+        //  Tăng postCount của profile
+        setMyProfile(prev =>
+          prev ? { ...prev, postCount: (prev.postCount ?? 0) + 1 } : prev
+        );
+
+        //  Thêm bài mới vào danh sách bài viết
+        setMyPosts(prev => (prev ? [newPostFromApi, ...prev] : [newPostFromApi]));
       }
 
       router.push("/home");
@@ -107,8 +109,8 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
             className="w-full border-b p-2 resize-none placeholder-gray-400 outline-none mb-4"
             placeholder="Contents..."
             rows={3}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
           />
 
           {/* Upload Button */}
