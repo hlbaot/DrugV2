@@ -31,9 +31,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (user) {
       localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
+    } 
   }, [user]);
 
   //Hàm cập nhật 1 phần thông tin user (dùng khi update profile)

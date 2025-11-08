@@ -1,3 +1,5 @@
+import { PostType } from "./post";
+
 // Một người trong danh sách follower hoặc following
 export interface FollowItem {
   id: number;
@@ -17,17 +19,12 @@ export interface ListFollowers {
 }
 
 // Bài viết trong profile
-export interface UserPost {
+export interface UserPost extends Omit<Partial<PostType>, 'id'> {
   id: number;
   caption: string;
   images: string[];
   likeCount: number;
   commentCount: number;
-}
-
-// Gói post cho API trả về dạng { posts: [...] }
-export interface Postprofile {
-  posts: UserPost[];
 }
 
 // Thông tin profile người dùng
@@ -40,6 +37,7 @@ export interface UserProfile {
   followerCount: number;
   followingCount: number;
   postCount: number;
+  isFollowing?: boolean;
 }
 
 // Interface cho ProfileContext
@@ -62,9 +60,23 @@ export interface ProfileContextType {
   following: FollowItem[];
   setFollowing: React.Dispatch<React.SetStateAction<FollowItem[]>>;
 
+  /** Làm mới dữ liệu profile của chính mình */
   refreshMyProfile: () => Promise<void>;
+
+  /** Làm mới dữ liệu profile của người khác */
   refreshViewedProfile: (username: string) => Promise<void>;
+
+  /** Cập nhật likeCount / commentCount của bài viết */
   updatePostCounts: (postId: number, likeCount: number, commentCount: number) => void;
+
+  /** Cập nhật thông tin profile (bio, avatar, username, v.v.) */
   updateProfile: (data: any) => Promise<void>;
+
+  /** Theo dõi người dùng */
+  followUser: (userId: number) => Promise<void>;
+
+  /** Bỏ theo dõi người dùng */
+  unfollowUser: (userId: number) => Promise<void>;
 }
+
 

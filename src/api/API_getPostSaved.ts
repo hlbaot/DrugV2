@@ -5,7 +5,6 @@ import { SavedPostResponse, SavedPostType } from "../interfaces/savedPost";
 export const getAllPostsSaved = async (): Promise<SavedPostType[]> => {
     const token = Cookies.get('token');
     const res = await axios.get<SavedPostResponse>('http://10.243.200.17:5050/users/saved/all-posts', {
-        // withCredentials: true,
         headers: {
             Authorization: `Bearer ${token}`,
         },

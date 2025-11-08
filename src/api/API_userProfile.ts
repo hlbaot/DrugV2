@@ -1,6 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { UserProfile, ListFollowing, ListFollowers , Postprofile } from "../interfaces/userProfile";
+import { PostType } from "../interfaces/post";
+import { UserPost} from "../interfaces/userProfile";
+import { UserProfile, ListFollowing, ListFollowers  } from "../interfaces/userProfile";
 const token = Cookies.get('token');
 // get thông tin người dùng
 export const API_UserProfile = async (username: string): Promise<UserProfile> => {
@@ -11,26 +13,27 @@ export const API_UserProfile = async (username: string): Promise<UserProfile> =>
     });
     return res.data;
 };
-// get danh sách follower
 export const API_ListFollowers = async (username: string): Promise<ListFollowers> => {
-    const res = await axios.get(`http://10.243.200.17:5050/follow/${username}/follower`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-    return res.data.follower;
+  const res = await axios.get(`http://10.243.200.17:5050/follow/${username}/followers`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
 };
-// get danh sách following
+
 export const API_ListFollowing = async (username: string): Promise<ListFollowing> => {
-    const res = await axios.get(`http://10.243.200.17:5050/follow/${username}/following`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-    return res.data.following;
+  const res = await axios.get(`http://10.243.200.17:5050/follow/${username}/following`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
 };
-// get bài đăng của người dùng
-export const API_PostProfile = async (username: string): Promise<Postprofile> => {
+
+
+// bài đăng của người dùng
+export const API_PostProfile = async (username: string): Promise<UserPost[]> => {
     const res = await axios.get(`http://10.243.200.17:5050/users/profile/${username}`, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -38,10 +41,11 @@ export const API_PostProfile = async (username: string): Promise<Postprofile> =>
     });
     return res.data;
 };
-// cập nhật thông tin pròile người dùng
+
+// cập nhật thông tin profile người dùng
 export const API_updateProfile = async (data: any) => {
     const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/profile`,
+        `http://10.243.200.17:5050/users/profiles/edit`,
         data,
         {
             headers: {
@@ -51,3 +55,29 @@ export const API_updateProfile = async (data: any) => {
     );
     return res.data;
 }
+
+// follow / unfollow user
+export const API_Follow = async (id: number) => {
+    const res = await axios.post(
+        `http://10.243.200.17:5050/follow/${id}`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+    return res.data;
+};
+
+export const API_Unfollow = async (id: number) => {
+    const res = await axios.delete(
+        `http://10.243.200.17:5050/follow/${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+    return res.data;
+};

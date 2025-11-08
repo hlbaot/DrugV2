@@ -12,10 +12,6 @@ export interface CommentType {
   };
 }
 
-export interface CommentResponse {
-  comments: CommentType[];
-}
-
 export interface PostType {
   id: number;
   caption: string;
@@ -26,11 +22,11 @@ export interface PostType {
     username: string;
     avatarUrl: string | null;
   };
-  //comments: CommentType[];
   commentCount: number;
   likeCount: number;
   isLiked: boolean;  
   isSaved: boolean;
+  comments?: CommentType[];
 }
 
 export interface PostContextType {

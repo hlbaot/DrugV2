@@ -7,6 +7,8 @@ import {
   API_ListFollowing,
   API_PostProfile,
   API_updateProfile,
+  API_Follow,
+  API_Unfollow
 } from '@/src/api/API_userProfile';
 import { UserProfile, UserPost, ProfileContextType, FollowItem } from '@/src/interfaces/userProfile';
 import { useUser } from './UserContext';
@@ -36,9 +38,9 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       ]);
 
       setViewedProfile(profileData);
-      setViewedPosts(postData?.posts || []);
-      setFollowers(followersData?.followers || []);
-      setFollowing(followingData?.followings || []);
+      setViewedPosts(postData || []);
+      setFollowers(followersData.followers || []);
+      setFollowing(followingData.followings || []);
     } catch (error) {
       console.error('Lỗi khi lấy profile người khác:', error);
     }
@@ -56,7 +58,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       ]);
 
       setMyProfile(profileData);
-      setMyPosts(postData.posts || []);
+      setMyPosts(postData || []);
       setFollowers(followersData.followers || []);
       setFollowing(followingData.followings || []);
     } catch (error) {
@@ -84,6 +86,29 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
         post.id === id ? { ...post, likeCount, commentCount } : post
       ) : prev
     );
+  };
+
+  const followUser = async (userId: number) => {
+    try {
+      await API_Follow(userId);
+
+      // Cập nhật ngay counts và trạng thái
+      setMyProfile(prev => prev ? { ...prev, followingCount: prev.followingCount + 1 } : prev);
+      setViewedProfile(prev => prev ? { ...prev, followerCount: prev.followerCount + 1, isFollowing: true } : prev);
+    } catch (error) {
+      console.error('Follow thất bại', error);
+    }
+  };
+
+  const unfollowUser = async (userId: number) => {
+    try {
+      await API_Unfollow(userId);
+
+      setMyProfile(prev => prev ? { ...prev, followingCount: prev.followingCount - 1 } : prev);
+      setViewedProfile(prev => prev ? { ...prev, followerCount: prev.followerCount - 1, isFollowing: false } : prev);
+    } catch (error) {
+      console.error('Unfollow thất bại', error);
+    }
   };
 
   // Cập nhật thông tin profile
@@ -119,6 +144,8 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
         refreshViewedProfile,
         updatePostCounts,
         updateProfile,
+        followUser,
+        unfollowUser
       }}
     >
       {children}
