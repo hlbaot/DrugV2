@@ -47,7 +47,7 @@ export default function Profile() {
 
   if (!profile) return <ProfileSkeleton/>;
 
-  // 🆕 Khi click vào bài viết → fetch chi tiết
+  // Khi click vào bài viết → fetch chi tiết
   const handleOpenShowPost = async (id: number) => {
   try {
     // Gọi song song 2 API để nhanh hơn

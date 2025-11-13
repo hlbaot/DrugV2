@@ -2,9 +2,12 @@
 import React from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/navigation'
+import { useTheme } from "next-themes";
+
 
 const ModalMore = () => {
     const router = useRouter();
+  const { theme, setTheme } = useTheme();
 
     const handleLogout = () => {
         Cookies.remove('token');
@@ -16,6 +19,13 @@ const ModalMore = () => {
         <div
             className="absolute top-full mt-2 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden right-0 lg:left-0 lg:right-auto flex flex-col min-w-max"
         >
+            {/* theme dark/light */}
+            <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-2 rounded"
+            >
+                {theme === "dark" ? "🌙 Dark" : "☀️ Light"}
+            </button>
             {/* Nhóm Settings */}
             <button className="flex items-center w-full px-4 py-2 gap-2 text-base text-gray-700 hover:bg-gray-100 cursor-pointer">
                 <svg

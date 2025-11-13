@@ -1,10 +1,11 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { CommentType, PostType } from "@/src/interfaces/post";
+import { API } from "./api";
 
 const token = Cookies.get('token');
 export const getAllPosts = async (): Promise<PostType[]> => {
-    const res = await axios.get('http://10.243.200.17:5050/posts', {
+    const res = await axios.get(`${API}/posts`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -15,7 +16,7 @@ export const getAllPosts = async (): Promise<PostType[]> => {
 // lay comment theo postId
 export const getCommentsPostId = async (id: number): Promise<CommentType[]> => {
   const res = await axios.get(
-    `http://10.243.200.17:5050/comments/${id}`,
+    `${API}/comments/${id}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

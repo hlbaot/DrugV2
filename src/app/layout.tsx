@@ -1,4 +1,5 @@
 import '@/src/styles/global.css';
+import { ThemeProvider } from "./ThemeProvider";
 import { ToastContainer } from "react-toastify";
 import { UserProvider } from '@/src/context/UserContext';
 
@@ -18,8 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <UserProvider>
-          {children}
-          <ToastContainer position="top-right" />
+          <ThemeProvider>
+            {children}
+            <ToastContainer position="top-right" />
+          </ThemeProvider>
         </UserProvider>
       </body>
     </html>
