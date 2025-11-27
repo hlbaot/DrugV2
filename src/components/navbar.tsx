@@ -17,17 +17,29 @@ export default function Navbar() {
   if (!user) return null;
 
   const isActive = (nameRouter: string) =>
-    `menu-link p-2 rounded-[30px] flex items-center gap-4 ${active === nameRouter ? 'bg-rose-400 text-white' : ''
+    `menu-link p-2 rounded-[30px] flex items-center gap-4 
+   text-black dark:text-white                        
+   ${active === nameRouter ? 'bg-rose-400 text-white' :
+      'hover:bg-gray-100 dark:hover:bg-neutral-700'
     }`;
 
 
+
   return (
-    <div className="navbar fixed z-50 w-[4.5rem] lg:w-[18%] h-screen border-r border-gray-300 flex flex-col items-center py-6 gap-8 bg-white">
+    <div className="
+  navbar fixed z-50 w-[4.5rem] lg:w-[18%] h-screen 
+  border-r border-gray-300           
+  flex flex-col items-center py-6 gap-8 
+  bg-white                           
+  dark:border-neutral-700        
+  dark:bg-black
+">
+
       {/* Logo */}
       <img
         src="/logo.png"
         alt="logo"
-        className="hidden lg:block w-[10rem] h-auto mb-4"
+        className="hidden lg:block w-[10rem] h-auto mb-4 invert-0 dark:invert"
       />
 
       {/* Menu items */}
@@ -36,7 +48,7 @@ export default function Navbar() {
         <Link href="/home" className={isActive("home")}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke={active === "home" ? "white" : "currentColor"}
-            className="icon w-7 h-7">
+            className="icon w-7 h-7 stroke-black dark:stroke-white">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="m2.25 12 8.954-8.955c.44-.439 
               1.152-.439 1.591 0L21.75 12M4.5 
@@ -53,7 +65,7 @@ export default function Navbar() {
         <Link href="/message" className={isActive("message")}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke={active === "message" ? "white" : "currentColor"}
-            className="icon w-7 h-7">
+            className="icon w-7 h-7 stroke-black dark:stroke-white">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M2.25 12.76c0 1.6 1.123 2.994 
               2.707 3.227 1.068.157 2.148.279 
@@ -72,7 +84,7 @@ export default function Navbar() {
         <Link href="/save" className={isActive("save")}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
-            className="icon w-7 h-7">
+            className="icon w-7 h-7 stroke-black dark:stroke-white">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M17.593 3.322c1.1.128 
               1.907 1.077 1.907 2.185V21L12 17.25 
@@ -86,11 +98,15 @@ export default function Navbar() {
         {/* Create */}
         <div
           onClick={() => setmodalCreate(true)}
-          className="menu-link p-2 flex items-center gap-4 cursor-pointer"
+          className="
+ menu-link p-2 flex items-center gap-4 cursor-pointer
+ text-black dark:text-white                // 👈 thêm
+ hover:bg-gray-100 dark:hover:bg-neutral-700  
+"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
-            className="icon w-7 h-7">
+            className="icon w-7 h-7 stroke-black dark:stroke-white">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M12 9v6m3-3H9m12 0a9 9 0 
               1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -113,7 +129,7 @@ export default function Navbar() {
         <div className="noti menu-link p-2 flex items-center gap-4 cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
-            className="icon w-7 h-7">
+            className="icon w-7 h-7 stroke-black dark:stroke-white">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M14.857 17.082a23.848 23.848 0 0 0 
               5.454-1.31A8.967 8.967 0 0 1 
@@ -127,10 +143,15 @@ export default function Navbar() {
         </div>
 
         {/* More */}
-        <div className="more relative menu-link p-2 flex items-center gap-4 cursor-pointer" onClick={() => setModalMore(prev => !prev)}>
+        <div className="
+ more relative menu-link p-2 flex items-center gap-4 cursor-pointer
+ text-black dark:text-white                     // 👈 thêm
+ hover:bg-gray-100 dark:hover:bg-neutral-700   // 👈 thêm
+"
+          onClick={() => setModalMore(prev => !prev)}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
-            className="icon w-7 h-7">
+            className="icon w-7 h-7 stroke-black dark:stroke-white">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M3.75 5.25h16.5m-16.5 
               4.5h16.5m-16.5 4.5h16.5m-16.5 

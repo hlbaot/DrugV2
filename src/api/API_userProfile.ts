@@ -1,8 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { API } from "./api";
-import { UserPost} from "../interfaces/userProfile";
-import { UserProfile, ListFollowing, ListFollowers  } from "../interfaces/userProfile";
+import { UserPost } from "../interfaces/userProfile";
+import { UserProfile, ListFollowing, ListFollowers } from "../interfaces/userProfile";
 const token = Cookies.get('token');
 // get thông tin người dùng
 export const API_UserProfile = async (username: string): Promise<UserProfile> => {
@@ -13,22 +13,23 @@ export const API_UserProfile = async (username: string): Promise<UserProfile> =>
     });
     return res.data;
 };
+// danh sách người theo dõi và đang theo dõi
 export const API_ListFollowers = async (username: string): Promise<ListFollowers> => {
-  const res = await axios.get(`${API}/follow/${username}/followers`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+    const res = await axios.get(`${API}/follow/${username}/followers`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return res.data;
 };
 
 export const API_ListFollowing = async (username: string): Promise<ListFollowing> => {
-  const res = await axios.get(`${API}/follow/${username}/following`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+    const res = await axios.get(`${API}/follow/${username}/following`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return res.data;
 };
 
 
@@ -81,3 +82,17 @@ export const API_Unfollow = async (id: number) => {
     );
     return res.data;
 };
+
+// edit profile
+export const API_EditProfile = async (data: any) => {
+    const res = await axios.put(
+        `${API}/users/profiles/edit`,
+        data,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+    return res.data;
+}

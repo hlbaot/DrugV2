@@ -109,7 +109,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          bgcolor: '#fff',
+          bgcolor: 'white',
           borderRadius: 3,
           boxShadow: 24,
           width: hasImages ? '80%' : '45%',
@@ -118,18 +118,31 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
           flexDirection: hasImages ? 'row' : 'column',
           overflow: 'hidden',
           maxHeight: '90vh',
+          // DARK MODE
+          '&.MuiBox-root': {
+            backgroundColor: 'white',
+          },
+          '@media (prefers-color-scheme: dark)': {
+            '&.MuiBox-root': {
+              backgroundColor: '#0f0f0f',
+            },
+          },
         }}
+        className="bg-white dark:bg-neutral-900 text-black dark:text-white"
       >
-        {/* LEFT: Hình ảnh */}
+        {/* LEFT: Image */}
         {hasImages && (
           <Box
             sx={{
               flex: 1,
-              backgroundColor: '#000',
+              backgroundColor: '#fff',
+              '@media (prefers-color-scheme: dark)': {
+                backgroundColor: '#000',
+              },
+              minHeight: '100%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minHeight: '100%',
               overflow: 'hidden',
             }}
           >
@@ -149,12 +162,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
                   <img
                     src={img}
                     alt={`post-${idx}`}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain',
-                      backgroundColor: '#000',
-                    }}
+                    className="w-full h-full object-contain bg-black"
                   />
                 </SwiperSlide>
               ))}
@@ -162,35 +170,31 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
           </Box>
         )}
 
-        {/* RIGHT: Caption + Comment */}
+        {/* RIGHT SECTION */}
         <Box
           sx={{
             width: hasImages ? 380 : '100%',
             display: 'flex',
             flexDirection: 'column',
             borderLeft: hasImages ? '1px solid #ddd' : 'none',
-            bgcolor: '#fff',
+            '@media (prefers-color-scheme: dark)': {
+              borderColor: '#333',
+            },
           }}
+          className="bg-white dark:bg-neutral-900 text-black dark:text-white"
         >
           {/* Header */}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              p: 2,
-            }}
-          >
-            {/* Avatar + username */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box className="flex items-center justify-between p-2">
+            <Box className="flex items-center gap-2">
               <Avatar
                 src={post.user.avatarUrl || '/avatar_default.jpg'}
                 sx={{ width: 40, height: 40 }}
               />
-              <Typography fontWeight={600}>{post.user.username}</Typography>
+              <Typography className="font-semibold text-black dark:text-white">
+                {post.user.username}
+              </Typography>
             </Box>
 
-            {/* Save icon */}
             <IconSave
               postId={post.id}
               isSaved={post.isSaved}
@@ -198,85 +202,61 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
             />
           </Box>
 
-          <Divider />
+          <Divider className="bg-gray-200 dark:bg-neutral-700" />
 
           {/* Caption */}
-          <Box sx={{ p: 2 }}>
-            <Typography variant="body1" sx={{ mb: 1 }}>
+          <Box className="p-2">
+            <Typography className="text-black dark:text-white">
               {post.caption}
             </Typography>
           </Box>
 
-          {/* Comments */}
+          {/* COMMENTS */}
           <Box
-            sx={{
-              flex: 1,
-              overflowY: 'auto',
-              px: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 1,
-            }}
+            className="flex-1 overflow-y-auto px-2 flex flex-col gap-1"
           >
             {(showAllComments ? comments : comments.slice(0, 3)).map((cmt) => (
-              <Box key={cmt.id}>
-                <Typography variant="body2">
-                  <b>{cmt.user.username}</b> {cmt.content}
-                </Typography>
-              </Box>
+              <Typography key={cmt.id} className="text-black dark:text-gray-200">
+                <b>{cmt.user.username}</b> {cmt.content}
+              </Typography>
             ))}
 
             {comments.length > 3 && (
               <Typography
-                variant="body2"
-                color="primary"
-                sx={{ cursor: 'pointer', fontSize: 13 }}
                 onClick={() => setShowAllComments(!showAllComments)}
+                className="cursor-pointer text-blue-600 dark:text-blue-400 text-sm"
               >
                 {showAllComments ? 'Hide comments' : 'See all comments'}
               </Typography>
             )}
           </Box>
 
-          <Divider />
+          <Divider className="bg-gray-200 dark:bg-neutral-700" />
 
-          {/* Like + Comment icons */}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              px: 2,
-              py: 1,
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {/* Like + Comment */}
+          <Box className="flex items-center justify-between px-2 py-1">
+            <Box className="flex items-center gap-3">
               <IconHeart
                 postId={post.id}
                 isLiked={post.isLiked}
                 likeCount={post.likeCount}
                 onToggleLike={handleToggleLike}
               />
-              <IconButton size="small">
-                <ChatBubbleOutlineIcon />
+
+              <IconButton>
+                <ChatBubbleOutlineIcon className="text-black dark:text-white" />
               </IconButton>
             </Box>
-
           </Box>
 
           {/* Like count */}
-          <Typography variant="body2" sx={{ px: 2, mb: 1 }}>
+          <Typography className="px-2 mb-1 text-black dark:text-white">
             <b>{post.likeCount}</b> likes
           </Typography>
 
-          {/* Comment input */}
+          {/* INPUT comment */}
           <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              p: 2,
-              borderTop: '1px solid #eee',
-            }}
+            className="flex items-center p-2 border-t border-gray-200 dark:border-neutral-700"
           >
             <TextField
               placeholder="Add a comment..."
@@ -285,11 +265,18 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
-              InputProps={{ disableUnderline: true }}
+              InputProps={{
+                disableUnderline: true,
+                style: {
+                  color: 'white',
+                },
+              }}
+              className="text-black dark:text-white"
             />
           </Box>
         </Box>
       </Box>
     </Modal>
+
   );
 };

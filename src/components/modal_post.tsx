@@ -19,27 +19,12 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 250,
-  bgcolor: 'background.paper',
   borderRadius: '16px',
   boxShadow: 24,
   p: 0,
   display: 'flex',
   flexDirection: 'column',
   overflow: 'hidden',
-};
-
-const buttonStyle = {
-  py: 2,
-  textAlign: 'center' as const,
-  cursor: 'pointer',
-  fontWeight: 500,
-  fontSize: '16px',
-  '&:not(:last-child)': {
-    borderBottom: '1px solid black',
-  },
-  '&:hover': {
-    backgroundColor: '#e0e0e0',
-  },
 };
 
 export const ThreeDotModal = ({
@@ -75,7 +60,7 @@ export const ThreeDotModal = ({
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="size-6"
+          className="size-6 stroke-black dark:stroke-white"
         >
           <path
             strokeLinecap="round"
@@ -86,29 +71,41 @@ export const ThreeDotModal = ({
       </button>
 
       {/* Modal */}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box sx={style}>
+      <Modal open={open} onClose={handleClose}>
+        <Box
+          sx={style}
+          className="bg-white dark:bg-neutral-900 text-black dark:text-white"
+        >
           {showDelete && (
             <Typography
-              sx={{ ...buttonStyle, color: 'red' }}
+              className="
+                py-3 text-center font-semibold text-red-500
+                border-b border-gray-300 dark:border-neutral-700
+                hover:bg-gray-200 dark:hover:bg-neutral-700
+              "
               onClick={handleDelete}
             >
               Delete
             </Typography>
           )}
 
-          <Typography sx={{ ...buttonStyle, color: 'blue' }}>
+          <Typography
+            className="
+              py-3 text-center text-blue-500 dark:text-blue-400
+              border-b border-gray-300 dark:border-neutral-700
+              hover:bg-gray-200 dark:hover:bg-neutral-700
+            "
+          >
             Follow
           </Typography>
 
-          {/* ✅ Nếu isSaved = true thì hiển thị “Unsave” */}
           <Typography
-            sx={{ ...buttonStyle, color: '#FFCC33' }}
+            className="
+              py-3 text-center font-medium
+              text-yellow-500 dark:text-yellow-400
+              border-b border-gray-300 dark:border-neutral-700
+              hover:bg-gray-200 dark:hover:bg-neutral-700
+            "
             onClick={() => {
               onToggleSave();
               handleClose();
@@ -117,7 +114,13 @@ export const ThreeDotModal = ({
             {isSaved ? 'Unsave' : 'Save'}
           </Typography>
 
-          <Typography sx={buttonStyle} onClick={handleClose}>
+          <Typography
+            className="
+              py-3 text-center font-medium cursor-pointer
+              hover:bg-gray-200 dark:hover:bg-neutral-700
+            "
+            onClick={handleClose}
+          >
             Cancel
           </Typography>
         </Box>

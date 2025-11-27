@@ -11,19 +11,6 @@ import { ProfileProvider } from '@/src/context/ProfileContext';
 import { SocketProvider } from '@/src/context/SocketContext';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  // const router = useRouter();
-  // const [authChecked, setAuthChecked] = useState(false);
-
-  // useEffect(() => {
-  //   const token = Cookies.get('token');
-  //   if (!token) {
-  //     router.push('/signin');
-  //   } else {
-  //     setAuthChecked(true);
-  //   }
-  // }, []);
-
-  // if (!authChecked) return null;
 
   return (
     <>
@@ -31,7 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <SocketProvider>
           < PostProvider >
             <SavePostProvider>
-              <div className="flex flex-col min-h-screen">
+              <div className="flex flex-col min-h-screen bg-white dark:bg-black">
                 <Header />
                 <Navbar />
                 <main className="flex-1">{children}</main>

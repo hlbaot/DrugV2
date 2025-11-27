@@ -25,7 +25,7 @@ function Post({ postId }: { postId: number }) {
   const [comments, setComments] = useState<CommentType[]>([])
   const router = useRouter();
   const [userId, setUserId] = useState<string>()
-  const { posts, setPosts, updatePostLikeStatus, updatePostSaveStatus } = usePostContext();
+  const { posts, setPosts, updatePostLikeStatus, updatePostSaveStatus, updatePostComments } = usePostContext();
   const { updateSavedStatus } = useSavePostContext();
   const { updatePostCounts } = useProfile();
   const post = posts.find((p) => p.id === postId);
@@ -107,8 +107,9 @@ function Post({ postId }: { postId: number }) {
 
   // ✅ Socket comment (thêm comment mới vào danh sách)
   const { sendComment } = useCommentSocket(post.id, (comment) => {
-    setComments((prev) => [...prev, comment]); // thêm comment mới từ socket
+    setComments((prev) => [...prev, comment]);
   });
+
 
   const handleSendComment = () => {
     if (!commentText.trim()) return;
@@ -120,7 +121,13 @@ function Post({ postId }: { postId: number }) {
   };
 
   return (
-    <div className="w-full mx-auto my-4 p-4 border rounded-lg bg-white shadow max-w-3xl">
+    <div className="
+  w-full mx-auto my-4 p-4 rounded-lg shadow max-w-3xl
+  
+  bg-white dark:bg-black
+  text-black dark:text-white                   
+">
+
 
       {/* Header */}
       <div className="w-full flex items-center mb-3 justify-between">
@@ -134,7 +141,8 @@ function Post({ postId }: { postId: number }) {
             priority
             onClick={handleInfo}
           />
-          <span onClick={handleInfo} className="font-semibold cursor-pointer">{user.username}</span>
+          <span onClick={handleInfo} className="font-semibold cursor-pointer text-black dark:text-white"
+          >{user.username}</span>
         </div>
 
         <ThreeDotModal
@@ -147,7 +155,7 @@ function Post({ postId }: { postId: number }) {
       </div>
 
       {/* caption */}
-      <span className="block mb-2">{caption}</span>
+      <span className="block mb-2 text-black dark:text-white">{caption}</span>
 
       {/* Slider hình ảnh */}
       <div className="mb-3 rounded-lg overflow-hidden relative">
@@ -159,7 +167,7 @@ function Post({ postId }: { postId: number }) {
         >
           {images.map((img, idx) => (
             <SwiperSlide key={idx}>
-              <div className="relative bg-white w-full mx-auto overflow-hidden rounded-md" style={{ aspectRatio: '4/5', maxHeight: '500px' }}>
+              <div className="relative bg-white dark:bg-neutral-900 w-full mx-auto overflow-hidden rounded-md" style={{ aspectRatio: '4/5', maxHeight: '500px' }}>
                 <Image src={img} alt={`slide-${idx}`} fill className="object-contain" />
               </div>
             </SwiperSlide>
@@ -168,10 +176,19 @@ function Post({ postId }: { postId: number }) {
       </div>
 
       {/* Like + Comment icons */}
-      <div className="react flex justify-between items-center space-x-4 mb-2 text-sm text-gray-600">
+      <div className="
+ react flex justify-between items-center space-x-4 mb-2 text-sm
+ text-gray-600 dark:text-gray-300    
+"
+      >
         <div className='flex w-auto gap-4'>
           <span className="flex items-center space-x-2">
-            <IconHeart postId={id} isLiked={isLiked} likeCount={likeCount} onToggleLike={handleToggleLike} />
+            <IconHeart
+              postId={id}
+              isLiked={isLiked}
+              // likeCount={likeCount}
+              onToggleLike={handleToggleLike}
+            />
             <span>{likeCount} likes</span>
           </span>
 
@@ -203,13 +220,14 @@ function Post({ postId }: { postId: number }) {
       {/* Hiển thị comment */}
       <div className={`text-sm mb-2 transition-all duration-300 ${showAllComments ? 'max-h-32 overflow-y-auto pr-1' : ''}`}>
         {(showAllComments ? comments : comments.slice(0, 3)).map((cmt) => (
-          <div key={cmt.id} className="mb-1 leading-snug">
-            <span className="font-semibold">{cmt.user.username}</span> {cmt.content}
+          <div key={cmt.id} className="mb-1 leading-snug text-black dark:text-white">
+            <span className="font-semibold text-black dark:text-white">{cmt.user.username}</span> {cmt.content}
           </div>
         ))}
 
         {comments.length > 3 && (
-          <button className="text-blue-500 text-xs mt-1" onClick={() => setShowAllComments(!showAllComments)}>
+          <button className="text-blue-500 dark:text-blue-400 text-xs mt-1 hover:text-blue-700 dark:hover:text-blue-300"
+            onClick={() => setShowAllComments(!showAllComments)}>
             {showAllComments ? 'Hide comments' : 'See all comments'}
           </button>
         )}
@@ -225,7 +243,14 @@ function Post({ postId }: { postId: number }) {
           onChange={(e) => setCommentText(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
           placeholder="Add a comment..."
-          className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm"
+          className="
+  w-full border rounded-full px-4 py-2 text-sm
+  border-gray-300 dark:border-neutral-700      
+  bg-white dark:bg-neutral-800               
+  text-black dark:text-white        
+  placeholder-gray-500 dark:placeholder-gray-400  
+"
+
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -233,7 +258,7 @@ function Post({ postId }: { postId: number }) {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="size-6 cursor-pointer"
+          className="size-6 cursor-pointer stroke-black dark:stroke-white"
           onClick={handleSendComment}
         >
           <path

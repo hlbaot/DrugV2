@@ -45,33 +45,45 @@ const Card = styled.div`
   width: 100%;
   max-width: 42rem;
   border: 1px solid #e5e7eb;
-  background: #fff;
+  background: #ffffff;
   border-radius: 12px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 
+  /* 🟣 DARK MODE SUPPORT */
+  .dark & {
+    background: #111111;           /* nền card dark */
+    border-color: #333333;         /* border dark */
+  }
+
+  /* HEADER */
   .head {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
+
   .left {
     display: flex;
     align-items: center;
     gap: 10px;
   }
+
+  /* ELEMENTS */
   .avatar {
     width: 40px;
     height: 40px;
     border-radius: 9999px;
   }
+
   .name {
     width: 140px;
     height: 14px;
     border-radius: 6px;
   }
+
   .dot {
     width: 28px;
     height: 28px;
@@ -101,12 +113,14 @@ const Card = styled.div`
     display: flex;
     gap: 8px;
   }
+
   .btn {
     width: 60px;
     height: 28px;
     border-radius: 8px;
   }
 
+  /* 💫 SKELETON ANIMATION FOR LIGHT MODE */
   .skeleton {
     background-image: linear-gradient(
       90deg,
@@ -119,9 +133,21 @@ const Card = styled.div`
     animation: shimmer 1.4s infinite linear;
   }
 
+  /* 💫 DARK MODE SKELETON */
+  .dark & .skeleton {
+    background-image: linear-gradient(
+      90deg,
+      #2a2a2a 0px,
+      #3a3a3a 40px,
+      #2a2a2a 80px
+    );
+  }
+
+  /* SHIMMER EFFECT */
   @keyframes shimmer {
     to {
       background-position: -100% 0;
     }
   }
 `;
+

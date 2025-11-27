@@ -33,15 +33,20 @@ export default function PostSaved({ savedPost }: PostSavedProps) {
 
   const imageList =
     typeof images === 'string'
-      ? images
-        ? [images]
-        : []
+      ? images ? [images] : []
       : images ?? [];
 
   const firstImage = imageList[0];
 
   return (
-    <div className="flex h-full flex-col bg-white border border-gray-200 rounded-md shadow-sm max-w-sm">
+    <div className="
+      flex h-full flex-col 
+      bg-white dark:bg-neutral-900 
+      border border-gray-200 dark:border-neutral-700
+      rounded-md shadow-sm 
+      text-black dark:text-white
+      max-w-sm
+    ">
 
       {/* Header */}
       <div className="w-full px-4 py-2 flex items-center justify-between">
@@ -51,11 +56,15 @@ export default function PostSaved({ savedPost }: PostSavedProps) {
             alt={user.username}
             className="w-8 h-8 rounded-full object-cover"
           />
-          <span className="font-semibold text-sm">{user.username}</span>
+          <span className="font-semibold text-sm text-black dark:text-white">
+            {user.username}
+          </span>
         </div>
+
         <IconSave postId={id} isSaved={isSaved} onToggleSave={handleToggleSave} />
       </div>
 
+      {/* Image or caption fallback */}
       {firstImage ? (
         <div className="w-full">
           <img
@@ -65,7 +74,7 @@ export default function PostSaved({ savedPost }: PostSavedProps) {
           />
         </div>
       ) : (
-        <div className="px-4 pb-2 text-gray-800 text-sm italic">
+        <div className="px-4 pb-2 text-gray-800 dark:text-gray-300 text-sm italic">
           {caption || 'Không có nội dung'}
         </div>
       )}

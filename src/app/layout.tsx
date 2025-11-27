@@ -5,19 +5,13 @@ import { UserProvider } from '@/src/context/UserContext';
 
 export const metadata = {
   title: 'DrugConnectionV2',
-  icons: {
-    icon: '/logo.png',
-  },
+  icons: { icon: '/logo.png' },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body suppressHydrationWarning={true}>
+    <html lang="en" suppressHydrationWarning>
+      <body>
         <UserProvider>
           <ThemeProvider>
             {children}

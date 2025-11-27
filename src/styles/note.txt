@@ -1,8 +1,6 @@
 - Suggested các acc người dùng drug (search)
 - UI noti
 - Followed / Unfollowed
-- tách api get profile người dùng ra làm 3 phần
-+ phần thông tin
-+ phần danh sách ngườgi fl
-+ phần post
- 
+- be fix lưu bài post
+- fe fix ui like bài
+- thêm cmt cho detail post

@@ -67,10 +67,21 @@ const Wrapper = styled.div`
     border-radius: 8px;
   }
 
+  /* Light mode skeleton */
   .skeleton {
     background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
     background-size: 200% 100%;
     animation: shimmer 1.2s ease-in-out infinite;
+  }
+
+  /* Dark mode override */
+  :global(html.dark) .skeleton {
+    background: linear-gradient(
+      90deg,
+      #2a2a2a 25%,
+      #3a3a3a 50%,
+      #2a2a2a 75%
+    );
   }
 
   @keyframes shimmer {

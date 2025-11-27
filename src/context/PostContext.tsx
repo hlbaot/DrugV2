@@ -11,14 +11,16 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Cập nhật trạng thái like của bài viết
-  const updatePostLikeStatus = (id: number, isLiked: boolean, likeCount: number) => {
-  setPosts(prevPosts =>
-    prevPosts.map(post => ({
-      ...post, // ép copy hết để đổi reference
-      ...(post.id === id ? { isLiked, likeCount } : {})
-    }))
-  );
-};
+  const updatePostLikeStatus = (id :number, isLiked: boolean, likeCount: number ) => {
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === id
+          ? { ...post, isLiked, likeCount }
+          : post
+      )
+    );
+  };
+
 
 
   // Cập nhật trạng thái save của bài viết
@@ -94,7 +96,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <PostContext.Provider
-      value={{ posts, setPosts, isLoading, refreshPosts, updatePostLikeStatus, updatePostSaveStatus, updatePostCommentCount, /*, updatePostComments*/ }}
+      value={{ posts, setPosts, isLoading, refreshPosts, updatePostLikeStatus, updatePostSaveStatus, updatePostCommentCount,  updatePostComments }}
     >
       {children}
     </PostContext.Provider>

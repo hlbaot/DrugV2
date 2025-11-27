@@ -37,11 +37,17 @@ export interface PostContextType {
   updatePostLikeStatus: (postId: number, liked: boolean, likeCount: number) => void;
   updatePostSaveStatus: (postId: number, saved: boolean) => void;
   updatePostCommentCount: (postId: number, newCount: number) => void;
-  //updatePostComments: (postId: number, newComment: CommentType) => void;
+  updatePostComments: (postId: number, newComment: CommentType) => void;
 }
 
 export interface CreatePostRequest {
   caption: string;
   imageUrls: string[];
   // isPublic?: boolean; 
+}
+
+export interface UpdateProfileRequest {
+  avatar?: File | null;     
+  username?: string;         
+  bio?: string;              
 }

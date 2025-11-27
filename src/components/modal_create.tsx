@@ -15,13 +15,15 @@ interface CreateModalProps {
 
 export default function CreateModal({ open, onClose }: CreateModalProps) {
   const router = useRouter();
-  const [caption, setCaption] = useState('');
-  const [files, setFiles] = useState<FileList | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [previewFiles, setPreviewFiles] = useState<{ url: string; file: File }[]>([]);
   const { refreshPosts } = usePostContext();
   const { myProfile, setMyProfile, setMyPosts } = useProfile();
 
+  const [caption, setCaption] = useState('');
+  const [files, setFiles] = useState<FileList | null>(null);
+  const [previewFiles, setPreviewFiles] = useState<{ url: string; file: File }[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Reset form khi modal đóng
   useEffect(() => {
     if (!open) {
       setCaption('');
@@ -30,85 +32,93 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
     }
   }, [open]);
 
+  // Handle submit
   const handleSubmit = async () => {
     try {
       setLoading(true);
+
       const imageUrls = await uploadMultipleImages(files);
 
-      const userId = Cookies.get('userId');
-      const token = Cookies.get('token');
+      const newPostFromApi = await CreatePost({ caption, imageUrls });
 
-      const newPostFromApi = await CreatePost({
-        caption,
-        imageUrls,
-        // userId: Number(userId),
-      });
-      // Cập nhật lại danh sách bài viết ngay sau khi post
-      refreshPosts();
+      refreshPosts(); // reload bài viết ngay
 
+      // update lại state profile
       if (myProfile && newPostFromApi) {
-        //  Tăng postCount của profile
         setMyProfile(prev =>
           prev ? { ...prev, postCount: (prev.postCount ?? 0) + 1 } : prev
         );
 
-        //  Thêm bài mới vào danh sách bài viết
         setMyPosts(prev => (prev ? [newPostFromApi, ...prev] : [newPostFromApi]));
       }
 
       router.push("/home");
+
       Swal.fire({
         title: 'Post created!',
         icon: 'success',
         text: 'Your post has been successfully published.',
         timer: 2500,
         showConfirmButton: false,
-        didOpen: () => {
-          const container = document.querySelector('.swal2-container') as HTMLElement;
-          if (container) container.style.zIndex = '9999';
-        },
       });
 
       onClose();
     } catch (err) {
       console.error('🔴 Post error:', err);
+
       Swal.fire({
         title: 'Failed to post!',
         icon: 'error',
         text: 'Something went wrong. Please try again.',
         showConfirmButton: true,
-        didOpen: () => {
-          const container = document.querySelector('.swal2-container') as HTMLElement;
-          if (container) container.style.zIndex = '9999';
-        },
       });
     } finally {
       setLoading(false);
     }
-
   };
 
+  // kiểm tra disabled
+  const isDisabled = caption.trim() === '' && previewFiles.length === 0;
 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-        <div className="relative w-[90%] max-w-md bg-white rounded-2xl p-6 shadow-lg">
+      <div className="
+        fixed inset-0 z-50 flex items-center justify-center 
+        bg-black/30 dark:bg-black/60
+      ">
+        <div className="
+          relative w-[90%] max-w-md p-6 rounded-2xl shadow-lg
+          bg-white dark:bg-neutral-900
+          text-black dark:text-white
+        ">
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+            className="
+              absolute top-3 right-3 text-xl
+              text-gray-500 hover:text-black 
+              dark:text-gray-300 dark:hover:text-white
+            "
           >
             ✕
           </button>
 
-          {/* Header */}
-          <h2 className="text-xl font-bold text-center mb-4">Create new post</h2>
+          {/* Title */}
+          <h2 className="text-xl font-bold text-center mb-4">
+            Create new post
+          </h2>
 
-          {/* Content Input */}
+          {/* Caption Input */}
           <textarea
-            className="w-full border-b p-2 resize-none placeholder-gray-400 outline-none mb-4"
-            placeholder="Contents..."
+            className="
+              w-full border-b p-2 mb-4 resize-none outline-none
+              placeholder-gray-400
+              bg-white dark:bg-neutral-900
+              border-gray-300 dark:border-gray-600
+              text-black dark:text-white
+            "
             rows={3}
+            placeholder="Contents..."
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
           />
@@ -116,10 +126,17 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
           {/* Upload Button */}
           <label
             htmlFor="file-upload"
-            className="block border border-dashed border-gray-400 rounded-md p-4 text-center cursor-pointer mb-4"
+            className="
+              block border border-dashed rounded-md p-4 mb-4 text-center cursor-pointer
+              bg-white dark:bg-neutral-800
+              border-gray-400 dark:border-gray-600
+              text-black dark:text-white
+              hover:bg-gray-100 dark:hover:bg-neutral-700
+            "
           >
             Choose file upload
           </label>
+
           <input
             id="file-upload"
             type="file"
@@ -128,40 +145,39 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
             accept="image/*"
             onChange={(e) => {
               if (!e.target.files) return;
+
               const newFiles = Array.from(e.target.files);
-              // Merge với file cũ
               const prevFiles = files ? Array.from(files) : [];
               const allFiles = [...prevFiles, ...newFiles];
 
-              // Tạo FileList mới
               const dt = new DataTransfer();
               allFiles.forEach(f => dt.items.add(f));
               setFiles(dt.files);
 
-              // Tạo preview mới
-              const newPreviews = newFiles.map(file => ({
+              const newPreview = newFiles.map(file => ({
                 file,
                 url: URL.createObjectURL(file),
               }));
-              setPreviewFiles(prev => [...prev, ...newPreviews]);
+
+              setPreviewFiles(prev => [...prev, ...newPreview]);
             }}
           />
 
-
-          {/* Image Previews */}
+          {/* Image Preview */}
           {previewFiles.length > 0 && (
             <div className="overflow-x-auto mb-4">
               <div className="flex gap-2 w-max px-2">
                 {previewFiles.map((item, index) => (
                   <div
                     key={index}
-                    className="relative flex-shrink-0 w-20 h-20 rounded overflow-hidden"
+                    className="relative w-20 h-20 rounded overflow-hidden flex-shrink-0"
                   >
                     <img
                       src={item.url}
-                      alt={`preview-${index}`}
+                      alt=""
                       className="w-full h-full object-cover"
                     />
+
                     <button
                       type="button"
                       onClick={() => {
@@ -170,10 +186,14 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
                         setPreviewFiles(updated);
 
                         const dt = new DataTransfer();
-                        updated.forEach((item) => dt.items.add(item.file));
+                        updated.forEach(f => dt.items.add(f.file));
                         setFiles(dt.files);
                       }}
-                      className="absolute -top-1 -right-1 bg-black text-white text-xs w-5 h-5 rounded-full flex items-center justify-center"
+                      className="
+                        absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center
+                        text-xs bg-black text-white
+                        dark:bg-white dark:text-black
+                      "
                     >
                       ✕
                     </button>
@@ -186,8 +206,17 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
           {/* Submit Button */}
           <button
             onClick={handleSubmit}
-            disabled={loading}
-            className="w-full border rounded-full py-2 hover:bg-gray-100 transition"
+            disabled={loading || isDisabled}
+            className={`
+              w-full border rounded-full py-2 transition
+              bg-white dark:bg-neutral-800
+              border-gray-300 dark:border-neutral-600
+              text-black dark:text-white
+
+              ${isDisabled
+                ? "opacity-40 cursor-not-allowed"
+                : "hover:bg-gray-100 dark:hover:bg-neutral-700"}
+            `}
           >
             {loading ? 'Uploading...' : 'Submit'}
           </button>
