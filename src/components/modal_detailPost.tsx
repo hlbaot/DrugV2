@@ -35,7 +35,10 @@ interface ModalShowPostProps {
 export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
   if (!post) return null;
 
-  const { updatePostLikeStatus, updatePostSaveStatus } = usePostContext();
+  const { posts, updatePostLikeStatus, updatePostSaveStatus } = usePostContext();
+
+  // Lấy post từ context để có data đã cập nhật (likeCount, isLiked, isSaved)
+  const currentPost = posts.find((p) => p.id === post.id) || post;
   const { updateSavedStatus } = useSavePostContext();
   const { updatePostCounts } = useProfile();
 
@@ -71,8 +74,8 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
   // ✅ Like
   const handleToggleLike = async () => {
     try {
-      const optimisticLiked = !post.isLiked;
-      const optimisticCount = post.likeCount + (optimisticLiked ? 1 : -1);
+      const optimisticLiked = !currentPost.isLiked;
+      const optimisticCount = currentPost.likeCount + (optimisticLiked ? 1 : -1);
       updatePostLikeStatus(post.id, optimisticLiked, optimisticCount);
 
       const data = await stateLike(post.id);
@@ -81,14 +84,14 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
       updatePostCounts(post.id, serverCount, post.commentCount);
     } catch (error) {
       console.error(error);
-      updatePostLikeStatus(post.id, post.isLiked, post.likeCount);
+      updatePostLikeStatus(post.id, currentPost.isLiked, currentPost.likeCount);
     }
   };
 
   // ✅ Save
   const handleToggleSave = async () => {
     try {
-      const optimisticSaved = !post.isSaved;
+      const optimisticSaved = !currentPost.isSaved;
       updatePostSaveStatus(post.id, optimisticSaved);
 
       const data = await stateSave(post.id);
@@ -97,7 +100,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
       updateSavedStatus(post.id, serverSaved);
     } catch (error) {
       console.error(error);
-      updatePostSaveStatus(post.id, post.isSaved);
+      updatePostSaveStatus(post.id, currentPost.isSaved);
     }
   };
 
@@ -197,7 +200,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
 
             <IconSave
               postId={post.id}
-              isSaved={post.isSaved}
+              isSaved={currentPost.isSaved}
               onToggleSave={handleToggleSave}
             />
           </Box>
@@ -238,8 +241,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
             <Box className="flex items-center gap-3">
               <IconHeart
                 postId={post.id}
-                isLiked={post.isLiked}
-                likeCount={post.likeCount}
+                isLiked={currentPost.isLiked}
                 onToggleLike={handleToggleLike}
               />
 
@@ -251,7 +253,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
 
           {/* Like count */}
           <Typography className="px-2 mb-1 text-black dark:text-white">
-            <b>{post.likeCount}</b> likes
+            <b>{currentPost.likeCount}</b> likes
           </Typography>
 
           {/* INPUT comment */}
