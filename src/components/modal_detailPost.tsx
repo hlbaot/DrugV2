@@ -60,9 +60,15 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
     fetchComments();
   }, [post.id]);
 
-  // ✅ Socket comment realtime
-  const { sendComment } = useCommentSocket(post.id, (comment) => {
-    setComments((prev) => [...prev, comment]);
+  // ✅ Socket comment realtime - only subscribe when modal is open
+  const { sendComment } = useCommentSocket(open ? post.id : 0, (comment) => {
+    setComments((prev) => {
+      // Check for duplicates
+      if (prev.some((c) => c.id === comment.id)) {
+        return prev;
+      }
+      return [...prev, comment];
+    });
   });
 
   const handleSendComment = () => {
@@ -71,36 +77,61 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
     setCommentText('');
   };
 
+  // ✅ Local state để handle optimistic UI update ngay lập tức
+  const [isLike, setIsLike] = useState(currentPost.isLiked);
+  const [likeCount, setLikeCount] = useState(currentPost.likeCount);
+  const [isSaved, setIsSaved] = useState(currentPost.isSaved);
+
+  // Sync local state khi currentPost thay đổi từ Context (ví dụ: real-time update)
+  useEffect(() => {
+    setIsLike(currentPost.isLiked);
+    setLikeCount(currentPost.likeCount);
+    setIsSaved(currentPost.isSaved);
+  }, [currentPost.isLiked, currentPost.likeCount, currentPost.isSaved]);
+
   // ✅ Like
   const handleToggleLike = async () => {
     try {
-      const optimisticLiked = !currentPost.isLiked;
-      const optimisticCount = currentPost.likeCount + (optimisticLiked ? 1 : -1);
-      updatePostLikeStatus(post.id, optimisticLiked, optimisticCount);
-
       const data = await stateLike(post.id);
-      const { likeCount: serverCount, isLiked: serverLiked } = data;
+
+
+      // Validate API response and provide fallbacks
+      const serverLiked = data?.isLike !== undefined ? data.isLike : !isLike;
+      const serverCount = data?.likeCount !== undefined ? data.likeCount : (serverLiked ? likeCount + 1 : likeCount - 1);
+
+      // Update local state
+      setIsLike(serverLiked);
+      setLikeCount(serverCount);
+
+      // Update context
       updatePostLikeStatus(post.id, serverLiked, serverCount);
       updatePostCounts(post.id, serverCount, post.commentCount);
     } catch (error) {
       console.error(error);
-      updatePostLikeStatus(post.id, currentPost.isLiked, currentPost.likeCount);
     }
   };
 
   // ✅ Save
   const handleToggleSave = async () => {
     try {
-      const optimisticSaved = !currentPost.isSaved;
+      // 1. Optimistic update
+      const optimisticSaved = !isSaved;
+      setIsSaved(optimisticSaved);
+
       updatePostSaveStatus(post.id, optimisticSaved);
 
+      // 2. API Call
       const data = await stateSave(post.id);
       const { isSaved: serverSaved } = data;
+
+      // 3. Update with Server data
+      setIsSaved(serverSaved);
       updatePostSaveStatus(post.id, serverSaved);
       updateSavedStatus(post.id, serverSaved);
     } catch (error) {
       console.error(error);
-      updatePostSaveStatus(post.id, currentPost.isSaved);
+      setIsSaved(isSaved); // Revert
+      updatePostSaveStatus(post.id, isSaved);
     }
   };
 
@@ -200,7 +231,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
 
             <IconSave
               postId={post.id}
-              isSaved={currentPost.isSaved}
+              isSaved={isSaved}
               onToggleSave={handleToggleSave}
             />
           </Box>
@@ -241,7 +272,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
             <Box className="flex items-center gap-3">
               <IconHeart
                 postId={post.id}
-                isLiked={currentPost.isLiked}
+                isLiked={isLike}
                 onToggleLike={handleToggleLike}
               />
 
@@ -253,7 +284,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
 
           {/* Like count */}
           <Typography className="px-2 mb-1 text-black dark:text-white">
-            <b>{currentPost.likeCount}</b> likes
+            <b>{likeCount}</b> likes
           </Typography>
 
           {/* INPUT comment */}
@@ -266,7 +297,12 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
               fullWidth
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleSendComment();
+                }
+              }}
               InputProps={{
                 disableUnderline: true,
                 style: {

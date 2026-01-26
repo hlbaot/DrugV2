@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSocket } from "@/src/context/SocketContext";
 import { CommentType, CommentRequest } from "@/src/interfaces/post";
 
@@ -11,10 +11,16 @@ interface CommentSocketPayload {
 export const useCommentSocket = (postId: number, onNewComment: (c: CommentType) => void) => {
   const socket = useSocket();
 
+  const onNewCommentRef = useRef(onNewComment);
+
+  useEffect(() => {
+    onNewCommentRef.current = onNewComment;
+  }, [onNewComment]);
+
   useEffect(() => {
     if (!socket || !postId) return;
 
-    console.log("🔌 INIT SOCKET FOR POST:", postId);
+    console.log("INIT SOCKET FOR POST:", postId);
 
     // JOIN ROOM NGAY LẬP TỨC
     socket.emit("join-post-room", { postId });
@@ -22,15 +28,16 @@ export const useCommentSocket = (postId: number, onNewComment: (c: CommentType) 
 
     // NẾU SOCKET RECONNECT THÌ JOIN LẠI
     const handleConnect = () => {
-      console.log("🔥 RECONNECTED:", socket.id);
+      console.log("RECONNECTED:", socket.id);
       socket.emit("join-post-room", { postId });
     };
 
-    // nhận comment mới từ server 
+    // nhận comment mới từ server
     const handleNewComment = (data: CommentSocketPayload) => {
-      console.log("🟩 FE RECEIVED NEW COMMENT:", data);
-
-      if (data.postId === postId) onNewComment(data.comment);
+      if (data.postId === postId) {
+        console.log("FE RECEIVED NEW COMMENT (for " + postId + "):", data);
+        onNewCommentRef.current(data.comment);
+      }
     };
 
     socket.on("connect", handleConnect);
@@ -41,7 +48,7 @@ export const useCommentSocket = (postId: number, onNewComment: (c: CommentType) 
       socket.off("connect", handleConnect);
       socket.off("new-comment", handleNewComment);
     };
-  }, [postId]);
+  }, [postId, socket]);
 
 
 

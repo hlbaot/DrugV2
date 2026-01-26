@@ -1,6 +1,0 @@
-- Suggested các acc người dùng drug (search)
-- UI noti
-- Followed / Unfollowed
-- be fix lưu bài post
-- fe fix ui like bài
-- thêm cmt cho detail post

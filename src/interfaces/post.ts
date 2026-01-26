@@ -24,7 +24,7 @@ export interface PostType {
   };
   commentCount: number;
   likeCount: number;
-  isLiked: boolean;  
+  isLiked: boolean;
   isSaved: boolean;
   comments?: CommentType[];
 }
@@ -47,7 +47,7 @@ export interface CreatePostRequest {
 }
 
 export interface UpdateProfileRequest {
-  avatar?: File | null;     
-  username?: string;         
-  bio?: string;              
+  avatar?: File | null;
+  username?: string;
+  bio?: string;
 }

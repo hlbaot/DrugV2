@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 interface IconHeartProps {
   postId: number;
@@ -6,42 +7,44 @@ interface IconHeartProps {
   onToggleLike: () => void;
 }
 
-const IconHeart: React.FC<IconHeartProps> = ({
-  postId,
-  isLiked,
-  onToggleLike,
-}) => {
+const IconHeart: React.FC<IconHeartProps> = ({ isLiked, onToggleLike }) => {
   return (
-    <div className="flex items-center gap-1">
-      <button
-        onClick={onToggleLike}
-        aria-label={isLiked ? 'Unlike' : 'Like'}
-        style={{
-          background: 'none',
-          border: 'none',
-          padding: 0,
-          cursor: 'pointer',
-        }}
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          style={{
-            transition: 'fill 0.2s',
-          }}
-        >
-          <path
-            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
-                2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
-                C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5
-                c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-            fill={isLiked ? 'red' : 'gray'}
-          />
-        </svg>
-      </button>
-    </div>
+    <Wrapper>
+      <Button onClick={onToggleLike} aria-label={isLiked ? 'Unlike' : 'Like'}>
+        <HeartIcon viewBox="0 0 24 24" $active={isLiked}>
+          <path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Z" />
+        </HeartIcon>
+      </Button>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Button = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+`;
+
+const HeartIcon = styled.svg<{ $active?: boolean }>`
+  width: 24px;
+  height: 24px;
+  fill: ${({ $active }) => ($active ? 'rgb(255, 50, 50)' : 'gray')};
+  transition: fill 0.2s, transform 0.15s;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+`;
 
 export default IconHeart;

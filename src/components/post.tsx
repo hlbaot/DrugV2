@@ -19,7 +19,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import { CommentType } from '../interfaces/post'
 
-function Post({ postId }: { postId: number }) {
+export default function Post({ postId }: { postId: number }) {
   const [showAllComments, setShowAllComments] = useState(false)
   const [commentText, setCommentText] = useState<string>('')
   const [comments, setComments] = useState<CommentType[]>([])
@@ -70,24 +70,25 @@ function Post({ postId }: { postId: number }) {
 
   const isOwner = userId === post.user.id.toString();
 
-  // ✅ Xử lý like
+  // Xử lý like
   const handleToggleLike = async () => {
     try {
-      const optimisticLiked = !isLiked;
-      const optimisticCount = likeCount + (optimisticLiked ? 1 : -1);
-      updatePostLikeStatus(id, optimisticLiked, optimisticCount);
-
       const data = await stateLike(id);
-      const { likeCount: serverCount, isLiked: serverLiked } = data;
+      // console.log('Like API Response (full):', JSON.stringify(data, null, 2));
+
+      // Validate API response and provide fallbacks
+      // Server returns isLike, we map to isLiked
+      const serverLiked = data?.isLike !== undefined ? data.isLike : !isLiked;
+      const serverCount = data?.likeCount !== undefined ? data.likeCount : (serverLiked ? likeCount + 1 : likeCount - 1);
+
       updatePostLikeStatus(id, serverLiked, serverCount);
       updatePostCounts(id, serverCount, commentCount);
     } catch (error) {
-      console.log(error);
-      updatePostLikeStatus(id, isLiked, likeCount);
+      console.log('Like error:', error);
     }
   };
 
-  // ✅ Xử lý save
+  // Xử lý save
   const handleToggleSave = async () => {
     try {
       const optimisticSaved = !isSaved;
@@ -105,9 +106,12 @@ function Post({ postId }: { postId: number }) {
 
   const handleInfo = () => router.push(`/${user.username}`);
 
-  // ✅ Socket comment (thêm comment mới vào danh sách)
+  // Socket comment (thêm comment mới vào danh sách)
   const { sendComment } = useCommentSocket(post.id, (comment) => {
-    setComments((prev) => [...prev, comment]);
+    setComments((prev) => {
+      if (prev.some((c) => c.id === comment.id)) return prev;
+      return [...prev, comment];
+    });
   });
 
 
@@ -186,7 +190,6 @@ function Post({ postId }: { postId: number }) {
             <IconHeart
               postId={id}
               isLiked={isLiked}
-              // likeCount={likeCount}
               onToggleLike={handleToggleLike}
             />
             <span>{likeCount} likes</span>
@@ -236,12 +239,17 @@ function Post({ postId }: { postId: number }) {
       <hr className="mb-2" />
 
       {/* Ô nhập comment */}
-      <div className="flex items-center gap-2">
+      <form
+        className="flex items-center gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSendComment();
+        }}
+      >
         <input
           type="text"
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
           placeholder="Add a comment..."
           className="
   w-full border rounded-full px-4 py-2 text-sm
@@ -252,25 +260,23 @@ function Post({ postId }: { postId: number }) {
 "
 
         />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="size-6 cursor-pointer stroke-black dark:stroke-white"
-          onClick={handleSendComment}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 12L3.269 3.125A59.769 59.769 0 0121.485 12 59.768 59.768 0 013.27 20.875L6 12zm0 0h7.5"
-          />
-        </svg>
-
-      </div>
+        <button type="submit" className="bg-transparent border-none p-0">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6 cursor-pointer stroke-black dark:stroke-white"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 12L3.269 3.125A59.769 59.769 0 0121.485 12 59.768 59.768 0 013.27 20.875L6 12zm0 0h7.5"
+            />
+          </svg>
+        </button>
+      </form>
     </div>
   )
 }
-
-export default Post
