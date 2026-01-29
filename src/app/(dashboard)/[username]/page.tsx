@@ -1,6 +1,6 @@
 
 import React from 'react'
-import Profile from '@/src/pages/profile'
+import Profile from '@/src/pages/profilePage'
 
 function profile() {
   return (

@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from "react";
-import { useSocket } from "@/src/context/SocketContext";
+import { useSocketCmt } from "@/src/context/SocketCommentContext";
 import { CommentType, CommentRequest } from "@/src/interfaces/post";
 
 interface CommentSocketPayload {
@@ -9,7 +9,7 @@ interface CommentSocketPayload {
 }
 
 export const useCommentSocket = (postId: number, onNewComment: (c: CommentType) => void) => {
-  const socket = useSocket();
+  const socketCmt = useSocketCmt();
 
   const onNewCommentRef = useRef(onNewComment);
 
@@ -18,44 +18,44 @@ export const useCommentSocket = (postId: number, onNewComment: (c: CommentType) 
   }, [onNewComment]);
 
   useEffect(() => {
-    if (!socket || !postId) return;
+    if (!socketCmt || !postId) return;
 
-    console.log("INIT SOCKET FOR POST:", postId);
+    // console.log("INIT SOCKET FOR POST:", postId);
 
     // JOIN ROOM NGAY LẬP TỨC
-    socket.emit("join-post-room", { postId });
+    socketCmt.emit("join-post-room", { postId });
     // console.log("🏠 JOIN ROOM:", postId);
 
     // NẾU SOCKET RECONNECT THÌ JOIN LẠI
     const handleConnect = () => {
-      console.log("RECONNECTED:", socket.id);
-      socket.emit("join-post-room", { postId });
+      console.log("RECONNECTED:", socketCmt.id);
+      socketCmt.emit("join-post-room", { postId });
     };
 
     // nhận comment mới từ server
     const handleNewComment = (data: CommentSocketPayload) => {
       if (data.postId === postId) {
-        console.log("FE RECEIVED NEW COMMENT (for " + postId + "):", data);
+        // console.log("FE RECEIVED NEW COMMENT (for " + postId + "):", data);
         onNewCommentRef.current(data.comment);
       }
     };
 
-    socket.on("connect", handleConnect);
-    socket.on("new-comment", handleNewComment);
+    socketCmt.on("connect", handleConnect);
+    socketCmt.on("new-comment", handleNewComment);
 
     return () => {
-      socket.emit("leave-post-room", { postId });
-      socket.off("connect", handleConnect);
-      socket.off("new-comment", handleNewComment);
+      socketCmt.emit("leave-post-room", { postId });
+      socketCmt.off("connect", handleConnect);
+      socketCmt.off("new-comment", handleNewComment);
     };
-  }, [postId, socket]);
+  }, [postId, socketCmt]);
 
 
 
   // 3) Gửi comment lên sever
   const sendComment = (data: CommentRequest) => {
-    console.log("📤 SEND COMMENT:", data);
-    socket.emit("send-comment", data);
+    // console.log("📤 SEND COMMENT:", data);
+    socketCmt.emit("send-comment", data);
   };
 
   return { sendComment };

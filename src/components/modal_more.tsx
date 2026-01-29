@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/navigation'
 import { useTheme } from "next-themes";
 
-const ModalMore = () => {
+const ModalMore = ({ className }: { className?: string }) => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
 
@@ -16,15 +16,15 @@ const ModalMore = () => {
 
   return (
     <div
-      className="
-        absolute top-full mt-2 right-0 lg:left-0 lg:right-auto 
+      className={`
+        ${className || 'absolute bottom-full mb-2 left-0'}
         flex flex-col min-w-max rounded-xl overflow-hidden
         bg-white dark:bg-neutral-900
         text-black dark:text-white
         shadow-lg 
-        border border-gray-300 dark:border-neutral-700
+        border border-gray-300 dark:border-neutral-800
         ring-1 ring-black dark:ring-white ring-opacity-5 dark:ring-opacity-10
-      "
+      `}
     >
 
       {/* 🌙 Toggle Theme */}

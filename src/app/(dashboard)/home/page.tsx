@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import PostFeed from '@/src/pages/postFeed'
+import PostFeed from '@/src/pages/postFeedPage'
 import { RightHome } from '@/src/components/rightHome'
 export default function Page() {
 

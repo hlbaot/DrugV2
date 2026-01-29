@@ -1,6 +1,6 @@
 'use client';
 import React from 'react'
-import SavePostFeed from '@/src/pages/savePostFeed';
+import SavePostFeed from '@/src/pages/savePostFeedPage';
 
 function Save() {
     return (

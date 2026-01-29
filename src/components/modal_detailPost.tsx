@@ -305,9 +305,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
               }}
               InputProps={{
                 disableUnderline: true,
-                style: {
-                  color: 'white',
-                },
+                className: "text-black dark:text-white"
               }}
               className="text-black dark:text-white"
             />

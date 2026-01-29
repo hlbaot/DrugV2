@@ -3,8 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+@layer base {
+    body {
+        @apply bg-white dark:bg-black text-black dark:text-white;
+    }
 }

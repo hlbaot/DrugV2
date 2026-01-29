@@ -76,9 +76,8 @@ export default function Profile() {
       <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-12 w-full px-4">
         {/* Avatar */}
         <div
-          className={`relative flex justify-center sm:justify-start ${
-            isMyProfile ? 'group cursor-pointer' : ''
-          }`}
+          className={`relative flex justify-center sm:justify-start ${isMyProfile ? 'group cursor-pointer' : ''
+            }`}
           onClick={() => isMyProfile && setModalAva(true)}
         >
           <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full overflow-hidden shadow-md border border-gray-200">
@@ -134,10 +133,9 @@ export default function Profile() {
               <button
                 className={`
                   rounded-md px-3 py-1 text-sm font-medium transition
-                  ${
-                    profile.isFollowing
-                      ? 'bg-gray-300 text-black hover:bg-gray-400'
-                      : 'bg-[#ed4956] text-white hover:bg-[#d7444f]'
+                  ${profile.isFollowing
+                    ? 'bg-gray-300 text-black hover:bg-gray-400'
+                    : 'bg-[#ed4956] text-white hover:bg-[#d7444f]'
                   }
                 `}
                 onClick={() =>

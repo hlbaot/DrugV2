@@ -253,7 +253,7 @@ export default function Post({ postId }: { postId: number }) {
           placeholder="Add a comment..."
           className="
   w-full border rounded-full px-4 py-2 text-sm
-  border-gray-300 dark:border-neutral-700      
+  border-gray-300 dark:border-neutral-800      
   bg-white dark:bg-neutral-800               
   text-black dark:text-white        
   placeholder-gray-500 dark:placeholder-gray-400  

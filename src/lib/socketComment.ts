@@ -2,7 +2,7 @@ import { io } from 'socket.io-client';
 import Cookies from 'js-cookie';
 import { API } from '@/src/api/api';
 
-const socket = io(`${API}/comments`, {
+const socketComment = io(`${API}/comments`, {
   path: '/socket.io',
   transports: ['websocket'],
   auth: { token: Cookies.get('token') },
@@ -10,4 +10,4 @@ const socket = io(`${API}/comments`, {
 });
 
 
-export default socket;
+export default socketComment;

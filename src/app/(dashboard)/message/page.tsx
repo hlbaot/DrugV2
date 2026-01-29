@@ -1,9 +1,11 @@
+'use client';
 import React from 'react'
+import Message from '@/src/pages/messagePage';
 
-function message() {
+export default function Page() {
     return (
-        <div>message</div>
+        <div className=' w-[100%] h-full flex justify-center'>
+            <Message />
+        </div>
     )
 }
-
-export default message
