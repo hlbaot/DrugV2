@@ -1,8 +1,8 @@
 'use client'
 import { SavedPostType } from '@/src/interfaces/savedPost'
 import { stateSave } from '@/src/api/API_savePost';
-import { useSavePostContext } from '@/src/context/SavePostContext';
-import { usePostContext } from '@/src/context/PostContext';
+import { useSavePostContext } from '@/src/store/useSavePostStore';
+import { usePostContext } from '@/src/store/usePostStore';
 import IconSave from './icon_save';
 
 interface PostSavedProps {

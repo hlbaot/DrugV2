@@ -3,12 +3,15 @@ import Cookies from "js-cookie";
 import { API } from "./api";
 import { UserPost } from "../interfaces/userProfile";
 import { UserProfile, ListFollowing, ListFollowers } from "../interfaces/userProfile";
-const token = Cookies.get('token');
+
+// Hàm helper lấy token động
+const getToken = () => Cookies.get('token');
+
 // get thông tin người dùng
 export const API_UserProfile = async (username: string): Promise<UserProfile> => {
     const res = await axios.get(`${API}/users/profiles/${username}`, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
         },
     });
     return res.data;
@@ -17,7 +20,7 @@ export const API_UserProfile = async (username: string): Promise<UserProfile> =>
 export const API_ListFollowers = async (username: string): Promise<ListFollowers> => {
     const res = await axios.get(`${API}/follow/${username}/followers`, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
         },
     });
     return res.data;
@@ -26,7 +29,7 @@ export const API_ListFollowers = async (username: string): Promise<ListFollowers
 export const API_ListFollowing = async (username: string): Promise<ListFollowing> => {
     const res = await axios.get(`${API}/follow/${username}/following`, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
         },
     });
     return res.data;
@@ -37,7 +40,7 @@ export const API_ListFollowing = async (username: string): Promise<ListFollowing
 export const API_PostProfile = async (username: string): Promise<UserPost[]> => {
     const res = await axios.get(`${API}/users/profile/${username}`, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
         },
     });
     return res.data;
@@ -50,7 +53,7 @@ export const API_updateProfile = async (data: any) => {
         data,
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${getToken()}`,
             },
         }
     );
@@ -64,7 +67,7 @@ export const API_Follow = async (id: number) => {
         {},
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${getToken()}`,
             },
         }
     );
@@ -76,7 +79,7 @@ export const API_Unfollow = async (id: number) => {
         `${API}/follow/${id}`,
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${getToken()}`,
             },
         }
     );
@@ -90,7 +93,7 @@ export const API_EditProfile = async (data: any) => {
         data,
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${getToken()}`,
             },
         }
     );

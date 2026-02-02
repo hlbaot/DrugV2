@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useSavePostContext } from '@/src/context/SavePostContext';
+import { useState } from 'react';
+import PostSkeleton from '@/public/skeletonPost';
+import { useSavedPosts } from '@/src/hooks/queries/usePosts';
 import PostSaved from '../components/postSaved';
 import { ModalShowPost } from '../components/modal_detailPost';
 import { PostType } from '@/src/interfaces/post';
@@ -8,13 +9,10 @@ import { API_detailPost } from '@/src/api/API_detailPost';
 import { getCommentsPostId } from '@/src/api/API_getPost';
 
 export default function SavePostFeed() {
-  const { savedPosts, refreshSavedPosts } = useSavePostContext();
+  // Sử dụng TanStack Query hook lấy danh sách bài viết đã lưu
+  const { data: savedPosts = [], isLoading } = useSavedPosts();
   const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    refreshSavedPosts();
-  }, []);
 
   const handleOpenPost = async (id: number) => {
     try {
@@ -29,8 +27,16 @@ export default function SavePostFeed() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center mx-auto mt-16 sm:mt-12 w-full px-2 max-w-md sm:max-w-lg md:max-w-lg lg:max-w-xl xl:max-w-xl 2xl:max-w-2xl">
+        <PostSkeleton mediaHeight={360} />
+      </div>
+    );
+  }
+
   return (
-    <div className="pl-[4.5rem] lg:pl-[20%]">
+    <div className="flex flex-col items-center mx-auto mt-16 sm:mt-12 w-full px-2 max-w-md sm:max-w-lg md:max-w-lg lg:max-w-xl xl:max-w-xl 2xl:max-w-2xl">
       <div
         className="
         grid w-full px-2 gap-3

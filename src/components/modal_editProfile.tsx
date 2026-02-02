@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { useProfile } from '../context/ProfileContext';
+import { useProfile } from '@/src/store/useProfileStore';
 import {
   Box,
   Button,

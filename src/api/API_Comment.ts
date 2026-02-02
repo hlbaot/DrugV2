@@ -1,9 +1,9 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { API } from "./api";
-import { CommentType } from "../interfaces/post";   
+import { CommentType } from "../interfaces/post";
 
-const token = Cookies.get('token');
+const getToken = () => Cookies.get('token');
 
 export const API_addComment = async (postId: number, content: string): Promise<CommentType> => {
     const res = await axios.post<CommentType>(
@@ -14,7 +14,7 @@ export const API_addComment = async (postId: number, content: string): Promise<C
         },
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${getToken()}`,
             },
         }
     );

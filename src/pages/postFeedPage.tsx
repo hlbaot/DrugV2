@@ -1,7 +1,7 @@
 'use client';
 import Post from '../components/post';
 import { PostType } from '@/src/interfaces/post';
-import { usePostContext } from '@/src/context/PostContext';
+import { usePostsFeed } from '@/src/hooks/queries/usePosts';
 import PostSkeleton from '@/public/skeletonPost';
 
 const sortPostsByTime = (posts: PostType[]) =>
@@ -10,7 +10,7 @@ const sortPostsByTime = (posts: PostType[]) =>
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
 export default function PostFeed() {
-  const { posts, isLoading } = usePostContext();
+  const { data: posts, isLoading } = usePostsFeed();
 
   if (isLoading) {
     return (
@@ -20,7 +20,7 @@ export default function PostFeed() {
     );
   }
 
-  const sorted = sortPostsByTime(posts);
+  const sorted = posts ? sortPostsByTime(posts) : [];
 
   return (
     <div className="flex flex-col items-center mx-auto mt-16 sm:mt-12 w-full px-2 max-w-md sm:max-w-lg md:max-w-lg lg:max-w-xl xl:max-w-xl 2xl:max-w-2xl">

@@ -1,9 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { useUser } from '@/src/context/UserContext';
+import { useUser } from '@/src/store/useUserStore';
 import Image from 'next/image';
-import { useProfile } from '@/src/context/ProfileContext';
+import { useFullProfile, profileKeys } from '@/src/hooks/queries/useProfile';
+import { useFollowUser, useUnfollowUser } from '@/src/hooks/mutations/useProfileMutations';
 import IconGearModal from '@/src/components/modal_gearProfile';
 import { ModalAva } from '../components/modal_avaProfile';
 import { ModalEdit } from '@/src/components/modal_editProfile';
@@ -24,31 +25,24 @@ export default function Profile() {
   const [openFollowers, setOpenFollowers] = useState(false);
   const [openFollowing, setOpenFollowing] = useState(false);
 
-  const {
-    myProfile,
-    myPosts,
-    viewedProfile,
-    viewedPosts,
-    refreshViewedProfile,
-    refreshMyProfile,
-    followUser,
-    unfollowUser,
-  } = useProfile();
-
   const { user } = useUser();
   const username = useParams<{ username: string }>()?.username;
   const isMyProfile = username === user?.username;
 
-  useEffect(() => {
-    if (!user) return;
-    if (isMyProfile) refreshMyProfile();
-    else if (username) refreshViewedProfile(username);
-  }, [user, username, isMyProfile]);
+  // TanStack Query hooks
+  const { profile, posts, isLoading } = useFullProfile(username);
+  const followMutation = useFollowUser();
+  const unfollowMutation = useUnfollowUser();
 
-  const profile = isMyProfile ? myProfile : viewedProfile;
-  const posts = isMyProfile ? myPosts : viewedPosts || [];
+  if (isLoading || !profile) return <ProfileSkeleton />;
 
-  if (!profile) return <ProfileSkeleton />;
+  const handleFollow = () => {
+    followMutation.mutate({ userId: profile.id, username: profile.username });
+  };
+
+  const handleUnfollow = () => {
+    unfollowMutation.mutate({ userId: profile.id, username: profile.username });
+  };
 
   // Khi click vào bài viết → fetch chi tiết
   const handleOpenShowPost = async (id: number) => {
@@ -132,19 +126,25 @@ export default function Profile() {
             ) : (
               <button
                 className={`
-                  rounded-md px-3 py-1 text-sm font-medium transition
+                  rounded-md px-4 py-1.5 text-sm font-medium transition
                   ${profile.isFollowing
-                    ? 'bg-gray-300 text-black hover:bg-gray-400'
-                    : 'bg-[#ed4956] text-white hover:bg-[#d7444f]'
+                    ? 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600 border border-gray-300 dark:border-neutral-600'
+                    : 'bg-[#0095f6] text-white hover:bg-[#1877f2]'
                   }
                 `}
                 onClick={() =>
                   profile.isFollowing
-                    ? unfollowUser(profile.id)
-                    : followUser(profile.id)
+                    ? handleUnfollow()
+                    : handleFollow()
                 }
+                disabled={followMutation.isPending || unfollowMutation.isPending}
               >
-                {profile.isFollowing ? 'Following' : 'Follow'}
+                {followMutation.isPending || unfollowMutation.isPending
+                  ? '...'
+                  : profile.isFollowing
+                    ? 'Following'
+                    : 'Follow'
+                }
               </button>
             )}
           </div>
@@ -182,7 +182,7 @@ export default function Profile() {
 
       {/* Grid posts */}
       <div className="grid grid-cols-3 gap-1 sm:gap-2 mt-4 w-full">
-        {posts.map((post, idx) => (
+        {(posts || []).map((post, idx) => (
           <div
             key={post.id ?? `post-${idx}`}
             className="relative bg-gray-100 aspect-square overflow-hidden group cursor-pointer"
@@ -215,6 +215,7 @@ export default function Profile() {
         open={openFollowers}
         onClose={() => setOpenFollowers(false)}
         username={profile.username}
+        isMyProfile={isMyProfile}
       />
 
       {/* Modal following */}
@@ -222,6 +223,7 @@ export default function Profile() {
         open={openFollowing}
         onClose={() => setOpenFollowing(false)}
         username={profile.username}
+        isMyProfile={isMyProfile}
       />
 
       {/* Modal hiển thị bài viết */}

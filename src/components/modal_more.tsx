@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 
 const ModalMore = ({ className }: { className?: string }) => {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
 
   const handleLogout = () => {
     Cookies.remove('token');
@@ -29,14 +29,14 @@ const ModalMore = ({ className }: { className?: string }) => {
 
       {/* 🌙 Toggle Theme */}
       <button
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
         className="
           p-3 text-left font-medium
           text-black dark:text-white
           hover:bg-gray-100 dark:hover:bg-neutral-700
         "
       >
-        {theme === "dark" ? "🌙 Dark" : "☀️ Light"}
+        {resolvedTheme === "dark" ? "🌙 Dark" : "☀️ Light"}
       </button>
 
       {/* ⚙ Settings */}

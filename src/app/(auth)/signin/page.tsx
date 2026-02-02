@@ -8,7 +8,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { API_SignIn } from "@/src/api/API_Signin";
 import { SignInRequest } from "@/src/interfaces/auth";
-import { useUser } from "@/src/context/UserContext";
+import { useUser } from "@/src/store/useUserStore";
 
 const SignInSchema = Yup.object({
   email: Yup.string()
@@ -78,7 +78,7 @@ export default function SignIn() {
       />
 
       <div className="main w-full flex flex-col sm:flex-row">
-        
+
         {/* LEFT FORM */}
         <div className="form_login w-full sm:w-[30%]">
 
@@ -110,10 +110,9 @@ export default function SignIn() {
                 bg-white dark:bg-black 
                 text-black dark:text-white 
                 placeholder-gray-500 dark:placeholder-white
-                ${
-                  formik.errors.email && formik.touched.email
-                    ? "border-red-500"
-                    : "border-black dark:border-white"
+                ${formik.errors.email && formik.touched.email
+                  ? "border-red-500"
+                  : "border-black dark:border-white"
                 }`}
             />
             {formik.errors.email && formik.touched.email && (
@@ -138,10 +137,9 @@ export default function SignIn() {
                 bg-white dark:bg-black 
                 text-black dark:text-white 
                 placeholder-gray-500 dark:placeholder-white
-                ${
-                  formik.errors.password && formik.touched.password
-                    ? "border-red-500"
-                    : "border-black dark:border-white"
+                ${formik.errors.password && formik.touched.password
+                  ? "border-red-500"
+                  : "border-black dark:border-white"
                 }`}
             />
             {formik.errors.password && formik.touched.password && (

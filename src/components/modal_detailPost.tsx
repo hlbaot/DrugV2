@@ -22,9 +22,9 @@ import { useCommentSocket } from '../socket/comment';
 import { getCommentsPostId } from '@/src/api/API_getPost';
 import { stateLike } from '@/src/api/API_likePost';
 import { stateSave } from '@/src/api/API_savePost';
-import { usePostContext } from '@/src/context/PostContext';
-import { useSavePostContext } from '@/src/context/SavePostContext';
-import { useProfile } from '@/src/context/ProfileContext';
+import { usePostContext } from '@/src/store/usePostStore';
+import { useSavePostContext } from '@/src/store/useSavePostStore';
+import { useProfile } from '@/src/store/useProfileStore';
 
 interface ModalShowPostProps {
   open: boolean;

@@ -1,5 +1,5 @@
 'use client';
-import { useUser } from '@/src/context/UserContext';
+import { useUser } from '@/src/store/useUserStore';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Cookies from 'js-cookie';

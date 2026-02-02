@@ -5,19 +5,18 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import IconHeart from './icon_heart'
 import IconSave from './icon_save'
-import { usePostContext } from '@/src/context/PostContext';
-import { useSavePostContext } from '@/src/context/SavePostContext';
-import { useProfile } from '@/src/context/ProfileContext';
+import { usePostsFeed } from '@/src/hooks/queries/usePosts';
+import { useLikePost, useSavePost } from '@/src/hooks/mutations/usePostMutations';
 import { ThreeDotModal } from './modal_post'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
-import { stateLike } from '@/src/api/API_likePost'
-import { stateSave } from '@/src/api/API_savePost'
 import { getCommentsPostId } from '@/src/api/API_getPost'
+import { useQueryClient } from '@tanstack/react-query';
+import { postKeys } from '@/src/hooks/queries/usePosts';
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import { CommentType } from '../interfaces/post'
+import { CommentType, PostType } from '../interfaces/post'
 
 export default function Post({ postId }: { postId: number }) {
   const [showAllComments, setShowAllComments] = useState(false)
@@ -25,9 +24,13 @@ export default function Post({ postId }: { postId: number }) {
   const [comments, setComments] = useState<CommentType[]>([])
   const router = useRouter();
   const [userId, setUserId] = useState<string>()
-  const { posts, setPosts, updatePostLikeStatus, updatePostSaveStatus, updatePostComments } = usePostContext();
-  const { updateSavedStatus } = useSavePostContext();
-  const { updatePostCounts } = useProfile();
+  const queryClient = useQueryClient();
+
+  // TanStack Query
+  const { data: posts = [] } = usePostsFeed();
+  const likeMutation = useLikePost();
+  const saveMutation = useSavePost();
+
   const post = posts.find((p) => p.id === postId);
   if (!post) return null;
 
@@ -70,38 +73,21 @@ export default function Post({ postId }: { postId: number }) {
 
   const isOwner = userId === post.user.id.toString();
 
-  // Xử lý like
-  const handleToggleLike = async () => {
-    try {
-      const data = await stateLike(id);
-      // console.log('Like API Response (full):', JSON.stringify(data, null, 2));
-
-      // Validate API response and provide fallbacks
-      // Server returns isLike, we map to isLiked
-      const serverLiked = data?.isLike !== undefined ? data.isLike : !isLiked;
-      const serverCount = data?.likeCount !== undefined ? data.likeCount : (serverLiked ? likeCount + 1 : likeCount - 1);
-
-      updatePostLikeStatus(id, serverLiked, serverCount);
-      updatePostCounts(id, serverCount, commentCount);
-    } catch (error) {
-      console.log('Like error:', error);
-    }
+  // Xử lý like với TanStack Query mutation
+  const handleToggleLike = () => {
+    likeMutation.mutate(id);
   };
 
-  // Xử lý save
-  const handleToggleSave = async () => {
-    try {
-      const optimisticSaved = !isSaved;
-      updatePostSaveStatus(id, optimisticSaved);
+  // Xử lý save với TanStack Query mutation
+  const handleToggleSave = () => {
+    saveMutation.mutate(id);
+  };
 
-      const data = await stateSave(id);
-      const { isSaved: serverSaved } = data;
-      updatePostSaveStatus(id, serverSaved);
-      updateSavedStatus(id, serverSaved);
-    } catch (error) {
-      console.log(error);
-      updatePostSaveStatus(id, isSaved);
-    }
+  // Xoá post khỏi cache
+  const handleDeletePost = () => {
+    queryClient.setQueryData<PostType[]>(postKeys.feed(), (old) =>
+      old?.filter((p) => p.id !== id)
+    );
   };
 
   const handleInfo = () => router.push(`/${user.username}`);
@@ -151,7 +137,7 @@ export default function Post({ postId }: { postId: number }) {
 
         <ThreeDotModal
           showDelete={isOwner}
-          onDelete={() => setPosts(posts.filter((p) => p.id !== id))}
+          onDelete={handleDeletePost}
           onToggleSave={handleToggleSave}
           isSaved={isSaved}
           id={id}
@@ -272,7 +258,7 @@ export default function Post({ postId }: { postId: number }) {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M6 12L3.269 3.125A59.769 59.769 0 0121.485 12 59.768 59.768 0 013.27 20.875L6 12zm0 0h7.5"
+              d="M6 12L3.269 3.125A59.769 59.769 0 0121.485 12 59.768 59.768 0 013.27 20.875L5 12zm0 0h7.5"
             />
           </svg>
         </button>

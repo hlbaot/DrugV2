@@ -1,7 +1,8 @@
 import '@/src/styles/global.css';
-import { ThemeProvider } from "./ThemeProvider";
+import { ThemeProvider } from "@/src/components/ThemeProvider";
 import { ToastContainer } from "react-toastify";
-import { UserProvider } from '@/src/context/UserContext';
+import { StoreInitializer } from '@/src/store/StoreInitializer';
+import { QueryProvider } from '@/src/components/QueryProvider';
 
 export const metadata = {
   title: 'DrugConnectionV2',
@@ -12,12 +13,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <UserProvider>
-          <ThemeProvider>
-            {children}
-            <ToastContainer position="top-right" />
-          </ThemeProvider>
-        </UserProvider>
+        <QueryProvider>
+          <StoreInitializer>
+            <ThemeProvider>
+              {children}
+              <ToastContainer position="top-right" />
+            </ThemeProvider>
+          </StoreInitializer>
+        </QueryProvider>
       </body>
     </html>
   );

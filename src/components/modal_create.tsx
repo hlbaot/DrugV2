@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { Modal } from '@mui/material';
-import { usePostContext } from '@/src/context/PostContext';
+import { useQueryClient } from '@tanstack/react-query';
 import { CreatePost } from '@/src/api/API_createPost';
 import { useRouter } from "next/navigation";
 import { uploadMultipleImages } from '@/src/feature/cloudinaryUpload';
-import { useProfile } from '@/src/context/ProfileContext';
+import { useProfile } from '@/src/store/useProfileStore';
+import { useUser } from '@/src/store/useUserStore';
+import { postKeys } from '@/src/hooks/queries/usePosts';
+import { profileKeys } from '@/src/hooks/queries/useProfile';
 import Cookies from 'js-cookie';
 
 interface CreateModalProps {
@@ -15,7 +18,8 @@ interface CreateModalProps {
 
 export default function CreateModal({ open, onClose }: CreateModalProps) {
   const router = useRouter();
-  const { refreshPosts } = usePostContext();
+  const queryClient = useQueryClient();
+  const { user } = useUser();
   const { myProfile, setMyProfile, setMyPosts } = useProfile();
 
   const [caption, setCaption] = useState('');
@@ -41,14 +45,21 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
 
       const newPostFromApi = await CreatePost({ caption, imageUrls });
 
-      refreshPosts(); // reload bài viết ngay
+      // Invalidate TanStack Query cache để tự động refetch data mới
+      // Feed sẽ tự động cập nhật không cần user reload
+      await queryClient.invalidateQueries({ queryKey: postKeys.feed() });
 
-      // update lại state profile
+      // Cập nhật profile posts nếu có username
+      if (user?.username) {
+        await queryClient.invalidateQueries({ queryKey: profileKeys.posts(user.username) });
+        await queryClient.invalidateQueries({ queryKey: profileKeys.detail(user.username) });
+      }
+
+      // Update local state profile (backup)
       if (myProfile && newPostFromApi) {
         setMyProfile(prev =>
           prev ? { ...prev, postCount: (prev.postCount ?? 0) + 1 } : prev
         );
-
         setMyPosts(prev => (prev ? [newPostFromApi, ...prev] : [newPostFromApi]));
       }
 

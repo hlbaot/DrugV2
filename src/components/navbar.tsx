@@ -6,7 +6,7 @@ import CreateModal from "./modal_create";
 import ModalMore from "./modal_more";
 import SearchDrawer from "./modal_search";
 import NotificationDrawer from "./modal_notification";
-import { useUser } from '@/src/context/UserContext';
+import { useUser } from '@/src/store/useUserStore';
 import '@/src/styles/navbar.scss'
 
 export default function Navbar() {
