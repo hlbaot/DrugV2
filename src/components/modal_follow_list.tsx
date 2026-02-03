@@ -38,14 +38,14 @@ export default function ModalFollowList({
     const { refreshMyProfile, refreshViewedProfile } = useProfile();
     const { user } = useUser();
 
-    // Fetch data khi modal mở
+    // Tải dữ liệu khi mở modal
     React.useEffect(() => {
         if (!open) return;
         fetchList();
         setSearchQuery('');
     }, [open, type, username]);
 
-    // Filter khi search
+    // Lọc danh sách khi tìm kiếm
     React.useEffect(() => {
         if (!searchQuery.trim()) {
             setFilteredList(list);
@@ -82,11 +82,11 @@ export default function ModalFollowList({
             } else {
                 await API_Follow(item.id);
             }
-            // Cập nhật local state
+            // Cập nhật trạng thái follow
             setList(prev => prev.map(i =>
                 i.id === item.id ? { ...i, isFollowing: !i.isFollowing } : i
             ));
-            // Refresh profile counts
+            // Làm mới số lượng followers/following
             if (isMyProfile) {
                 refreshMyProfile();
             } else {
@@ -104,7 +104,7 @@ export default function ModalFollowList({
     };
 
     const handleRemoveFollower = async (item: FollowItem) => {
-        // TODO: Implement remove follower API nếu backend có hỗ trợ
+        // TODO: Thêm API xóa follower khi backend hỗ trợ
         console.log('Remove follower:', item.username);
     };
 
@@ -118,7 +118,7 @@ export default function ModalFollowList({
     return (
         <Modal open={open} onClose={onClose}>
             <Wrapper>
-                {/* Header */}
+                {/* Tiêu đề */}
                 <div className="header">
                     <span className="title">{title}</span>
                     <IconButton
@@ -131,7 +131,7 @@ export default function ModalFollowList({
                     </IconButton>
                 </div>
 
-                {/* Search Bar */}
+                {/* Thanh tìm kiếm
                 <div className="search-wrapper">
                     <SearchIcon className="search-icon" />
                     <InputBase
@@ -141,9 +141,9 @@ export default function ModalFollowList({
                         className="search-input"
                         fullWidth
                     />
-                </div>
+                </div> */}
 
-                {/* List */}
+                {/* Danh sách người dùng */}
                 <div className="list">
                     {loading && <p className="empty">Loading...</p>}
 
@@ -169,7 +169,7 @@ export default function ModalFollowList({
                                 </div>
                             </div>
 
-                            {/* Nút Follow/Following/Remove */}
+                            {/* Nút theo dõi/đang theo dõi/xóa */}
                             {item.username !== user?.username && (
                                 type === 'followers' && isMyProfile ? (
                                     <button
@@ -281,7 +281,7 @@ const Wrapper = styled(Box)(({ theme }) => {
             flex: 1,
             padding: '8px 0',
 
-            // Scrollbar styling
+            // Tùy chỉnh thanh cuộn
             scrollbarWidth: 'thin',
             scrollbarColor: `${isDark ? '#363636' : '#dbdbdb'} transparent`,
             '&::-webkit-scrollbar': {

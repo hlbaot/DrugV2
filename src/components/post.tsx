@@ -45,7 +45,7 @@ export default function Post({ postId }: { postId: number }) {
     isSaved
   } = post;
 
-  // ✅ Fetch comments từ API khi load post
+  // Fetch comments từ API khi load post
   useEffect(() => {
     const fetchComments = async () => {
       try {

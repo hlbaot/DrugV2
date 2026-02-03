@@ -60,7 +60,7 @@ export const API_updateProfile = async (data: any) => {
     return res.data;
 }
 
-// follow / unfollow user
+// follow / unfollow user / delete user follow
 export const API_Follow = async (id: number) => {
     const res = await axios.post(
         `${API}/follow/${id}`,
@@ -77,6 +77,18 @@ export const API_Follow = async (id: number) => {
 export const API_Unfollow = async (id: number) => {
     const res = await axios.delete(
         `${API}/follow/${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${getToken()}`,
+            },
+        }
+    );
+    return res.data;
+};
+
+export const API_DeleteFollow = async (id: number) => {
+    const res = await axios.delete(
+        `${API}/follow/delete/${id}`,
         {
             headers: {
                 Authorization: `Bearer ${getToken()}`,

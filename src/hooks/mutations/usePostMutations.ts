@@ -62,15 +62,37 @@ export function useSavePost() {
             await queryClient.cancelQueries({ queryKey: postKeys.feed() });
             await queryClient.cancelQueries({ queryKey: postKeys.saved() });
             const previousPosts = queryClient.getQueryData<PostType[]>(postKeys.feed());
+            const previousSavedPosts = queryClient.getQueryData<any[]>(postKeys.saved());
 
             queryClient.setQueryData<PostType[]>(postKeys.feed(), (old) =>
                 old?.map(post => post.id === postId ? { ...post, isSaved: !post.isSaved } : post)
             );
-            return { previousPosts };
+
+            // Optimistically update saved posts list
+            queryClient.setQueryData<any[]>(postKeys.saved(), (old) => {
+                if (!old) return old;
+
+                // Check if post is currently in saved list
+                const postExists = old.some(p => p.id === postId);
+
+                if (postExists) {
+                    // Remove from saved list (unsaving)
+                    return old.filter(p => p.id !== postId);
+                } else {
+                    // Note: Adding to saved list would require the full post data
+                    // In practice, this case is handled by invalidateQueries on success
+                    return old;
+                }
+            });
+
+            return { previousPosts, previousSavedPosts };
         },
         onError: (_err, _postId, context) => {
             if (context?.previousPosts) {
                 queryClient.setQueryData(postKeys.feed(), context.previousPosts);
+            }
+            if (context?.previousSavedPosts) {
+                queryClient.setQueryData(postKeys.saved(), context.previousSavedPosts);
             }
         },
         onSettled: () => {

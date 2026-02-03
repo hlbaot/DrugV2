@@ -36,7 +36,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
     }
   }, [open]);
 
-  // Handle submit
+  // Xử lý submit
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -45,8 +45,8 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
 
       const newPostFromApi = await CreatePost({ caption, imageUrls });
 
-      // Invalidate TanStack Query cache để tự động refetch data mới
-      // Feed sẽ tự động cập nhật không cần user reload
+      // Làm mới cache TanStack Query để tự động tải lại dữ liệu mới
+      // Feed sẽ tự động cập nhật không cần reload
       await queryClient.invalidateQueries({ queryKey: postKeys.feed() });
 
       // Cập nhật profile posts nếu có username
@@ -55,7 +55,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
         await queryClient.invalidateQueries({ queryKey: profileKeys.detail(user.username) });
       }
 
-      // Update local state profile (backup)
+      // Cập nhật state profile (dự phòng)
       if (myProfile && newPostFromApi) {
         setMyProfile(prev =>
           prev ? { ...prev, postCount: (prev.postCount ?? 0) + 1 } : prev
@@ -102,7 +102,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
           bg-white dark:bg-neutral-900
           text-black dark:text-white
         ">
-          {/* Close Button */}
+          {/* Nút đóng */}
           <button
             onClick={onClose}
             className="
@@ -114,12 +114,12 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
             ✕
           </button>
 
-          {/* Title */}
+          {/* Tiêu đề */}
           <h2 className="text-xl font-bold text-center mb-4">
             Create new post
           </h2>
 
-          {/* Caption Input */}
+          {/* Ô nhập nội dung */}
           <textarea
             className="
               w-full border-b p-2 mb-4 resize-none outline-none
@@ -134,7 +134,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
             onChange={(e) => setCaption(e.target.value)}
           />
 
-          {/* Upload Button */}
+          {/* Nút tải ảnh */}
           <label
             htmlFor="file-upload"
             className="
@@ -174,7 +174,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
             }}
           />
 
-          {/* Image Preview */}
+          {/* Xem trước ảnh */}
           {previewFiles.length > 0 && (
             <div className="overflow-x-auto mb-4">
               <div className="flex gap-2 w-max px-2">
@@ -214,7 +214,7 @@ export default function CreateModal({ open, onClose }: CreateModalProps) {
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Nút gửi */}
           <button
             onClick={handleSubmit}
             disabled={loading || isDisabled}

@@ -21,9 +21,8 @@ import IconSave from './icon_save';
 import { useCommentSocket } from '../socket/comment';
 import { getCommentsPostId } from '@/src/api/API_getPost';
 import { stateLike } from '@/src/api/API_likePost';
-import { stateSave } from '@/src/api/API_savePost';
+import { useSavePost } from '@/src/hooks/mutations/usePostMutations';
 import { usePostContext } from '@/src/store/usePostStore';
-import { useSavePostContext } from '@/src/store/useSavePostStore';
 import { useProfile } from '@/src/store/useProfileStore';
 
 interface ModalShowPostProps {
@@ -39,7 +38,6 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
 
   // Lấy post từ context để có data đã cập nhật (likeCount, isLiked, isSaved)
   const currentPost = posts.find((p) => p.id === post.id) || post;
-  const { updateSavedStatus } = useSavePostContext();
   const { updatePostCounts } = useProfile();
 
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -60,10 +58,10 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
     fetchComments();
   }, [post.id]);
 
-  // ✅ Socket comment realtime - only subscribe when modal is open
+  // ✅ Socket comment realtime - chỉ subscribe khi modal mở
   const { sendComment } = useCommentSocket(open ? post.id : 0, (comment) => {
     setComments((prev) => {
-      // Check for duplicates
+      // Kiểm tra trùng lặp
       if (prev.some((c) => c.id === comment.id)) {
         return prev;
       }
@@ -95,15 +93,15 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
       const data = await stateLike(post.id);
 
 
-      // Validate API response and provide fallbacks
+      // Xác thực response API và cung cấp giá trị dự phòng
       const serverLiked = data?.isLike !== undefined ? data.isLike : !isLike;
       const serverCount = data?.likeCount !== undefined ? data.likeCount : (serverLiked ? likeCount + 1 : likeCount - 1);
 
-      // Update local state
+      // Cập nhật state local
       setIsLike(serverLiked);
       setLikeCount(serverCount);
 
-      // Update context
+      // Cập nhật context
       updatePostLikeStatus(post.id, serverLiked, serverCount);
       updatePostCounts(post.id, serverCount, post.commentCount);
     } catch (error) {
@@ -111,28 +109,18 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
     }
   };
 
-  // ✅ Save
-  const handleToggleSave = async () => {
-    try {
-      // 1. Optimistic update
-      const optimisticSaved = !isSaved;
-      setIsSaved(optimisticSaved);
+  // ✅ Save - using TanStack Query mutation
+  const saveMutation = useSavePost();
 
-      updatePostSaveStatus(post.id, optimisticSaved);
+  const handleToggleSave = () => {
+    // Cập nhật UI ngay - đổi màu liền
+    setIsSaved(!isSaved);
 
-      // 2. API Call
-      const data = await stateSave(post.id);
-      const { isSaved: serverSaved } = data;
+    // Cập nhật context
+    updatePostSaveStatus(post.id, !isSaved);
 
-      // 3. Update with Server data
-      setIsSaved(serverSaved);
-      updatePostSaveStatus(post.id, serverSaved);
-      updateSavedStatus(post.id, serverSaved);
-    } catch (error) {
-      console.error(error);
-      setIsSaved(isSaved); // Revert
-      updatePostSaveStatus(post.id, isSaved);
-    }
+    // Gọi API
+    saveMutation.mutate(post.id);
   };
 
   return (
@@ -152,7 +140,7 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
           flexDirection: hasImages ? 'row' : 'column',
           overflow: 'hidden',
           maxHeight: '90vh',
-          // DARK MODE
+          // CHẾ ĐỘ TỐI
           '&.MuiBox-root': {
             backgroundColor: 'white',
           },
@@ -267,28 +255,49 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
 
           <Divider className="bg-gray-200 dark:bg-neutral-700" />
 
-          {/* Like + Comment */}
-          <Box className="flex items-center justify-between px-2 py-1">
-            <Box className="flex items-center gap-3">
-              <IconHeart
-                postId={post.id}
-                isLiked={isLike}
-                onToggleLike={handleToggleLike}
-              />
+          {/* Like + Comment icons with counts - inline style like post.tsx */}
+          <Box className="flex items-center justify-between px-2 py-2">
+            <Box className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
+              {/* Like with count */}
+              <span className="flex items-center gap-2">
+                <IconHeart
+                  postId={post.id}
+                  isLiked={isLike}
+                  onToggleLike={handleToggleLike}
+                />
+                <span className="text-black dark:text-white">{likeCount} likes</span>
+              </span>
 
-              <IconButton>
-                <ChatBubbleOutlineIcon className="text-black dark:text-white" />
-              </IconButton>
+              {/* Comment with count */}
+              <span className="flex items-center gap-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-black dark:text-white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 20.25c4.97 0 9-3.694 9-8.25S16.97 3.75 12 3.75 3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.48 4.48 0 01-.923 1.785A5.97 5.97 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"
+                  />
+                </svg>
+                <span className="text-black dark:text-white">{comments.length} comments</span>
+              </span>
             </Box>
           </Box>
 
-          {/* Like count */}
-          <Typography className="px-2 mb-1 text-black dark:text-white">
-            <b>{likeCount}</b> likes
-          </Typography>
+          <Divider className="bg-gray-200 dark:bg-neutral-700" />
 
-          {/* INPUT comment */}
+          {/* INPUT comment - Form based submission */}
           <Box
+            component="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSendComment();
+            }}
             className="flex items-center p-2 border-t border-gray-200 dark:border-neutral-700"
           >
             <TextField
@@ -297,12 +306,6 @@ export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
               fullWidth
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleSendComment();
-                }
-              }}
               InputProps={{
                 disableUnderline: true,
                 className: "text-black dark:text-white"

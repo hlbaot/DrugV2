@@ -17,7 +17,7 @@ import ModalFollowers from '../components/modal_follower';
 import ModalFollowing from '../components/modal_following';
 
 export default function Profile() {
-  // State
+  // Trạng thái
   const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
   const [modalAva, setModalAva] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
@@ -26,7 +26,12 @@ export default function Profile() {
   const [openFollowing, setOpenFollowing] = useState(false);
 
   const { user } = useUser();
-  const username = useParams<{ username: string }>()?.username;
+  const params = useParams<{ username: string }>();
+  const username = params?.username;
+
+  // Trả về sớm nếu không có username
+  if (!username) return <ProfileSkeleton />;
+
   const isMyProfile = username === user?.username;
 
   // TanStack Query hooks
@@ -66,9 +71,9 @@ export default function Profile() {
 
   return (
     <div className="flex flex-col mx-auto mt-16 sm:mt-12 w-full px-2 max-w-3xl">
-      {/* Header */}
+      {/* Tiêu đề */}
       <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-12 w-full px-4">
-        {/* Avatar */}
+        {/* Ảnh đại diện */}
         <div
           className={`relative flex justify-center sm:justify-start ${isMyProfile ? 'group cursor-pointer' : ''
             }`}
@@ -84,7 +89,7 @@ export default function Profile() {
             />
           </div>
 
-          {/* Overlay */}
+          {/* Lớp phủ */}
           {isMyProfile && (
             <div className="absolute inset-0 rounded-full bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
               <span className="text-white text-xs sm:text-sm font-medium">
@@ -99,7 +104,7 @@ export default function Profile() {
           <ModalAva open={modalAva} onClose={() => setModalAva(false)} />
         )}
 
-        {/* Info */}
+        {/* Thông tin */}
         <section className="flex flex-col gap-4 flex-1">
           <div className="flex flex-wrap items-center gap-3">
             <p className="text-xl sm:text-2xl font-semibold">
@@ -149,7 +154,7 @@ export default function Profile() {
             )}
           </div>
 
-          {/* Stats */}
+          {/* Thống kê */}
           <div className="flex gap-6 text-sm sm:text-base">
             <p>
               <span className="font-semibold">{profile.postCount}</span> posts
@@ -172,15 +177,15 @@ export default function Profile() {
             </p>
           </div>
 
-          {/* Bio */}
+          {/* Tiểu sử */}
           <p className="text-sm sm:text-base">{profile.bioText || 'No bio yet'}</p>
         </section>
       </div>
 
-      {/* Divider */}
+      {/* Đường phân cách */}
       <hr className="mt-6 border-t border-gray-200" />
 
-      {/* Grid posts */}
+      {/* Lưới bài viết */}
       <div className="grid grid-cols-3 gap-1 sm:gap-2 mt-4 w-full">
         {(posts || []).map((post, idx) => (
           <div

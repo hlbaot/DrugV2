@@ -5,7 +5,7 @@ import { UserProfile } from '@/src/interfaces/userProfile'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
-// Mock notifications for mobile
+// Dữ liệu mẫu thông báo cho mobile
 const mockNotifications = [
     { id: 1, type: 'like', username: 'john_doe', avatar: '/avatar_default.jpg', message: 'liked your photo.', time: '2m' },
     { id: 2, type: 'follow', username: 'jane_smith', avatar: '/avatar_default.jpg', message: 'started following you.', time: '15m', isFollowing: true },
@@ -18,7 +18,7 @@ function Header() {
     const [modalMore, setModalMore] = useState(false)
     const [showNoti, setShowNoti] = useState(false)
 
-    // Search State
+    // Trạng thái tìm kiếm
     const [query, setQuery] = useState('')
     const [results, setResults] = useState<UserProfile[]>([])
     const [loading, setLoading] = useState(false)
@@ -27,7 +27,7 @@ function Header() {
     const searchRef = useRef<HTMLDivElement>(null)
     const notiRef = useRef<HTMLDivElement>(null)
 
-    // Close search when clicking outside
+    // Đóng tìm kiếm khi click bên ngoài
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -41,7 +41,7 @@ function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Debounce Search
+    // Tìm kiếm với debounce
     useEffect(() => {
         const timer = setTimeout(async () => {
             if (query.trim()) {
@@ -72,7 +72,7 @@ function Header() {
     return (
         <div className=" flex justify-around items-center w-[100%] h-[auto] fixed top-0 bg-white dark:bg-black lg:hidden py-2 border-b border-gray-300 dark:border-neutral-800 z-40">
 
-            {/* search */}
+            {/* Tìm kiếm */}
             <div ref={searchRef} className="relative w-[50%]">
                 <div className="bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-full flex justify-around items-center gap-2 px-2">
                     <input
@@ -88,7 +88,7 @@ function Header() {
                     </svg>
                 </div>
 
-                {/* Dropdown Results */}
+                {/* Kết quả tìm kiếm */}
                 {showResults && (
                     <div className="absolute top-full mt-2 left-0 w-full bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-800 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
                         {loading && <div className="p-2 text-center text-gray-500">Loading...</div>}
@@ -116,9 +116,9 @@ function Header() {
                 )}
             </div>
 
-            {/* noti & more */}
+            {/* Thông báo và menu */}
             <div className="w-[35%] flex items-center justify-around text-black dark:text-white">
-                {/* noti */}
+                {/* Thông báo */}
                 <div ref={notiRef} className="relative">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +139,7 @@ function Header() {
               1-5.714 0" />
                     </svg>
 
-                    {/* Notification Dropdown - Centered on mobile */}
+                    {/* Dropdown thông báo - Giữa màn hình trên mobile */}
                     {showNoti && (
                         <div className="fixed top-14 left-4 right-4 mx-auto max-w-[350px] bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-800 rounded-xl shadow-xl max-h-[70vh] overflow-y-auto z-50">
                             <div className="p-4 border-b border-gray-200 dark:border-neutral-800">
@@ -177,7 +177,7 @@ function Header() {
                     )}
                 </div>
 
-                {/* more */}
+                {/* Menu */}
                 <div className="relative">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

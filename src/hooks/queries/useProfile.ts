@@ -26,43 +26,43 @@ export const profileKeys = {
 };
 
 // Lấy thông tin profile cơ bản (bio, avatar, số follower, ...)
-export function useUserProfile(username: string | undefined) {
+export function useUserProfile(username: string ) {
     return useQuery<UserProfile>({
-        queryKey: profileKeys.detail(username || ''),
+        queryKey: profileKeys.detail(username),
         queryFn: () => API_UserProfile(username!),
         enabled: !!username, // Chỉ fetch khi có username
     });
 }
 
 // Lấy danh sách bài viết của user
-export function useUserPosts(username: string | undefined) {
-    return useQuery<UserPost[]>({
-        queryKey: profileKeys.posts(username || ''),
-        queryFn: () => API_PostProfile(username!),
-        enabled: !!username,
+export function useUserPosts(username: string ) {
+    return useQuery<UserPost[]>({ // kiểu dữ liệu trả về
+        queryKey: profileKeys.posts(username), // truy vấn theo key
+        queryFn: () => API_PostProfile(username!), // api lấy dữ liệu
+        enabled: !!username, // chỉ fetch khi có username
     });
 }
 
 // Lấy danh sách người đang follow user này
-export function useFollowers(username: string | undefined) {
+export function useFollowers(username: string ) {
     return useQuery<ListFollowers>({
-        queryKey: profileKeys.followers(username || ''),
+        queryKey: profileKeys.followers(username),
         queryFn: () => API_ListFollowers(username!),
         enabled: !!username,
     });
 }
 
 // Lấy danh sách user này đang follow ai
-export function useFollowing(username: string | undefined) {
+export function useFollowing(username: string ) {
     return useQuery<ListFollowing>({
-        queryKey: profileKeys.following(username || ''),
+        queryKey: profileKeys.following(username),
         queryFn: () => API_ListFollowing(username!),
         enabled: !!username,
     });
 }
 
 // Hook tổng hợp - lấy tất cả dữ liệu profile cùng lúc
-export function useFullProfile(username: string | undefined) {
+export function useFullProfile(username: string ) {
     const profile = useUserProfile(username);
     const posts = useUserPosts(username);
     const followers = useFollowers(username);

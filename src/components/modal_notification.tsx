@@ -7,7 +7,7 @@ interface NotificationDrawerProps {
     onClose: () => void;
 }
 
-// Mock data for notifications
+// Dữ liệu mẫu cho thông báo
 const mockNotifications = [
     {
         id: 1,
@@ -84,7 +84,7 @@ const mockNotifications = [
 export default function NotificationDrawer({ open, onClose }: NotificationDrawerProps) {
     const drawerRef = useRef<HTMLDivElement>(null);
 
-    // Close when clicking outside
+    // Đóng khi click bên ngoài
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (open && drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
@@ -113,14 +113,14 @@ export default function NotificationDrawer({ open, onClose }: NotificationDrawer
             ${open ? 'translate-x-0' : '-translate-x-full'}
         `}>
             <div className="flex flex-col h-full">
-                {/* Header */}
+                {/* Tiêu đề */}
                 <div className="p-6 pb-2">
                     <h2 className="text-2xl font-bold text-black dark:text-white">Notifications</h2>
                 </div>
 
-                {/* Sections */}
+                {/* Các phần */}
                 <div className="flex-1 overflow-y-auto px-2">
-                    {/* Today Section */}
+                    {/* Phần Hôm nay */}
                     <div className="mb-4">
                         <h3 className="text-sm font-semibold px-4 py-2 text-black dark:text-white">Today</h3>
                         {mockNotifications.filter(n => n.time.includes('m') || n.time.includes('h')).map(notification => (
@@ -128,7 +128,7 @@ export default function NotificationDrawer({ open, onClose }: NotificationDrawer
                         ))}
                     </div>
 
-                    {/* This Week Section */}
+                    {/* Phần Tuần này */}
                     <div className="mb-4">
                         <h3 className="text-sm font-semibold px-4 py-2 text-black dark:text-white">This Week</h3>
                         {mockNotifications.filter(n => n.time.includes('d')).map(notification => (
@@ -141,11 +141,11 @@ export default function NotificationDrawer({ open, onClose }: NotificationDrawer
     )
 }
 
-// Notification Item Component
+// Component hiển thị từng thông báo
 function NotificationItem({ notification }: { notification: typeof mockNotifications[0] }) {
     return (
         <div className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-neutral-900 cursor-pointer rounded-lg">
-            {/* Avatar */}
+            {/* Ảnh đại diện */}
             <Image
                 src={notification.avatar}
                 alt={notification.username}
@@ -154,7 +154,7 @@ function NotificationItem({ notification }: { notification: typeof mockNotificat
                 className="rounded-full object-cover border border-gray-200 dark:border-neutral-800 shrink-0"
             />
 
-            {/* Content */}
+            {/* Nội dung */}
             <div className="flex-1 min-w-0">
                 <p className="text-sm text-black dark:text-white">
                     <span className="font-semibold">{notification.username}</span>{' '}
@@ -163,7 +163,7 @@ function NotificationItem({ notification }: { notification: typeof mockNotificat
                 </p>
             </div>
 
-            {/* Right Side - Post thumbnail or Follow button */}
+            {/* Bên phải - Ảnh bài viết hoặc nút Follow */}
             {notification.type === 'follow' ? (
                 <button className={`px-4 py-1.5 rounded-lg text-sm font-semibold shrink-0 ${notification.isFollowing
                     ? 'bg-gray-200 dark:bg-neutral-700 text-black dark:text-white'
