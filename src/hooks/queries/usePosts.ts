@@ -35,6 +35,7 @@ export function usePostsFeed() {
             // Thêm trường isSaved vào mỗi post
             return feed.map(p => ({ ...p, isSaved: savedIds.has(p.id) }));
         },
+        staleTime: 1000 * 60 * 2, // Feed fresh trong 2 phút
     });
 }
 
@@ -43,6 +44,7 @@ export function useSavedPosts() {
     return useQuery<SavedPostType[]>({
         queryKey: postKeys.saved(),
         queryFn: getAllPostsSaved,
+        staleTime: 1000 * 60, // Saved posts fresh trong 1 phút
     });
 }
 

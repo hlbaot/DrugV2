@@ -13,10 +13,10 @@ function makeQueryClient() {
     return new QueryClient({
         defaultOptions: {
             queries: {
-                staleTime: 60 * 1000,       // Data "tươi" trong 60 giây - không fetch lại
-                gcTime: 5 * 60 * 1000,      // Giữ cache 5 phút khi không dùng
-                retry: 1,                    // Thử lại 1 lần nếu request lỗi
-                refetchOnWindowFocus: false, // Không fetch lại khi user quay lại tab
+                staleTime: 60 * 1000,       
+                gcTime: 5 * 60 * 1000,      
+                retry: 1,                    
+                refetchOnWindowFocus: false, 
             },
         },
     });

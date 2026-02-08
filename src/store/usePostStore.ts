@@ -22,7 +22,7 @@ interface PostStore {
     updatePostCommentCount: (id: number, newCount: number) => void;
 }
 
-export const usePostStore = create<PostStore>((set) => ({
+export const usePostStore = create<PostStore>()((set) => ({
     // State lưu danh sách posts và trạng thái loading
     posts: [],
     isLoading: true,

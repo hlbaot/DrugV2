@@ -26,7 +26,7 @@ export const profileKeys = {
 };
 
 // Lấy thông tin profile cơ bản (bio, avatar, số follower, ...)
-export function useUserProfile(username: string ) {
+export function useUserProfile(username: string) {
     return useQuery<UserProfile>({
         queryKey: profileKeys.detail(username),
         queryFn: () => API_UserProfile(username!),
@@ -35,7 +35,7 @@ export function useUserProfile(username: string ) {
 }
 
 // Lấy danh sách bài viết của user
-export function useUserPosts(username: string ) {
+export function useUserPosts(username: string) {
     return useQuery<UserPost[]>({ // kiểu dữ liệu trả về
         queryKey: profileKeys.posts(username), // truy vấn theo key
         queryFn: () => API_PostProfile(username!), // api lấy dữ liệu
@@ -44,7 +44,7 @@ export function useUserPosts(username: string ) {
 }
 
 // Lấy danh sách người đang follow user này
-export function useFollowers(username: string ) {
+export function useFollowers(username: string) {
     return useQuery<ListFollowers>({
         queryKey: profileKeys.followers(username),
         queryFn: () => API_ListFollowers(username!),
@@ -53,7 +53,7 @@ export function useFollowers(username: string ) {
 }
 
 // Lấy danh sách user này đang follow ai
-export function useFollowing(username: string ) {
+export function useFollowing(username: string) {
     return useQuery<ListFollowing>({
         queryKey: profileKeys.following(username),
         queryFn: () => API_ListFollowing(username!),
@@ -62,7 +62,7 @@ export function useFollowing(username: string ) {
 }
 
 // Hook tổng hợp - lấy tất cả dữ liệu profile cùng lúc
-export function useFullProfile(username: string ) {
+export function useFullProfile(username: string) {
     const profile = useUserProfile(username);
     const posts = useUserPosts(username);
     const followers = useFollowers(username);

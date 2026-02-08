@@ -17,7 +17,7 @@ interface SavePostStore {
     updateSavedStatus: (id: number, isSaved: boolean, newData?: SavedPostType) => void;
 }
 
-export const useSavePostStore = create<SavePostStore>((set) => ({
+export const useSavePostStore = create<SavePostStore>()((set) => ({
     // Danh sách các bài viết đã lưu
     savedPosts: [],
 

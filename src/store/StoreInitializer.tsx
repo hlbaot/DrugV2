@@ -1,16 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useUserStore } from './useUserStore';
 
-// Component để khởi tạo user từ localStorage khi app load
-// TanStack Query sẽ tự động fetch data khi cần
+/**
+ * Component để đợi store hydrate từ localStorage trước khi render children.
+ * Với persist middleware, việc khởi tạo user từ localStorage đã được tự động xử lý.
+ * Component này chỉ cần đợi hydration hoàn tất để tránh lỗi hydration mismatch.
+ */
 export function StoreInitializer({ children }: { children: React.ReactNode }) {
-    const initializeUser = useUserStore(state => state.initializeUser);
+    const hasHydrated = useUserStore(state => state._hasHydrated);
 
-    useEffect(() => {
-        initializeUser();
-    }, []);
+    if (!hasHydrated) {
+        return null;
+    }
 
     return <>{children}</>;
 }

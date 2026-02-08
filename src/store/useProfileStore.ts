@@ -45,7 +45,7 @@ interface ProfileStore {
     updateProfile: (data: any) => Promise<void>;
 }
 
-export const useProfileStore = create<ProfileStore>((set) => ({
+export const useProfileStore = create<ProfileStore>()((set) => ({
     // State lưu trữ dữ liệu profile
     myProfile: null,
     viewedProfile: null,
