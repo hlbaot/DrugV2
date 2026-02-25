@@ -12,9 +12,14 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
+      //xí xoá
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+        pathname: '/**',
+      },
     ],
   },
-
   webpack(config: Configuration) {
     config.module?.rules?.push({
       test: /\.svg$/,

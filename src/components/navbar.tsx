@@ -18,6 +18,7 @@ export default function Navbar() {
   const [modalSearch, setModalSearch] = useState(false);
   const [modalNoti, setModalNoti] = useState(false);
   const { user } = useUser();
+  //const user = mockUsers[0];
   if (!user) return null;
 
   const isActive = (nameRouter: string) =>

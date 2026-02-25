@@ -1,6 +1,6 @@
 export interface SavedPostType {
   id: number;
-  images: string | string[]; 
+  images: string | string[];
   caption: string;
   isSaved: boolean;
   user: {
@@ -15,7 +15,7 @@ export interface SavedPostResponse {
   posts: SavedPostType[];
 }
 
-export interface SavePostContextType {
+export interface SavePostStoreType {
   savedPosts: SavedPostType[];
   setSavedPosts: React.Dispatch<React.SetStateAction<SavedPostType[]>>;
   refreshSavedPosts: () => Promise<void>;

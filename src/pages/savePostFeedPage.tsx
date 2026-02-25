@@ -4,7 +4,7 @@ import PostSkeleton from '@/public/skeletonPost';
 import { useSavedPosts } from '@/src/hooks/queries/usePosts';
 import PostSaved from '../components/postSaved';
 import { ModalShowPost } from '../components/modal_detailPost';
-import { PostType } from '@/src/interfaces/post';
+import { PostType } from '@/src/hooks/post';
 import { API_detailPost } from '@/src/api/API_detailPost';
 import { getCommentsPostId } from '@/src/api/API_getPost';
 

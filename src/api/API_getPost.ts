@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { CommentType, PostType } from "@/src/interfaces/post";
+import { CommentType, PostType } from "@/src/hooks/post";
 import { API } from "./api";
 
 export const getAllPosts = async (): Promise<PostType[]> => {

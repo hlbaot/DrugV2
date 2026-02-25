@@ -29,7 +29,7 @@ export interface PostType {
   comments?: CommentType[];
 }
 
-export interface PostContextType {
+export interface PostStoreType {
   posts: PostType[];
   setPosts: React.Dispatch<React.SetStateAction<PostType[]>>;
   isLoading: boolean;

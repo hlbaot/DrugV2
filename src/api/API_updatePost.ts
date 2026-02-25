@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { API } from "./api";
-import { UpdateProfileRequest } from "../interfaces/post";
+import { UpdateProfileRequest } from "../hooks/post";
 
 export const UpdateProfile = async (data: UpdateProfileRequest): Promise<void> => {
   const token = Cookies.get('token');

@@ -14,6 +14,7 @@ export const API_UserProfile = async (username: string): Promise<UserProfile> =>
             Authorization: `Bearer ${getToken()}`,
         },
     });
+    console.log('🔍 API_UserProfile response:', res.data);
     return res.data;
 };
 // danh sách người theo dõi và đang theo dõi

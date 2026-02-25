@@ -16,7 +16,7 @@ import { postKeys } from '@/src/hooks/queries/usePosts';
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import { CommentType, PostType } from '../interfaces/post'
+import { CommentType, PostType } from '@/src/interfaces/post'
 
 export default function Post({ postId }: { postId: number }) {
   const [showAllComments, setShowAllComments] = useState(false)

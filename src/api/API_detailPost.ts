@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PostType } from "@/src/interfaces/post";
+import { PostType } from "@/src/hooks/post";
 import Cookies from "js-cookie";
 import { API } from "./api";
 

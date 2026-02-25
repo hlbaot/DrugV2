@@ -49,5 +49,3 @@ export const useSavePostStore = create<SavePostStore>()((set) => ({
     }
 }));
 
-// Alias - giữ tương thích với code cũ
-export const useSavePostContext = () => useSavePostStore();

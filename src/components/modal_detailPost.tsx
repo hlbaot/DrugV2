@@ -15,14 +15,14 @@ import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { PostType, CommentType } from '../interfaces/post';
+import { PostType, CommentType } from '../hooks/post';
 import IconHeart from './icon_heart';
 import IconSave from './icon_save';
 import { useCommentSocket } from '../socket/comment';
 import { getCommentsPostId } from '@/src/api/API_getPost';
 import { stateLike } from '@/src/api/API_likePost';
 import { useSavePost } from '@/src/hooks/mutations/usePostMutations';
-import { usePostContext } from '@/src/store/usePostStore';
+import { usePostStore } from '@/src/store/usePostStore';
 import { useProfile } from '@/src/store/useProfileStore';
 
 interface ModalShowPostProps {
@@ -34,7 +34,7 @@ interface ModalShowPostProps {
 export const ModalShowPost = ({ open, onClose, post }: ModalShowPostProps) => {
   if (!post) return null;
 
-  const { posts, updatePostLikeStatus, updatePostSaveStatus } = usePostContext();
+  const { posts, updatePostLikeStatus, updatePostSaveStatus } = usePostStore();
 
   // Lấy post từ context để có data đã cập nhật (likeCount, isLiked, isSaved)
   const currentPost = posts.find((p) => p.id === post.id) || post;

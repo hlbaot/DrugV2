@@ -39,7 +39,7 @@ export function usePostsFeed() {
     });
 }
 
-// Lấy danh sách bài viết đã lưu (bookmark)
+// Lấy danh sách bài viết đã lưu
 export function useSavedPosts() {
     return useQuery<SavedPostType[]>({
         queryKey: postKeys.saved(),

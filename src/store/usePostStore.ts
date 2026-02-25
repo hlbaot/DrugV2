@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { PostType } from '@/src/interfaces/post';
+import { PostType } from '@/src/hooks/post';
 import { getAllPosts } from '@/src/api/API_getPost';
 import { getAllPostsSaved } from '@/src/api/API_getPostSaved';
 
@@ -73,5 +73,3 @@ export const usePostStore = create<PostStore>()((set) => ({
     },
 }));
 
-// Alias - giữ tương thích với code cũ dùng tên usePostContext
-export const usePostContext = () => usePostStore();

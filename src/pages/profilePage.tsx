@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/src/store/useUserStore';
 import Image from 'next/image';
 import { useFullProfile, profileKeys } from '@/src/hooks/queries/useProfile';
@@ -15,6 +16,8 @@ import { getCommentsPostId } from '@/src/api/API_getPost';
 import ProfileSkeleton from '@/public/skeletonProfile';
 import ModalFollowers from '../components/modal_follower';
 import ModalFollowing from '../components/modal_following';
+import { useMessageList, messageKeys } from '@/src/hooks/queries/useMessage';
+import { createRoom } from '@/src/api/API_Message';
 
 export default function Profile() {
   // Trạng thái
@@ -27,6 +30,8 @@ export default function Profile() {
 
   const { user } = useUser();
   const params = useParams<{ username: string }>();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const username = params?.username;
 
   // Trả về sớm nếu không có username
@@ -36,6 +41,7 @@ export default function Profile() {
 
   // TanStack Query hooks
   const { profile, posts, isLoading } = useFullProfile(username);
+  const { data: messageList } = useMessageList();
   const followMutation = useFollowUser();
   const unfollowMutation = useUnfollowUser();
 
@@ -49,6 +55,27 @@ export default function Profile() {
     unfollowMutation.mutate({ userId: profile.id, username: profile.username });
   };
 
+
+  const handleClickMessage = async () => {
+    const existingRoom = messageList?.find((room) => room.partner.id === profile.id);
+
+    if (existingRoom) {
+      router.push(`/message/${existingRoom.roomId}`);
+    } else {
+      try {
+        const newRoom = await createRoom(profile.id);
+
+        // Cập nhật lại danh sách tin nhắn để room mới hiện ngay
+        await queryClient.invalidateQueries({ queryKey: messageKeys.list() });
+
+        const newRoomId = newRoom.roomId ?? newRoom.id;
+        router.push(`/message/${newRoomId}`);
+      } catch (error) {
+        console.error('❌ Lỗi khi tạo phòng:', error);
+      }
+    }
+  };
+
   // Khi click vào bài viết → fetch chi tiết
   const handleOpenShowPost = async (id: number) => {
     try {
@@ -56,7 +83,7 @@ export default function Profile() {
         API_detailPost(id),
         getCommentsPostId(id),
       ]);
-
+      // gộp 2 thông tin post và comments
       const mergedPost = {
         ...postDetail,
         comments: comments || [],
@@ -129,28 +156,42 @@ export default function Profile() {
                 <ModalEdit open={modalEdit} onClose={() => setModalEdit(false)} />
               </>
             ) : (
-              <button
-                className={`
-                  rounded-md px-4 py-1.5 text-sm font-medium transition
-                  ${profile.isFollowing
-                    ? 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600 border border-gray-300 dark:border-neutral-600'
-                    : 'bg-[#0095f6] text-white hover:bg-[#1877f2]'
+              <>
+                <button
+                  className={`
+                    rounded-md px-4 py-1.5 text-sm font-medium transition
+                    ${profile.isFollowing
+                      ? 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600 border border-gray-300 dark:border-neutral-600'
+                      : 'bg-[#0095f6] text-white hover:bg-[#1877f2]'
+                    }
+                  `}
+                  onClick={() =>
+                    profile.isFollowing
+                      ? handleUnfollow()
+                      : handleFollow()
                   }
-                `}
-                onClick={() =>
-                  profile.isFollowing
-                    ? handleUnfollow()
-                    : handleFollow()
-                }
-                disabled={followMutation.isPending || unfollowMutation.isPending}
-              >
-                {followMutation.isPending || unfollowMutation.isPending
-                  ? '...'
-                  : profile.isFollowing
-                    ? 'Following'
-                    : 'Follow'
-                }
-              </button>
+                  disabled={followMutation.isPending || unfollowMutation.isPending}
+                >
+                  {followMutation.isPending || unfollowMutation.isPending
+                    ? '...'
+                    : profile.isFollowing
+                      ? 'Following'
+                      : 'Follow'
+                  }
+                </button>
+
+                <button
+                  onClick={handleClickMessage}
+                  className="
+                    rounded-md px-4 py-1.5 text-sm font-medium transition border
+                    bg-gray-100 border-gray-300 text-black hover:bg-gray-200
+                    dark:bg-neutral-800 dark:border-neutral-600 dark:text-white
+                    dark:hover:bg-neutral-700
+                  "
+                >
+                  Message
+                </button>
+              </>
             )}
           </div>
 

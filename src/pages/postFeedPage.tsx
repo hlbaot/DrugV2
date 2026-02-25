@@ -1,6 +1,6 @@
 'use client';
 import Post from '../components/post';
-import { PostType } from '@/src/interfaces/post';
+import { PostType } from '@/src/hooks/post';
 import { usePostsFeed } from '@/src/hooks/queries/usePosts';
 import PostSkeleton from '@/public/skeletonPost';
 
