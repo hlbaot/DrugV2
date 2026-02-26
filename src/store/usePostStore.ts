@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { PostType } from '@/src/hooks/post';
+import { PostType } from '@/src/interfaces/post';
 import { getAllPosts } from '@/src/api/API_getPost';
 import { getAllPostsSaved } from '@/src/api/API_getPostSaved';
 
