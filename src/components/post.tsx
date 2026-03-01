@@ -22,6 +22,7 @@ export default function Post({ postId }: { postId: number }) {
   const [showAllComments, setShowAllComments] = useState(false)
   const [commentText, setCommentText] = useState<string>('')
   const [comments, setComments] = useState<CommentType[]>([])
+  const [slideAspectRatios, setSlideAspectRatios] = useState<Record<number, string>>({})
   const router = useRouter();
   const [userId, setUserId] = useState<string>()
   const queryClient = useQueryClient();
@@ -110,6 +111,19 @@ export default function Post({ postId }: { postId: number }) {
     setCommentText("");
   };
 
+  // xác định kích thước ảnh
+  const getAspectRatioBySize = (width: number, height: number) => {
+    if (!width || !height) return '1 / 1';
+    const ratio = width / height;
+
+    // 1200x800 -> 3/2 (ảnh ngang)
+    if (ratio > 1.05) return '3 / 2';
+    // 960x1200 -> 4/5 (ảnh dọc)
+    if (ratio < 0.95) return '4 / 5';
+    // 1200x1200 -> 1/1 (ảnh vuông)
+    return '1 / 1';
+  };
+
   return (
     <div className="
   w-full mx-auto my-4 p-4 rounded-lg shadow max-w-3xl
@@ -157,8 +171,26 @@ export default function Post({ postId }: { postId: number }) {
         >
           {images.map((img, idx) => (
             <SwiperSlide key={idx}>
-              <div className="relative bg-white dark:bg-neutral-900 w-full mx-auto overflow-hidden rounded-md" style={{ aspectRatio: '4/5', maxHeight: '500px' }}>
-                <Image src={img} alt={`slide-${idx}`} fill className="object-contain" />
+              <div
+                className="relative bg-white dark:bg-neutral-900 w-full mx-auto overflow-hidden rounded-md"
+                style={{ aspectRatio: slideAspectRatios[idx] ?? '1 / 1', maxHeight: '620px' }}
+              >
+                <Image
+                  src={img}
+                  alt={`slide-${idx}`}
+                  fill
+                  className="object-cover"
+                  onLoadingComplete={(loadedImg) => {
+                    const detectedRatio = getAspectRatioBySize(
+                      loadedImg.naturalWidth,
+                      loadedImg.naturalHeight
+                    );
+                    setSlideAspectRatios((prev) => {
+                      if (prev[idx] === detectedRatio) return prev;
+                      return { ...prev, [idx]: detectedRatio };
+                    });
+                  }}
+                />
               </div>
             </SwiperSlide>
           ))}
